@@ -67,7 +67,7 @@ public final class WindowManager {
     if (Authorization.isAccessGranted(controller)) {
       var stage = createNewStage(controller);
       stages.add(stage);
-      stage.show();
+      stage.show(); // TODO maybe should use showAndWait(), test it
     } else {
       showAccessWarning();
     }
@@ -101,6 +101,7 @@ public final class WindowManager {
       mainStage.setMinHeight(viewSettings.getDefaultHeight());
       mainStage.setWidth(viewSettings.getWidth());
       mainStage.setHeight(viewSettings.getHeight());
+      mainStage.setMaximized(viewSettings.isMaximized());
       mainStage.setOnCloseRequest(getOnCloseActions());
     }
     mainStage.setScene(controller.getScene());
@@ -128,6 +129,7 @@ public final class WindowManager {
     return event -> {
       viewSettings.setWidth(mainStage.getWidth());
       viewSettings.setHeight(mainStage.getHeight());
+      viewSettings.setMaximized(mainStage.isMaximized());
       viewSettings.save();
     };
   }
