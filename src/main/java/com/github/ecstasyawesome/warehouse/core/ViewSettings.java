@@ -12,7 +12,7 @@ public final class ViewSettings {
   private final String widthDefaultValue = "640.0";
   private final String heightKey = "window.height";
   private final String heightDefaultValue = "480.0";
-  // TODO fullScreen setting
+  private final String maximizedKey = "window.maximized";
 
   private ViewSettings() {
   }
@@ -22,7 +22,7 @@ public final class ViewSettings {
   }
 
   public double getWidth() {
-    return getVerifiedWithDefaultValue(widthKey, widthDefaultValue);
+    return getVerifiedWithDefaultLengthValue(widthKey, widthDefaultValue);
   }
 
   public double getDefaultWidth() {
@@ -34,14 +34,14 @@ public final class ViewSettings {
   }
 
   public double getHeight() {
-    return getVerifiedWithDefaultValue(heightKey, heightDefaultValue);
+    return getVerifiedWithDefaultLengthValue(heightKey, heightDefaultValue);
   }
 
   public double getDefaultHeight() {
     return Double.parseDouble(heightDefaultValue);
   }
 
-  private double getVerifiedWithDefaultValue(String key, String defaultValue) {
+  private double getVerifiedWithDefaultLengthValue(String key, String defaultValue) {
     var value = properties.getProperty(key, defaultValue);
     var result = Double.parseDouble(value);
     var defaultDoubleValue = Double.parseDouble(defaultValue);
@@ -54,6 +54,14 @@ public final class ViewSettings {
 
   public void setHeight(double height) {
     properties.setProperty(heightKey, String.valueOf(height));
+  }
+
+  public boolean isMaximized() {
+    return Boolean.parseBoolean(properties.getProperty(maximizedKey));
+  }
+
+  public void setMaximized(boolean maximized) {
+    properties.setProperty(maximizedKey, String.valueOf(maximized));
   }
 
   public void save() {
