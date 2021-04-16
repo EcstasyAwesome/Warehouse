@@ -31,7 +31,7 @@ public final class PropertyTool {
     verifyRootFolder();
     final var pathToFile = preparePath(config);
     try (var outputStream = Files.newOutputStream(pathToFile)) {
-      properties.store(outputStream, null);
+      properties.store(outputStream, "DO NOT MODIFY THIS FILE");
     } catch (IOException exception) {
       EventManager.showPopUpWindow(AlertType.ERROR, exception.getMessage());  // TODO message
     }
