@@ -1,5 +1,6 @@
 package com.github.ecstasyawesome.warehouse.core;
 
-public abstract class Controller {
+public interface Resulting<T> {
 
+  T take();
 }

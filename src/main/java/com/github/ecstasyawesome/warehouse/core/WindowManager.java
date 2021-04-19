@@ -1,10 +1,11 @@
 package com.github.ecstasyawesome.warehouse.core;
 
-import com.github.ecstasyawesome.warehouse.controller.Authorization;
+import com.github.ecstasyawesome.warehouse.module.controller.Authorization;
 import com.github.ecstasyawesome.warehouse.service.EventManager;
 import com.github.ecstasyawesome.warehouse.util.ResourceLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javafx.animation.FadeTransition;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -26,6 +27,8 @@ public final class WindowManager {
 
   private WindowManager(final Stage root) {
     this.root = root;
+    configureMainStage();
+    configureAuthorizationStage();
   }
 
   public static WindowManager getInstance() {
@@ -45,32 +48,35 @@ public final class WindowManager {
   public void showAuthorizationForm() {
     if (Authorization.getCurrentUser().isEmpty()) {
       mainStage.close();
-      prepareAuthorizationStage();
       authorizationStage.show();
     } else {
       EventManager.showPopUpWindow(AlertType.WARNING, "Do logout before login"); // TODO i18n
     }
   }
 
-  public void showScene(Controller controller) {
-    if (Authorization.isAccessGranted(controller)) {
+  public <T extends Controller> void show(ModuleFactory<T> factory) {
+    var wrapper = factory.create();
+    if (Authorization.isAccessGranted(wrapper.getAccess())) {
       authorizationStage.close();
       closeSecondaryStagesIfPresent();
-      prepareMainStage(controller);
+      mainStage.setScene(wrapper.getScene());
       mainStage.show();
     } else {
       showAccessWarning();
     }
   }
 
-  public void showSceneInNewWindow(Controller controller) {
-    if (Authorization.isAccessGranted(controller)) {
-      var stage = createNewStage(controller);
+  public <T extends FeedbackController<E>, E> Optional<E> show(
+      FeedbackModuleFactory<T, E> factory) {
+    var wrapper = factory.create();
+    if (Authorization.isAccessGranted(wrapper.getAccess())) {
+      var stage = createNewStage(wrapper.getScene());
       stages.add(stage);
-      stage.show(); // TODO maybe should use showAndWait(), test it
+      stage.showAndWait();
     } else {
       showAccessWarning();
     }
+    return Optional.ofNullable(wrapper.getController().take());
   }
 
   private void closeSecondaryStagesIfPresent() {
@@ -83,38 +89,33 @@ public final class WindowManager {
     EventManager.showPopUpWindow(AlertType.WARNING, "Access denied!"); // TODO i18n
   }
 
-  private Stage createNewStage(Controller controller) {
+  private Stage createNewStage(Scene scene) {
     var stage = new Stage();
     EventHandler<WindowEvent> onCloseEvent = event -> stages.remove(stage);
     stage.initModality(Modality.APPLICATION_MODAL);
     stage.initOwner(stages.isEmpty() ? mainStage : stages.get(stages.size() - 1));
-    stage.setScene(controller.getScene());
+    stage.setScene(scene);
     stage.setOnCloseRequest(onCloseEvent);
     stage.setOnHidden(onCloseEvent); // TODO check workable with OK and CANCEL buttons
     return stage;
   }
 
-  private void prepareMainStage(Controller controller) {
-    if (mainStage.getScene() == null) {
-      mainStage.initOwner(root);
-      mainStage.setMinWidth(viewSettings.getDefaultWidth());
-      mainStage.setMinHeight(viewSettings.getDefaultHeight());
-      mainStage.setWidth(viewSettings.getWidth());
-      mainStage.setHeight(viewSettings.getHeight());
-      mainStage.setMaximized(viewSettings.isMaximized());
-      mainStage.setOnCloseRequest(getOnCloseActions());
-    }
-    mainStage.setScene(controller.getScene());
+  private void configureMainStage() {
+    mainStage.initOwner(root);
+    mainStage.setMinWidth(viewSettings.getDefaultWidth());
+    mainStage.setMinHeight(viewSettings.getDefaultHeight());
+    mainStage.setWidth(viewSettings.getWidth());
+    mainStage.setHeight(viewSettings.getHeight());
+    mainStage.setMaximized(viewSettings.isMaximized());
+    mainStage.setOnCloseRequest(getOnCloseActions());
   }
 
-  private void prepareAuthorizationStage() {
-    if (authorizationStage.getScene() == null) {
-      var authorization = ResourceLoader.load(Authorization.FXML);
-      applyFadeAnimation(authorization);
-      authorizationStage.initOwner(root);
-      authorizationStage.setScene(new Scene(authorization));
-      authorizationStage.setResizable(false);
-    }
+  private void configureAuthorizationStage() {
+    var authorization = ResourceLoader.load(Authorization.FXML);
+    applyFadeAnimation(authorization);
+    authorizationStage.initOwner(root);
+    authorizationStage.setScene(new Scene(authorization));
+    authorizationStage.setResizable(false);
   }
 
   private void applyFadeAnimation(Parent parent) {
