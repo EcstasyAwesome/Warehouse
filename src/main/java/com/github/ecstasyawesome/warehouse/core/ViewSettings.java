@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public final class ViewSettings {
 
-  private static final ViewSettings INSTANCE = new ViewSettings();
+  private static ViewSettings instance;
   private final Properties properties = PropertyTool.load(Config.VIEW);
   private final String widthKey = "window.width";
   private final String widthDefaultValue = "640.0";
@@ -18,7 +18,10 @@ public final class ViewSettings {
   }
 
   public static ViewSettings getInstance() {
-    return INSTANCE;
+    if (instance == null) {
+      instance = new ViewSettings();
+    }
+    return instance;
   }
 
   public double getWidth() {
