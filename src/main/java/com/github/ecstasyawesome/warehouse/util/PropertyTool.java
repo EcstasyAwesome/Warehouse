@@ -1,15 +1,15 @@
 package com.github.ecstasyawesome.warehouse.util;
 
-import com.github.ecstasyawesome.warehouse.service.EventManager;
+import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Properties;
-import javafx.scene.control.Alert.AlertType;
 
 public final class PropertyTool {
 
+  private static final WindowManager WINDOW_MANAGER = WindowManager.getInstance();
   private static final Path ROOT = Path.of("settings");
 
   private PropertyTool() {
@@ -21,7 +21,8 @@ public final class PropertyTool {
     try (var inputStream = Files.newInputStream(pathToFile)) {
       result.load(inputStream);
     } catch (IOException exception) {
-      EventManager.showPopUpWindow(AlertType.WARNING, exception.getMessage());  // TODO message
+      // TODO save to some logger
+      WINDOW_MANAGER.showDialog(exception);
     }
     return result;
   }
@@ -33,7 +34,8 @@ public final class PropertyTool {
     try (var outputStream = Files.newOutputStream(pathToFile)) {
       properties.store(outputStream, "DO NOT MODIFY THIS FILE");
     } catch (IOException exception) {
-      EventManager.showPopUpWindow(AlertType.ERROR, exception.getMessage());  // TODO message
+      // TODO save to some logger
+      WINDOW_MANAGER.showDialog(exception);
     }
   }
 
@@ -46,14 +48,15 @@ public final class PropertyTool {
       try {
         Files.createDirectory(ROOT);
       } catch (IOException exception) {
-        EventManager.showPopUpWindow(AlertType.ERROR, exception.getMessage());  // TODO message
+        // TODO save to some logger
+        WINDOW_MANAGER.showDialog(exception);
       }
     }
   }
 
   public enum Config {
 
-    VIEW("view.cfg"), SETTINGS("settings.cfg");
+    VIEW("view.cfg"), APPLICATION("application.cfg");
 
     private final String fileName;
 
