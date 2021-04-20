@@ -1,13 +1,10 @@
 package com.github.ecstasyawesome.warehouse.core;
 
-import com.github.ecstasyawesome.warehouse.util.PropertyTool;
 import com.github.ecstasyawesome.warehouse.util.PropertyTool.Config;
-import java.util.Properties;
 
-public final class ViewSettings {
+public final class ViewSettings extends Settings {
 
   private static ViewSettings instance;
-  private final Properties properties = PropertyTool.load(Config.VIEW);
   private final String widthKey = "window.width";
   private final String widthDefaultValue = "640.0";
   private final String heightKey = "window.height";
@@ -15,6 +12,7 @@ public final class ViewSettings {
   private final String maximizedKey = "window.maximized";
 
   private ViewSettings() {
+    super(Config.VIEW);
   }
 
   public static ViewSettings getInstance() {
@@ -65,9 +63,5 @@ public final class ViewSettings {
 
   public void setMaximized(boolean maximized) {
     properties.setProperty(maximizedKey, String.valueOf(maximized));
-  }
-
-  public void save() {
-    PropertyTool.save(Config.VIEW, properties);
   }
 }
