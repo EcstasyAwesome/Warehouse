@@ -1,19 +1,16 @@
 package com.github.ecstasyawesome.warehouse.core;
 
-import com.github.ecstasyawesome.warehouse.util.PropertyTool;
 import com.github.ecstasyawesome.warehouse.util.PropertyTool.Config;
 import com.github.ecstasyawesome.warehouse.util.ResourceLoader.Language;
-import java.util.Properties;
 
-public class ApplicationSettings extends Settings {
+public final class ApplicationSettings extends Settings {
 
   private static ApplicationSettings instance;
-  private final Properties properties = PropertyTool.load(Config.APPLICATION);
-
   private final String languageDefaultValue = Language.ENGLISH.name();
   private final String languageKey = "application.language";
 
   private ApplicationSettings() {
+    super(Config.APPLICATION);
   }
 
   public static ApplicationSettings getInstance() {
@@ -34,10 +31,5 @@ public class ApplicationSettings extends Settings {
 
   public void setLanguage(Language language) {
     properties.setProperty(languageKey, language.name());
-  }
-
-  @Override
-  public void save() {
-    PropertyTool.save(Config.APPLICATION, properties);
   }
 }
