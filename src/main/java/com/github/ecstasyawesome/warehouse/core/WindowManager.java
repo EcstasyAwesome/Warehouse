@@ -118,7 +118,7 @@ public final class WindowManager {
 
   private Alert createNewAlertDialog(AlertType type, String message) {
     var alert = new Alert(type);
-    alert.setTitle("Title"); // TODO i18n
+    alert.setTitle("Notification"); // TODO i18n
     alert.setHeaderText(null);
     var defaultMessage = "Message is not provided"; // TODO i18n
     var messageNullOrBlank = message == null || message.isBlank();
@@ -135,10 +135,10 @@ public final class WindowManager {
   }
 
   private boolean isAccessGranted(Access access) {
-    var user = getUserFromContext();
     if (access == Access.GUEST) {
       return true;
     }
+    var user = getUserFromContext();
     if (user.isEmpty()) {
       return false;
     }
@@ -186,7 +186,7 @@ public final class WindowManager {
   private void configureAuthorizationStage() {
     var module = AuthorizationModuleFactory.INSTANCE.create();
     applyFadeAnimation(module.getParent());
-    authorizationStage.setTitle("Warehouse login"); // TODO i18n
+    authorizationStage.setTitle("Authorization"); // TODO i18n
     authorizationStage.initOwner(root);
     authorizationStage.setScene(module.getScene());
     authorizationStage.setResizable(false);
