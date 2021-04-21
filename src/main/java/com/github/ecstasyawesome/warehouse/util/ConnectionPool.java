@@ -8,7 +8,7 @@ public class ConnectionPool {
 
   private static final String USERS_TABLE = """
       CREATE TABLE USERS (
-          ID          BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+          ID          BIGINT PRIMARY KEY AUTO_INCREMENT,
           SURNAME     VARCHAR(25) NOT NULL,
           NAME        VARCHAR(25) NOT NULL,
           SECOND_NAME VARCHAR(25) NOT NULL,
@@ -20,12 +20,11 @@ public class ConnectionPool {
       """;
 
   static {
-    System.setProperty("derby.language.sequence.preallocator", "1");
     createTableIfExist(USERS_TABLE);
   }
 
   public static Connection getConnection() throws SQLException {
-    return DriverManager.getConnection("jdbc:derby:database;create=true");
+    return DriverManager.getConnection("jdbc:h2:./database/default", "root", "root");
   }
 
   private static void createTableIfExist(String sql) {
