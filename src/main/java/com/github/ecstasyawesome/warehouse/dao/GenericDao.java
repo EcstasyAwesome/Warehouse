@@ -60,4 +60,13 @@ public abstract class GenericDao<T> {
       }
     }
   }
+
+  protected final boolean hasQueryResult(final String query) throws SQLException {
+    final var request = String.format("SELECT EXISTS (%s)", query);
+    try (var connection = ConnectionPool.getConnection();
+        var statement = connection.prepareStatement(request);
+        var resultSet = statement.executeQuery()) {
+      return resultSet.first() && resultSet.getBoolean(1);
+    }
+  }
 }
