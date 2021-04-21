@@ -1,4 +1,4 @@
-package com.github.ecstasyawesome.warehouse.core;
+package com.github.ecstasyawesome.warehouse.util;
 
 import java.util.HashMap;
 import java.util.Map;
