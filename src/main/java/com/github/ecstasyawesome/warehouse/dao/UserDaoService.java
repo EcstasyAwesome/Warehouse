@@ -3,6 +3,7 @@ package com.github.ecstasyawesome.warehouse.dao;
 import com.github.ecstasyawesome.warehouse.core.Access;
 import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +14,27 @@ public class UserDaoService extends UserDao {
   public static final UserDaoService INSTANCE = new UserDaoService();
 
   private UserDaoService() {
+  }
+
+  @Override
+  public boolean isLoginExist(String login) {
+    final var query = String.format("SELECT * FROM USERS WHERE LOGIN='%s'", login);
+    try {
+      return hasQueryResult(query);
+    } catch (SQLException exception) {
+      exception.printStackTrace(); // TODO logger
+      throw new UnsupportedOperationException(exception);
+    }
+  }
+
+  @Override
+  public boolean isEmptyTable() {
+    try {
+      return !hasQueryResult("SELECT * FROM USERS");
+    } catch (SQLException exception) {
+      exception.printStackTrace(); // TODO logger
+      throw new UnsupportedOperationException(exception);
+    }
   }
 
   @Override
@@ -31,9 +53,8 @@ public class UserDaoService extends UserDao {
         INSERT INTO USERS (SURNAME, NAME, SECOND_NAME, PHONE, LOGIN, PASSWORD, ACCESS)
         VALUES (?, ?, ?, ?, ?, ?, ?);
         """;
-    try (var connection = ConnectionPool.getConnection();
-        var statement = connection.prepareStatement(query)) {
-      prepareStatement(statement, instance);
+    try (var connection = ConnectionPool.getConnection()) {
+      processRequest(instance, query, connection);
     } catch (SQLException exception) {
       exception.printStackTrace(); // TODO logger
       throw new UnsupportedOperationException(exception);
@@ -77,15 +98,7 @@ public class UserDaoService extends UserDao {
         WHERE ID=?
         """;
     try (var connection = ConnectionPool.getConnection()) {
-      connection.setAutoCommit(false);
-      try (var statement = connection.prepareStatement(query)) {
-        prepareStatement(statement, instance);
-        statement.execute();
-        connection.commit();
-      } catch (SQLException exception) {
-        connection.rollback();
-        throw exception;
-      }
+      processRequest(instance, query, connection);
     } catch (SQLException exception) {
       exception.printStackTrace(); // TODO logger
       throw new UnsupportedOperationException(exception);
@@ -99,6 +112,19 @@ public class UserDaoService extends UserDao {
     } catch (SQLException exception) {
       exception.printStackTrace(); // TODO logger
       throw new UnsupportedOperationException(exception);
+    }
+  }
+
+  private void processRequest(User instance, String query, Connection connection)
+      throws SQLException {
+    connection.setAutoCommit(false);
+    try (var statement = connection.prepareStatement(query)) {
+      prepareStatement(statement, instance);
+      statement.execute();
+      connection.commit();
+    } catch (SQLException exception) {
+      connection.rollback();
+      throw exception;
     }
   }
 
