@@ -1,42 +1,22 @@
 package com.github.ecstasyawesome.warehouse.controller;
 
-import com.github.ecstasyawesome.warehouse.core.Access;
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.model.User;
-import java.net.URL;
-import java.util.Optional;
+import com.github.ecstasyawesome.warehouse.module.HomeModuleFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
 
-public class Authorization {
+public class Authorization extends Controller {
 
-  public static final URL FXML = Authorization.class.getResource("/model/Authorization.fxml");
   private final WindowManager windowManager = WindowManager.getInstance();
-  private static User user; // TODO default local user
 
   @FXML
   private TextField loginField;
 
   @FXML
   private PasswordField passwordField;
-
-  public static Optional<User> getCurrentUser() {
-    return Optional.ofNullable(user);
-  }
-
-  public static boolean isAccessGranted(Controller controller) {
-    var access = controller.access;
-    if (access == Access.GUEST) {
-      return true;
-    }
-    if (user == null) {
-      return false;
-    }
-    return user.getAccess().level <= access.level;
-  }
 
   @FXML
   void login() {
@@ -45,22 +25,13 @@ public class Authorization {
       loginField.setEffect(null);
       if (passwordField.getText().equals("")) { // TODO local user and DB users
         passwordField.setEffect(null);
-        user = new User(); // TODO remove (here for test only)
-        user.setSurname("Surname");
-        user.setFirstName("FirstName");
-        user.setSecondName("SecondName");
-        user.setAccess(Access.ADMIN);
-        WindowManager.getInstance().showScene(Controller.MAIN);
+        windowManager.show(HomeModuleFactory.INSTANCE);
       } else {
         passwordField.setEffect(colorEffect);
       }
     } else {
       loginField.setEffect(colorEffect);
     }
-  }
-
-  void logout() {
-    user = null;
   }
 }
 
