@@ -2,6 +2,7 @@ package com.github.ecstasyawesome.warehouse.core;
 
 import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.module.AuthorizationModuleFactory;
+import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -116,6 +117,17 @@ public final class WindowManager {
     alert.showAndWait();
   }
 
+  public boolean isAccessGranted(Access access) {
+    if (access == Access.GUEST) {
+      return true;
+    }
+    var user = getUserFromContext();
+    if (user.isEmpty()) {
+      return false;
+    }
+    return user.get().getAccess().level <= access.level;
+  }
+
   private Alert createNewAlertDialog(AlertType type, String message) {
     var alert = new Alert(type);
     alert.setTitle("Notification"); // TODO i18n
@@ -132,17 +144,6 @@ public final class WindowManager {
       exception.printStackTrace(printStream);
     }
     return result.toString();
-  }
-
-  private boolean isAccessGranted(Access access) {
-    if (access == Access.GUEST) {
-      return true;
-    }
-    var user = getUserFromContext();
-    if (user.isEmpty()) {
-      return false;
-    }
-    return user.get().getAccess().level <= access.level;
   }
 
   private Optional<User> getUserFromContext() {
