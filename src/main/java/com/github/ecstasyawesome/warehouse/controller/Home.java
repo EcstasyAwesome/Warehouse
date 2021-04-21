@@ -1,9 +1,7 @@
 package com.github.ecstasyawesome.warehouse.controller;
 
-import java.net.URL;
+import com.github.ecstasyawesome.warehouse.core.Controller;
 
-public class Home {
-
-  public static final URL FXML = Home.class.getResource("/model/Home.fxml");
+public class Home extends Controller {
 
 }
