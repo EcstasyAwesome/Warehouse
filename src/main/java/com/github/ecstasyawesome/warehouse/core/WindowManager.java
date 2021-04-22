@@ -70,6 +70,7 @@ public final class WindowManager {
     if (isAccessGranted(module.getAccess())) {
       authorizationStage.close();
       closeSecondaryStagesIfPresent();
+      mainStage.setTitle(module.getTitle());
       mainStage.setScene(module.getScene());
       mainStage.show();
     } else {
@@ -81,7 +82,7 @@ public final class WindowManager {
       FeedbackModuleFactory<T, E> factory) {
     var module = factory.create();
     if (isAccessGranted(module.getAccess())) {
-      var stage = createNewStage(module.getScene());
+      var stage = createNewStage(module.getTitle(), module.getScene());
       stages.add(stage);
       stage.showAndWait();
       return Optional.ofNullable(module.getController().take());
@@ -161,11 +162,12 @@ public final class WindowManager {
     showDialog(AlertType.WARNING, "Access denied!"); // TODO i18n
   }
 
-  private Stage createNewStage(Scene scene) {
+  private Stage createNewStage(String title, Scene scene) {
     var stage = new Stage();
     EventHandler<WindowEvent> onCloseEvent = event -> stages.remove(stage);
     stage.initModality(Modality.APPLICATION_MODAL);
     stage.initOwner(stages.isEmpty() ? mainStage : stages.get(stages.size() - 1));
+    stage.setTitle(title);
     stage.setScene(scene);
     stage.setOnCloseRequest(onCloseEvent);
     stage.setOnHidden(onCloseEvent); // TODO check workable with OK and CANCEL buttons
@@ -174,7 +176,6 @@ public final class WindowManager {
 
   private void configureMainStage() {
     var viewSettings = ViewSettings.getInstance();
-    mainStage.setTitle("Warehouse"); // TODO i18n
     mainStage.initOwner(root);
     mainStage.setMinWidth(viewSettings.getDefaultWidth());
     mainStage.setMinHeight(viewSettings.getDefaultHeight());
@@ -187,7 +188,7 @@ public final class WindowManager {
   private void configureAuthorizationStage() {
     var module = AuthorizationModuleFactory.INSTANCE.create();
     applyFadeAnimation(module.getParent());
-    authorizationStage.setTitle("Authorization"); // TODO i18n
+    authorizationStage.setTitle(module.getTitle());
     authorizationStage.initOwner(root);
     authorizationStage.setScene(module.getScene());
     authorizationStage.setResizable(false);
