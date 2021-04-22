@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionPool {
+public final class ConnectionPool {
 
   private static final String USERS_TABLE = """
       CREATE TABLE USERS (
