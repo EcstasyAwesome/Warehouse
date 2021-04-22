@@ -8,12 +8,14 @@ import javafx.scene.Scene;
 
 public abstract class ModuleWrapper<T extends Controller> {
 
+  private final String title;
   private final Access access;
   private final Parent parent;
   private final Scene scene;
   private final T controller;
 
-  public ModuleWrapper(Access access, final URL url) {
+  public ModuleWrapper(final String title, Access access, final URL url) {
+    this.title = title;
     this.access = access;
     var fxmlLoader = ResourceLoader.createFxmlLoader(url);
     try {
@@ -29,6 +31,10 @@ public abstract class ModuleWrapper<T extends Controller> {
       throw new ClassCastException(exception.getMessage());
     }
     scene = new Scene(parent);
+  }
+
+  public String getTitle() {
+    return title;
   }
 
   public Access getAccess() {
