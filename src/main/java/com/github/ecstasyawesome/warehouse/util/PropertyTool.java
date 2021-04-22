@@ -22,7 +22,6 @@ public final class PropertyTool {
       result.load(inputStream);
     } catch (IOException exception) {
       // TODO save to some logger
-      WINDOW_MANAGER.showDialog(exception);
     }
     return result;
   }
