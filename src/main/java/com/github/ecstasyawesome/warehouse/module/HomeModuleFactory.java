@@ -1,9 +1,9 @@
 package com.github.ecstasyawesome.warehouse.module;
 
+import com.github.ecstasyawesome.warehouse.controller.Home;
 import com.github.ecstasyawesome.warehouse.core.Access;
 import com.github.ecstasyawesome.warehouse.core.ModuleFactory;
 import com.github.ecstasyawesome.warehouse.core.ModuleWrapper;
-import com.github.ecstasyawesome.warehouse.controller.Home;
 import java.net.URL;
 
 public class HomeModuleFactory implements ModuleFactory<Home> {
@@ -16,7 +16,7 @@ public class HomeModuleFactory implements ModuleFactory<Home> {
 
   @Override
   public ModuleWrapper<Home> create() {
-    return new ModuleWrapper<>(Access.USER, fxml) {
+    return new ModuleWrapper<>("Home", Access.USER, fxml) { // TODO i18n
     };
   }
 }
