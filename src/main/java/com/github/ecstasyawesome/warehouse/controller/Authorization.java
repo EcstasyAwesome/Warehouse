@@ -36,6 +36,7 @@ public class Authorization extends Controller {
       windowManager.showDialog(exception);
     }
     if (user != null) {
+      loginField.setEffect(null);
       if (passwordField.getText().equals(user.getPassword())) {
         passwordField.setEffect(null);
         SessionManager.store("currentUser", user);
