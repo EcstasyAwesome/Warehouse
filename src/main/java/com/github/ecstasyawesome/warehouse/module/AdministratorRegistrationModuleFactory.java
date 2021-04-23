@@ -13,6 +13,9 @@ public class AdministratorRegistrationModuleFactory
       new AdministratorRegistrationModuleFactory();
   public final URL fxml = getClass().getResource("/model/AdministratorRegistration.fxml");
 
+  private AdministratorRegistrationModuleFactory() {
+  }
+
   @Override
   public FeedbackModuleWrapper<AdministratorRegistration, String> create() {
     return new FeedbackModuleWrapper<>("Registration", Access.GUEST, fxml) { // TODO i18n

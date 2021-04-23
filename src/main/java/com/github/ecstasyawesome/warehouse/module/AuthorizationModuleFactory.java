@@ -11,6 +11,9 @@ public class AuthorizationModuleFactory implements ModuleFactory<Authorization> 
   public static final AuthorizationModuleFactory INSTANCE = new AuthorizationModuleFactory();
   public final URL fxml = getClass().getResource("/model/Authorization.fxml");
 
+  private AuthorizationModuleFactory() {
+  }
+
   @Override
   public ModuleWrapper<Authorization> create() {
     return new ModuleWrapper<>("Authorization", Access.GUEST, fxml) { // TODO i18n
