@@ -28,10 +28,16 @@ public final class ConnectionPool {
   }
 
   private static void createTableIfExist(String sql) {
-    try (var connection = getConnection();
-        var statement = connection.prepareStatement(sql)) {
-      statement.execute();
-    } catch (SQLException ignored) { // TODO maybe should write some information to log
+    try (var connection = getConnection()) {
+      connection.setAutoCommit(false);
+      try (var statement = connection.prepareStatement(sql)) {
+        statement.execute();
+        connection.commit();
+      } catch (SQLException exception) {
+        connection.rollback();
+      }
+    } catch (SQLException exception) {
+      // TODO maybe should write some information to log
     }
   }
 }
