@@ -50,9 +50,7 @@ public final class WindowManager {
   }
 
   public void showAuthorization() {
-    if (authorizationStage.getOwner() == null) {
-      configureAuthorizationStage();
-    }
+    configureAuthorizationStage();
     var user = getUserFromContext();
     if (user.isEmpty()) {
       mainStage.close();
@@ -70,7 +68,7 @@ public final class WindowManager {
     if (isAccessGranted(module.getAccess())) {
       authorizationStage.close();
       closeSecondaryStagesIfPresent();
-      mainStage.setTitle(module.getTitle());
+      mainStage.setTitle(prepareStageName(module.getTitle()));
       mainStage.setScene(module.getScene());
       mainStage.show();
     } else {
@@ -167,7 +165,7 @@ public final class WindowManager {
     EventHandler<WindowEvent> onCloseEvent = event -> stages.remove(stage);
     stage.initModality(Modality.APPLICATION_MODAL);
     stage.initOwner(stages.isEmpty() ? mainStage : stages.get(stages.size() - 1));
-    stage.setTitle(title);
+    stage.setTitle(prepareStageName(title));
     stage.setScene(scene);
     stage.setOnCloseRequest(onCloseEvent);
     stage.setOnHidden(onCloseEvent); // TODO check workable with OK and CANCEL buttons
@@ -186,12 +184,18 @@ public final class WindowManager {
   }
 
   private void configureAuthorizationStage() {
+    if (authorizationStage.getOwner() == null) {
+      authorizationStage.initOwner(root);
+      authorizationStage.setResizable(false);
+    }
     var module = AuthorizationModuleFactory.INSTANCE.create();
     applyFadeAnimation(module.getParent());
-    authorizationStage.setTitle(module.getTitle());
-    authorizationStage.initOwner(root);
+    authorizationStage.setTitle(prepareStageName(module.getTitle()));
     authorizationStage.setScene(module.getScene());
-    authorizationStage.setResizable(false);
+  }
+
+  private String prepareStageName(String moduleName) {
+    return String.format("Warehouse - %s", moduleName);
   }
 
   private void applyFadeAnimation(Parent parent) {
