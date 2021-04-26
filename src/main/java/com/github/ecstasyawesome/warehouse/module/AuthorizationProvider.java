@@ -6,7 +6,7 @@ import com.github.ecstasyawesome.warehouse.core.Module;
 import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
 import java.net.URL;
 
-public class AuthorizationProvider implements ModuleProvider<Authorization> {
+public class AuthorizationProvider extends ModuleProvider<Authorization> {
 
   public static final AuthorizationProvider INSTANCE = new AuthorizationProvider();
   public final URL fxml = getClass().getResource("/model/Authorization.fxml");

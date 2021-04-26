@@ -1,10 +1,10 @@
 package com.github.ecstasyawesome.warehouse.core;
 
-public interface ModuleProvider<T extends Controller> {
+public abstract class ModuleProvider<T extends Controller> {
 
-  Module<T> create();
+  public abstract Module<T> create();
 
-  Access getAccess();
+  public abstract Access getAccess();
 
-  String getTitle();
+  public abstract String getTitle();
 }

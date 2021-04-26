@@ -7,7 +7,7 @@ import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
 import java.net.URL;
 
 
-public class HomeProvider implements ModuleProvider<Home> {
+public class HomeProvider extends ModuleProvider<Home> {
 
   public static final HomeProvider INSTANCE = new HomeProvider();
   public final URL fxml = getClass().getResource("/model/Home.fxml");

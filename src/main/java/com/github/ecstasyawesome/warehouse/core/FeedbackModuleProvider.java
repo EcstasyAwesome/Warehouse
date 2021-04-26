@@ -1,8 +1,8 @@
 package com.github.ecstasyawesome.warehouse.core;
 
-public interface FeedbackModuleProvider<T extends FeedbackController<E>, E> extends
-    ModuleProvider<T> {
+public abstract class FeedbackModuleProvider<T extends FeedbackController<E>, E>
+    extends ModuleProvider<T> {
 
   @Override
-  FeedbackModule<T, E> create();
+  public abstract FeedbackModule<T, E> create();
 }

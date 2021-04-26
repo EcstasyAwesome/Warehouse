@@ -7,7 +7,7 @@ import com.github.ecstasyawesome.warehouse.core.FeedbackModule;
 import java.net.URL;
 
 public class AdministratorRegistrationProvider
-    implements FeedbackModuleProvider<AdministratorRegistration, String> {
+    extends FeedbackModuleProvider<AdministratorRegistration, String> {
 
   public static final AdministratorRegistrationProvider INSTANCE =
       new AdministratorRegistrationProvider();
