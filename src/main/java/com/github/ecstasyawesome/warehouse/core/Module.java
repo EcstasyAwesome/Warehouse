@@ -6,17 +6,13 @@ import java.net.URL;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
-public abstract class ModuleWrapper<T extends Controller> {
+public abstract class Module<T extends Controller> {
 
-  private final String title;
-  private final Access access;
   private final Parent parent;
   private final Scene scene;
   private final T controller;
 
-  public ModuleWrapper(final String title, Access access, final URL url) {
-    this.title = title;
-    this.access = access;
+  public Module(final URL url) {
     var fxmlLoader = ResourceLoader.createFxmlLoader(url);
     try {
       parent = fxmlLoader.load();
@@ -31,14 +27,6 @@ public abstract class ModuleWrapper<T extends Controller> {
       throw new ClassCastException(exception.getMessage());
     }
     scene = new Scene(parent);
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public Access getAccess() {
-    return access;
   }
 
   @SuppressWarnings("unchecked")

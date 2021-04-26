@@ -1,14 +1,18 @@
 package com.github.ecstasyawesome.warehouse.core;
 
 import com.github.ecstasyawesome.warehouse.model.User;
-import com.github.ecstasyawesome.warehouse.module.AuthorizationModuleFactory;
+import com.github.ecstasyawesome.warehouse.module.AuthorizationProvider;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -27,9 +31,12 @@ public final class WindowManager {
 
   private static WindowManager instance;
   private final Stage root;
+  private ModuleProvider<?> currentModuleProvider;
+  private Cacheable currentCacheableController;
   private final Stage authorizationStage = new Stage();
   private final Stage mainStage = new Stage();
   private final List<Stage> stages = new ArrayList<>();
+  private final Set<Class<? extends Cacheable>> cachedControllers = new HashSet<>();
 
   private WindowManager(final Stage root) {
     this.root = root;
@@ -50,9 +57,12 @@ public final class WindowManager {
   }
 
   public void showAuthorization() {
-    configureAuthorizationStage();
     var user = getUserFromContext();
     if (user.isEmpty()) {
+      configureAuthorizationStage();
+      currentModuleProvider = null;
+      currentCacheableController = null;
+      cachedControllers.clear();
       mainStage.close();
       authorizationStage.show();
     } else {
@@ -60,15 +70,17 @@ public final class WindowManager {
     }
   }
 
-  public <T extends Controller> void show(ModuleFactory<T> factory) {
+  public <T> void show(ModuleProvider<? super T> provider) {
     if (mainStage.getOwner() == null) {
       configureMainStage();
     }
-    var module = factory.create();
-    if (isAccessGranted(module.getAccess())) {
-      authorizationStage.close();
+    if (isAccessGranted(provider.getAccess())) {
       closeSecondaryStagesIfPresent();
-      mainStage.setTitle(prepareStageName(module.getTitle()));
+      authorizationStage.close();
+      currentModuleProvider = provider;
+      var module = provider.create();
+      checkAbilityToCache(module.getController());
+      mainStage.setTitle(prepareStageName(provider.getTitle()));
       mainStage.setScene(module.getScene());
       mainStage.show();
     } else {
@@ -76,11 +88,10 @@ public final class WindowManager {
     }
   }
 
-  public <T extends FeedbackController<E>, E> Optional<E> show(
-      FeedbackModuleFactory<T, E> factory) {
-    var module = factory.create();
-    if (isAccessGranted(module.getAccess())) {
-      var stage = createNewStage(module.getTitle(), module.getScene());
+  public <T, E> Optional<E> show(FeedbackModuleProvider<? super T, E> provider) {
+    if (isAccessGranted(provider.getAccess())) {
+      var module = provider.create();
+      var stage = createNewStage(provider.getTitle(), module.getScene());
       stages.add(stage);
       stage.showAndWait();
       return Optional.ofNullable(module.getController().take());
@@ -90,8 +101,17 @@ public final class WindowManager {
     return Optional.empty();
   }
 
-  // TODO push notifications (will be super to find lib to show native notifications)
+  public ModuleProvider<?> getCurrentModuleProvider() {
+    return Objects.requireNonNull(currentModuleProvider, "Any module was not shown");
+  }
 
+  public void shutdown() {
+    root.close();
+    Platform.exit();
+  }
+
+
+  // TODO push notifications (will be super to find lib to show native notifications)
   public Optional<ButtonType> showDialog(AlertType type, final String message) {
     return createNewAlertDialog(type, message).showAndWait();
   }
@@ -127,6 +147,23 @@ public final class WindowManager {
     return user.get().getAccess().level <= access.level;
   }
 
+  private void checkAbilityToCache(Controller controller) {
+    if (currentCacheableController != null && currentCacheableController.isReady()) {
+      cachedControllers.add(currentCacheableController.getClass());
+      currentCacheableController.backup();
+    }
+    if (controller instanceof Cacheable cacheableController) {
+      currentCacheableController = cacheableController;
+      var clazz = cacheableController.getClass();
+      if (cachedControllers.contains(clazz)) {
+        cachedControllers.remove(clazz);
+        cacheableController.recovery();
+      }
+    } else {
+      currentCacheableController = null;
+    }
+  }
+
   private Alert createNewAlertDialog(AlertType type, String message) {
     var alert = new Alert(type);
     alert.setTitle("Notification"); // TODO i18n
@@ -153,6 +190,7 @@ public final class WindowManager {
   private void closeSecondaryStagesIfPresent() {
     if (stages.size() > 0) {
       stages.get(0).close();
+      stages.clear();
     }
   }
 
@@ -168,19 +206,21 @@ public final class WindowManager {
     stage.setTitle(prepareStageName(title));
     stage.setScene(scene);
     stage.setOnCloseRequest(onCloseEvent);
-    stage.setOnHidden(onCloseEvent); // TODO check workable with OK and CANCEL buttons
+    stage.setOnHidden(onCloseEvent);
     return stage;
   }
 
   private void configureMainStage() {
     var viewSettings = ViewSettings.getInstance();
+    var onCloseAction = getOnCloseActions();
     mainStage.initOwner(root);
     mainStage.setMinWidth(viewSettings.getDefaultWidth());
     mainStage.setMinHeight(viewSettings.getDefaultHeight());
     mainStage.setWidth(viewSettings.getWidth());
     mainStage.setHeight(viewSettings.getHeight());
     mainStage.setMaximized(viewSettings.isMaximized());
-    mainStage.setOnCloseRequest(getOnCloseActions());
+    mainStage.setOnCloseRequest(onCloseAction);
+    mainStage.setOnHidden(onCloseAction);
   }
 
   private void configureAuthorizationStage() {
@@ -188,9 +228,10 @@ public final class WindowManager {
       authorizationStage.initOwner(root);
       authorizationStage.setResizable(false);
     }
-    var module = AuthorizationModuleFactory.INSTANCE.create();
+    var provider = AuthorizationProvider.INSTANCE;
+    var module = provider.create();
     applyFadeAnimation(module.getParent());
-    authorizationStage.setTitle(prepareStageName(module.getTitle()));
+    authorizationStage.setTitle(prepareStageName(provider.getTitle()));
     authorizationStage.setScene(module.getScene());
   }
 

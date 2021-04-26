@@ -4,8 +4,8 @@ import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.User;
-import com.github.ecstasyawesome.warehouse.module.AdministratorRegistrationModuleFactory;
-import com.github.ecstasyawesome.warehouse.module.HomeModuleFactory;
+import com.github.ecstasyawesome.warehouse.module.AdministratorRegistrationProvider;
+import com.github.ecstasyawesome.warehouse.module.HomeProvider;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -40,7 +40,7 @@ public class Authorization extends Controller {
       if (passwordField.getText().equals(user.getPassword())) {
         passwordField.setEffect(null);
         SessionManager.store("currentUser", user);
-        windowManager.show(HomeModuleFactory.INSTANCE);
+        windowManager.show(HomeProvider.INSTANCE);
       } else {
         passwordField.setEffect(colorEffect);
       }
@@ -50,7 +50,7 @@ public class Authorization extends Controller {
   @FXML
   private void initialize() {
     if (userDaoService.isEmptyTable()) {
-      var result = windowManager.show(AdministratorRegistrationModuleFactory.INSTANCE);
+      var result = windowManager.show(AdministratorRegistrationProvider.INSTANCE);
       if (result.isPresent()) {
         loginField.setText(result.get());
       } else {
