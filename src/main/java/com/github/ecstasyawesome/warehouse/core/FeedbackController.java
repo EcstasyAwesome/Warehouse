@@ -1,5 +1,7 @@
 package com.github.ecstasyawesome.warehouse.core;
 
-public abstract class FeedbackController<T> extends Controller implements Resulting<T> {
+import java.util.function.Supplier;
+
+public abstract class FeedbackController<T> extends Controller implements Supplier<T> {
 
 }

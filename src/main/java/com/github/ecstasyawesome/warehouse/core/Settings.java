@@ -6,8 +6,8 @@ import java.util.Properties;
 
 public abstract class Settings {
 
-  private final Config config;
   protected final Properties properties;
+  private final Config config;
 
   protected Settings(Config config) {
     this.config = config;

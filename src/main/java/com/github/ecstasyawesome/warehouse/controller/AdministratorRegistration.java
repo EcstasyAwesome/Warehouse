@@ -68,7 +68,7 @@ public class AdministratorRegistration extends FeedbackController<String> {
   }
 
   @Override
-  public String take() {
+  public String get() {
     return result;
   }
 

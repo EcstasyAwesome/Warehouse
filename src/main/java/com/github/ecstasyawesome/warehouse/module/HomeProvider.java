@@ -6,7 +6,6 @@ import com.github.ecstasyawesome.warehouse.core.Module;
 import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
 import java.net.URL;
 
-
 public class HomeProvider extends ModuleProvider<Home> {
 
   public static final HomeProvider INSTANCE = new HomeProvider();

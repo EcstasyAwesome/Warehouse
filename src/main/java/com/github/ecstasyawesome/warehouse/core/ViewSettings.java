@@ -26,16 +26,20 @@ public final class ViewSettings extends Settings {
     return getVerifiedWithDefaultLengthValue(widthKey, widthDefaultValue);
   }
 
-  public double getDefaultWidth() {
-    return Double.parseDouble(widthDefaultValue);
-  }
-
   public void setWidth(double width) {
     properties.setProperty(widthKey, String.valueOf(width));
   }
 
+  public double getDefaultWidth() {
+    return Double.parseDouble(widthDefaultValue);
+  }
+
   public double getHeight() {
     return getVerifiedWithDefaultLengthValue(heightKey, heightDefaultValue);
+  }
+
+  public void setHeight(double height) {
+    properties.setProperty(heightKey, String.valueOf(height));
   }
 
   public double getDefaultHeight() {
@@ -51,10 +55,6 @@ public final class ViewSettings extends Settings {
       return defaultDoubleValue;
     }
     return result;
-  }
-
-  public void setHeight(double height) {
-    properties.setProperty(heightKey, String.valueOf(height));
   }
 
   public boolean isMaximized() {

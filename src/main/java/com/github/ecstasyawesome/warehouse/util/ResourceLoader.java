@@ -42,8 +42,8 @@ public final class ResourceLoader {
     RUSSIAN(new Locale("ru", "RU"), "Русский"),
     UKRAINIAN(new Locale("uk", "UA"), "Українська");
 
-    private final Locale locale;
     public final String originalName;
+    private final Locale locale;
 
     Language(Locale locale, String originalName) {
       this.locale = locale;

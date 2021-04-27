@@ -31,12 +31,12 @@ public final class WindowManager {
 
   private static WindowManager instance;
   private final Stage root;
-  private ModuleProvider<?> currentModuleProvider;
-  private Cacheable currentCacheableController;
   private final Stage authorizationStage = new Stage();
   private final Stage mainStage = new Stage();
   private final List<Stage> stages = new ArrayList<>();
   private final Set<Class<? extends Cacheable>> cachedControllers = new HashSet<>();
+  private ModuleProvider<? extends Controller> currentModuleProvider;
+  private Cacheable currentCachedController;
 
   private WindowManager(final Stage root) {
     this.root = root;
@@ -60,8 +60,9 @@ public final class WindowManager {
     var user = getUserFromContext();
     if (user.isEmpty()) {
       configureAuthorizationStage();
+      closeAllExtraStages();
       currentModuleProvider = null;
-      currentCacheableController = null;
+      currentCachedController = null;
       cachedControllers.clear();
       mainStage.close();
       authorizationStage.show();
@@ -71,16 +72,12 @@ public final class WindowManager {
   }
 
   public <T> void show(ModuleProvider<? super T> provider) {
-    if (mainStage.getOwner() == null) {
-      configureMainStage();
-    }
     if (isAccessGranted(provider.getAccess())) {
-      closeSecondaryStagesIfPresent();
-      authorizationStage.close();
-      currentModuleProvider = provider;
+      configureMainStage(provider);
       var module = provider.create();
-      checkAbilityToCache(module.getController());
-      mainStage.setTitle(prepareStageName(provider.getTitle()));
+      checkAbilityToCache(null);
+      var title = prepareStageName(provider.getTitle());
+      mainStage.setTitle(title);
       mainStage.setScene(module.getScene());
       mainStage.show();
     } else {
@@ -88,13 +85,43 @@ public final class WindowManager {
     }
   }
 
-  public <T, E> Optional<E> show(FeedbackModuleProvider<? super T, E> provider) {
+  public <T> void show(CachedModuleProvider<? super T> provider) {
+    if (isAccessGranted(provider.getAccess())) {
+      configureMainStage(provider);
+      var module = provider.create();
+      checkAbilityToCache(module.getController());
+      var title = prepareStageName(provider.getTitle());
+      mainStage.setTitle(title);
+      mainStage.setScene(module.getScene());
+      mainStage.show();
+    } else {
+      showAccessWarning();
+    }
+  }
+
+  public <T, E> Optional<E> showAndGet(FeedbackModuleProvider<? super T, E> provider) {
     if (isAccessGranted(provider.getAccess())) {
       var module = provider.create();
-      var stage = createNewStage(provider.getTitle(), module.getScene());
+      var stage = createNewExtraStage(provider.getTitle(), module.getScene());
       stages.add(stage);
       stage.showAndWait();
-      return Optional.ofNullable(module.getController().take());
+      return Optional.ofNullable(module.getController().get());
+    } else {
+      showAccessWarning();
+    }
+    return Optional.empty();
+  }
+
+  public <T, E> Optional<E> showAndGet(ConfiguredFeedbackModuleProvider<? super T, E> provider,
+      E data) {
+    if (isAccessGranted(provider.getAccess())) {
+      var module = provider.create();
+      var controller = module.getController();
+      controller.accept(data);
+      var stage = createNewExtraStage(provider.getTitle(), module.getScene());
+      stages.add(stage);
+      stage.showAndWait();
+      return Optional.ofNullable(controller.get());
     } else {
       showAccessWarning();
     }
@@ -147,20 +174,20 @@ public final class WindowManager {
     return user.get().getAccess().level <= access.level;
   }
 
-  private void checkAbilityToCache(Controller controller) {
-    if (currentCacheableController != null && currentCacheableController.isReady()) {
-      cachedControllers.add(currentCacheableController.getClass());
-      currentCacheableController.backup();
+  private void checkAbilityToCache(CachedController controller) {
+    if (currentCachedController != null && currentCachedController.isReady()) {
+      cachedControllers.add(currentCachedController.getClass());
+      currentCachedController.backup();
     }
-    if (controller instanceof Cacheable cacheableController) {
-      currentCacheableController = cacheableController;
-      var clazz = cacheableController.getClass();
+    if (controller != null) {
+      currentCachedController = controller;
+      var clazz = controller.getClass();
       if (cachedControllers.contains(clazz)) {
         cachedControllers.remove(clazz);
-        cacheableController.recovery();
+        controller.recovery();
       }
     } else {
-      currentCacheableController = null;
+      currentCachedController = null;
     }
   }
 
@@ -187,7 +214,7 @@ public final class WindowManager {
     return Optional.ofNullable(user);
   }
 
-  private void closeSecondaryStagesIfPresent() {
+  private void closeAllExtraStages() {
     if (stages.size() > 0) {
       stages.get(0).close();
       stages.clear();
@@ -198,11 +225,11 @@ public final class WindowManager {
     showDialog(AlertType.WARNING, "Access denied!"); // TODO i18n
   }
 
-  private Stage createNewStage(String title, Scene scene) {
+  private Stage createNewExtraStage(String title, Scene scene) {
     var stage = new Stage();
     EventHandler<WindowEvent> onCloseEvent = event -> stages.remove(stage);
     stage.initModality(Modality.APPLICATION_MODAL);
-    stage.initOwner(stages.isEmpty() ? mainStage : stages.get(stages.size() - 1));
+    stage.initOwner(stages.isEmpty() ? root : stages.get(stages.size() - 1));
     stage.setTitle(prepareStageName(title));
     stage.setScene(scene);
     stage.setOnCloseRequest(onCloseEvent);
@@ -210,17 +237,22 @@ public final class WindowManager {
     return stage;
   }
 
-  private void configureMainStage() {
-    var viewSettings = ViewSettings.getInstance();
-    var onCloseAction = getOnCloseActions();
-    mainStage.initOwner(root);
-    mainStage.setMinWidth(viewSettings.getDefaultWidth());
-    mainStage.setMinHeight(viewSettings.getDefaultHeight());
-    mainStage.setWidth(viewSettings.getWidth());
-    mainStage.setHeight(viewSettings.getHeight());
-    mainStage.setMaximized(viewSettings.isMaximized());
-    mainStage.setOnCloseRequest(onCloseAction);
-    mainStage.setOnHidden(onCloseAction);
+  private void configureMainStage(ModuleProvider<? extends Controller> provider) {
+    if (mainStage.getOwner() == null) {
+      var viewSettings = ViewSettings.getInstance();
+      var onCloseAction = getOnCloseActions();
+      mainStage.initOwner(root);
+      mainStage.setMinWidth(viewSettings.getDefaultWidth());
+      mainStage.setMinHeight(viewSettings.getDefaultHeight());
+      mainStage.setWidth(viewSettings.getWidth());
+      mainStage.setHeight(viewSettings.getHeight());
+      mainStage.setMaximized(viewSettings.isMaximized());
+      mainStage.setOnCloseRequest(onCloseAction);
+      mainStage.setOnHidden(onCloseAction);
+    }
+    closeAllExtraStages();
+    authorizationStage.close();
+    currentModuleProvider = provider;
   }
 
   private void configureAuthorizationStage() {
