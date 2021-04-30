@@ -110,13 +110,13 @@ public class User {
 
     User user = (User) obj;
     return this.id == user.id
-        && this.surname.equals(user.surname)
-        && this.name.equals(user.name)
-        && this.secondName.equals(user.secondName)
-        && this.phone.equals(user.phone)
-        && this.login.equals(user.login)
-        && this.password.equals(user.password)
-        && this.access.equals(user.access);
+           && this.surname.equals(user.surname)
+           && this.name.equals(user.name)
+           && this.secondName.equals(user.secondName)
+           && this.phone.equals(user.phone)
+           && this.login.equals(user.login)
+           && this.password.equals(user.password)
+           && this.access.equals(user.access);
   }
 
   public static class Builder {

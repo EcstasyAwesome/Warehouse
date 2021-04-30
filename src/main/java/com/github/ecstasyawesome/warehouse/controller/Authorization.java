@@ -4,10 +4,9 @@ import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.User;
-import com.github.ecstasyawesome.warehouse.module.AdministratorRegistrationProvider;
 import com.github.ecstasyawesome.warehouse.module.HomeProvider;
+import com.github.ecstasyawesome.warehouse.module.user.AdministratorRegistrationProvider;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -54,7 +53,7 @@ public class Authorization extends Controller {
       if (result.isPresent()) {
         loginField.setText(result.get());
       } else {
-        Platform.exit();
+        windowManager.shutdown();
       }
     }
   }

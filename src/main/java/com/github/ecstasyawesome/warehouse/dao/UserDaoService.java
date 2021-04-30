@@ -3,10 +3,10 @@ package com.github.ecstasyawesome.warehouse.dao;
 import com.github.ecstasyawesome.warehouse.core.Access;
 import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 public class UserDaoService extends UserDao {
@@ -54,12 +54,24 @@ public class UserDaoService extends UserDao {
         VALUES (?, ?, ?, ?, ?, ?, ?);
         """;
     try (var connection = ConnectionPool.getConnection()) {
-      processRequest(instance, query, connection);
+      connection.setAutoCommit(false);
+      try (var statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        prepareStatement(statement, instance);
+        statement.executeUpdate();
+        try (var resultSet = statement.getGeneratedKeys()) {
+          resultSet.first();
+          var id = resultSet.getLong(1);
+          connection.commit();
+          return id;
+        }
+      } catch (SQLException exception) {
+        connection.rollback();
+        throw exception;
+      }
     } catch (SQLException exception) {
       exception.printStackTrace(); // TODO logger
       throw new UnsupportedOperationException(exception);
     }
-    return 0L;
   }
 
   @Override
@@ -94,11 +106,20 @@ public class UserDaoService extends UserDao {
   public void update(User instance) {
     final var query = """
         UPDATE USERS
-        SET 'SURNAME'=?, 'NAME'=?, 'SECOND_NAME'=?, 'PHONE'=?, 'LOGIN'=?, 'PASSWORD'=?, 'ACCESS'=?
+        SET SURNAME=?, NAME=?, SECOND_NAME=?, PHONE=?, LOGIN=?, PASSWORD=?, ACCESS=?
         WHERE ID=?
         """;
     try (var connection = ConnectionPool.getConnection()) {
-      processRequest(instance, query, connection);
+      connection.setAutoCommit(false);
+      try (var statement = connection.prepareStatement(query)) {
+        prepareStatement(statement, instance);
+        statement.setLong(8, instance.getId());
+        statement.execute();
+        connection.commit();
+      } catch (SQLException exception) {
+        connection.rollback();
+        throw exception;
+      }
     } catch (SQLException exception) {
       exception.printStackTrace(); // TODO logger
       throw new UnsupportedOperationException(exception);
@@ -112,19 +133,6 @@ public class UserDaoService extends UserDao {
     } catch (SQLException exception) {
       exception.printStackTrace(); // TODO logger
       throw new UnsupportedOperationException(exception);
-    }
-  }
-
-  private void processRequest(User instance, String query, Connection connection)
-      throws SQLException {
-    connection.setAutoCommit(false);
-    try (var statement = connection.prepareStatement(query)) {
-      prepareStatement(statement, instance);
-      statement.execute();
-      connection.commit();
-    } catch (SQLException exception) {
-      connection.rollback();
-      throw exception;
     }
   }
 

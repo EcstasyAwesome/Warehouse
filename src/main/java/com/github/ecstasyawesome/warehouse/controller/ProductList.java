@@ -37,12 +37,12 @@ public class ProductList {
   private TableColumn<Product, String> unitColumn;
 
   @FXML
-  void addButtonEvent(ActionEvent event) {
+  void addButtonEvent() {
     productTable.getItems().add(new Product(1, "item 1", "category 1", "unit 1"));
   }
 
   @FXML
-  void deleteButtonEvent(ActionEvent event) {
+  void deleteButtonEvent() {
     var list = productTable.getItems();
     var option = Optional.ofNullable(productTable.getSelectionModel());
     option.ifPresent(item -> {

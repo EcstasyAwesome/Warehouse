@@ -3,9 +3,8 @@ package com.github.ecstasyawesome.warehouse.controller;
 import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.module.HomeProvider;
-import com.github.ecstasyawesome.warehouse.module.UserListProvider;
+import com.github.ecstasyawesome.warehouse.module.user.UserListProvider;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -22,7 +21,7 @@ public class TopBar {
   private MenuItem userListItem;
 
   @FXML
-  void logout(ActionEvent event) {
+  void logout() {
     var result = windowManager
         .showDialog(AlertType.CONFIRMATION, "Are you sure you want to logout?"); // TODO i18n
     if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -32,7 +31,7 @@ public class TopBar {
   }
 
   @FXML
-  void exit(ActionEvent event) {
+  void exit() {
     var result = windowManager
         .showDialog(AlertType.CONFIRMATION, "Are you sure you want to exit?"); // TODO i18n
     if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -41,22 +40,22 @@ public class TopBar {
   }
 
   @FXML
-  void showHome(ActionEvent event) {
+  void showHome() {
     windowManager.show(HomeProvider.INSTANCE);
   }
 
   @FXML
-  void showProfile(ActionEvent event) {
-
+  void showProfile() {
+    // TODO
   }
 
   @FXML
-  void showSettings(ActionEvent event) {
-
+  void showSettings() {
+    // TODO
   }
 
   @FXML
-  void showUserList(ActionEvent event) {
+  void showUserList() {
     windowManager.show(UserListProvider.INSTANCE);
   }
 

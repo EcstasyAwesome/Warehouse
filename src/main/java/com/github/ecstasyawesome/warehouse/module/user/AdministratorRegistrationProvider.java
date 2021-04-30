@@ -1,6 +1,6 @@
-package com.github.ecstasyawesome.warehouse.module;
+package com.github.ecstasyawesome.warehouse.module.user;
 
-import com.github.ecstasyawesome.warehouse.controller.AdministratorRegistration;
+import com.github.ecstasyawesome.warehouse.controller.user.AdministratorRegistration;
 import com.github.ecstasyawesome.warehouse.core.Access;
 import com.github.ecstasyawesome.warehouse.core.FeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.FeedbackModuleProvider;
@@ -11,7 +11,7 @@ public class AdministratorRegistrationProvider
 
   public static final AdministratorRegistrationProvider INSTANCE =
       new AdministratorRegistrationProvider();
-  public final URL fxml = getClass().getResource("/model/AdministratorRegistration.fxml");
+  public final URL fxml = getClass().getResource("/model/user/AdministratorRegistration.fxml");
 
   private AdministratorRegistrationProvider() {
   }
