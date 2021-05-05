@@ -1,7 +1,8 @@
 # Project exclude paths
-.idea/
 *.iml
 *.log
+.idea/
 target/
+logs/
 settings/
 database/
