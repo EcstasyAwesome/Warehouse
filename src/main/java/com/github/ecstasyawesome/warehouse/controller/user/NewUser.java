@@ -78,7 +78,7 @@ public class NewUser extends FeedbackController<User> {
 
   @FXML
   private void initialize() {
-    accessChoiceBox.setItems(FXCollections.observableArrayList(Access.values()));
+    accessChoiceBox.setItems(FXCollections.observableArrayList(Access.getAccesses()));
   }
 
   @Override
