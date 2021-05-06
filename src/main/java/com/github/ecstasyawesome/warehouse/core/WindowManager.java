@@ -26,9 +26,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class WindowManager {
 
+  private static final Logger LOGGER = LogManager.getLogger(WindowManager.class);
   private static WindowManager instance;
   private final Stage root;
   private final Stage authorizationStage = new Stage();
@@ -44,19 +47,25 @@ public final class WindowManager {
 
   public static WindowManager getInstance() {
     if (instance == null) {
-      throw new IllegalStateException("Window Manager is not initialized");
+      var exception = new IllegalStateException("Window Manager is not initialized");
+      LOGGER.fatal(exception);
+      throw exception;
     }
     return instance;
   }
 
   public static void initialize(final Stage stage) {
     if (instance != null) {
-      throw new IllegalStateException("Window Manager is already initialized");
+      var exception = new IllegalStateException("Window Manager is already initialized");
+      LOGGER.fatal(exception);
+      throw exception;
     }
     instance = new WindowManager(stage);
+    LOGGER.debug("{} is initialized successfully", WindowManager.class.getSimpleName());
   }
 
   public void showAuthorization() {
+    LOGGER.debug("Request to show the authorization stage");
     var user = getUserFromContext();
     if (user.isEmpty()) {
       configureAuthorizationStage();
@@ -65,13 +74,15 @@ public final class WindowManager {
       currentCachedController = null;
       cachedControllers.clear();
       mainStage.close();
+      LOGGER.trace("Showed the authorization stage");
       authorizationStage.show();
     } else {
       showDialog(AlertType.WARNING, "Do logout before login"); // TODO i18n
     }
   }
 
-  public <T> void show(ModuleProvider<? super T> provider) {
+  public <T> void show(final ModuleProvider<? super T> provider) {
+    LOGGER.debug("Request to show the module provider '{}'", provider.getClass().getName());
     if (isAccessGranted(provider.getAccess())) {
       configureMainStage(provider);
       var module = provider.create();
@@ -79,13 +90,15 @@ public final class WindowManager {
       var title = prepareStageName(provider.getTitle());
       mainStage.setTitle(title);
       mainStage.setScene(module.getScene());
+      LOGGER.trace("Showed the stage '{}'", title);
       mainStage.show();
     } else {
       showAccessWarning();
     }
   }
 
-  public <T> void show(CachedModuleProvider<? super T> provider) {
+  public <T> void show(final CachedModuleProvider<? super T> provider) {
+    LOGGER.debug("Request to show the cached module provider '{}'", provider.getClass().getName());
     if (isAccessGranted(provider.getAccess())) {
       configureMainStage(provider);
       var module = provider.create();
@@ -93,17 +106,21 @@ public final class WindowManager {
       var title = prepareStageName(provider.getTitle());
       mainStage.setTitle(title);
       mainStage.setScene(module.getScene());
+      LOGGER.trace("Showed the stage '{}'", title);
       mainStage.show();
     } else {
       showAccessWarning();
     }
   }
 
-  public <T, E> Optional<E> showAndGet(FeedbackModuleProvider<? super T, E> provider) {
+  public <T, E> Optional<E> showAndGet(final FeedbackModuleProvider<? super T, E> provider) {
+    LOGGER.debug("Request to show the feedback module provider '{}'",
+        provider.getClass().getName());
     if (isAccessGranted(provider.getAccess())) {
       var module = provider.create();
       var stage = createNewExtraStage(provider.getTitle(), module.getScene());
       stages.add(stage);
+      LOGGER.trace("Showed the extra stage '{}'", stage.getTitle());
       stage.showAndWait();
       return Optional.ofNullable(module.getController().get());
     } else {
@@ -112,14 +129,17 @@ public final class WindowManager {
     return Optional.empty();
   }
 
-  public <T, E> Optional<E> showAndGet(ConfiguredFeedbackModuleProvider<? super T, E> provider,
-      E data) {
+  public <T, E> Optional<E> showAndGet(
+      final ConfiguredFeedbackModuleProvider<? super T, E> provider, final E data) {
+    LOGGER.debug("Request to show the configured feedback module provider '{}'",
+        provider.getClass().getName());
     if (isAccessGranted(provider.getAccess())) {
       var module = provider.create();
       var controller = module.getController();
       controller.accept(data);
       var stage = createNewExtraStage(provider.getTitle(), module.getScene());
       stages.add(stage);
+      LOGGER.trace("Showed the extra stage '{}'", stage.getTitle());
       stage.showAndWait();
       return Optional.ofNullable(controller.get());
     } else {
@@ -137,14 +157,15 @@ public final class WindowManager {
     Platform.exit();
   }
 
-
   // TODO push notifications (will be super to find lib to show native notifications)
   public Optional<ButtonType> showDialog(AlertType type, final String message) {
-    return createNewAlertDialog(type, message).showAndWait();
+    var alert = createNewDialog(type, message);
+    LOGGER.trace("Showed a dialog");
+    return alert.showAndWait();
   }
 
   public void showDialog(final Exception exception) {
-    var alert = createNewAlertDialog(AlertType.ERROR, exception.getMessage());
+    var alert = createNewDialog(AlertType.ERROR, exception.getMessage());
     var stacktrace = getStacktrace(exception);
 
     var textArea = new TextArea(stacktrace);
@@ -160,6 +181,7 @@ public final class WindowManager {
     gridPane.add(textArea, 0, 0);
 
     alert.getDialogPane().setExpandableContent(gridPane);
+    LOGGER.trace("Showed a dialog with an exception");
     alert.showAndWait();
   }
 
@@ -176,28 +198,34 @@ public final class WindowManager {
 
   private void checkAbilityToCache(CachedController controller) {
     if (currentCachedController != null && currentCachedController.isReady()) {
-      cachedControllers.add(currentCachedController.getClass());
+      var clazz = currentCachedController.getClass();
+      cachedControllers.add(clazz);
       currentCachedController.backup();
+      LOGGER.debug("Backup the controller '{}'", clazz.getName());
     }
     if (controller != null) {
       currentCachedController = controller;
       var clazz = controller.getClass();
+      LOGGER.debug("Set the controller '{}' like a current cached controller", clazz.getName());
       if (cachedControllers.contains(clazz)) {
         cachedControllers.remove(clazz);
-        controller.recovery();
+        controller.recover();
+        LOGGER.debug("Recovered the controller '{}'", clazz.getName());
       }
     } else {
       currentCachedController = null;
+      LOGGER.debug("A current controller is not cacheable");
     }
   }
 
-  private Alert createNewAlertDialog(AlertType type, String message) {
+  private Alert createNewDialog(AlertType type, String message) {
     var alert = new Alert(type);
     alert.setTitle("Notification"); // TODO i18n
     alert.setHeaderText(null);
     var defaultMessage = "Message is not provided"; // TODO i18n
     var messageNullOrBlank = message == null || message.isBlank();
     alert.setContentText(messageNullOrBlank ? defaultMessage : message);
+    LOGGER.debug("Created an dialog with type '{}' and message '{}'", type.name(), message);
     return alert;
   }
 
@@ -227,28 +255,29 @@ public final class WindowManager {
 
   private Stage createNewExtraStage(String title, Scene scene) {
     var stage = new Stage();
-    EventHandler<WindowEvent> onCloseEvent = event -> stages.remove(stage);
     stage.initModality(Modality.APPLICATION_MODAL);
     stage.initOwner(stages.isEmpty() ? root : stages.get(stages.size() - 1));
     stage.setTitle(prepareStageName(title));
     stage.setScene(scene);
-    stage.setOnCloseRequest(onCloseEvent);
-    stage.setOnHidden(onCloseEvent);
+    stage.setOnHidden(event -> {
+      stages.remove(stage);
+      LOGGER.debug("Closed the extra stage with title '{}'", stage.getTitle());
+    });
+    LOGGER.debug("Created the extra stage with title '{}'", stage.getTitle());
     return stage;
   }
 
   private void configureMainStage(ModuleProvider<? extends Controller> provider) {
     if (mainStage.getOwner() == null) {
       var viewSettings = ViewSettings.getInstance();
-      var onCloseAction = getOnCloseActions();
       mainStage.initOwner(root);
       mainStage.setMinWidth(viewSettings.getDefaultWidth());
       mainStage.setMinHeight(viewSettings.getDefaultHeight());
       mainStage.setWidth(viewSettings.getWidth());
       mainStage.setHeight(viewSettings.getHeight());
       mainStage.setMaximized(viewSettings.isMaximized());
-      mainStage.setOnCloseRequest(onCloseAction);
-      mainStage.setOnHidden(onCloseAction);
+      mainStage.setOnHidden(getOnCloseActions());
+      LOGGER.debug("Configured main stage for the first time");
     }
     closeAllExtraStages();
     authorizationStage.close();
@@ -259,6 +288,9 @@ public final class WindowManager {
     if (authorizationStage.getOwner() == null) {
       authorizationStage.initOwner(root);
       authorizationStage.setResizable(false);
+      authorizationStage.setOnCloseRequest(event ->
+          LOGGER.info("Application closed without authorized user"));
+      LOGGER.debug("Configured authorization stage for the first time");
     }
     var provider = AuthorizationProvider.INSTANCE;
     var module = provider.create();
@@ -286,6 +318,10 @@ public final class WindowManager {
       viewSettings.setHeight(mainStage.getHeight());
       viewSettings.setMaximized(mainStage.isMaximized());
       viewSettings.save();
+      getUserFromContext().ifPresent(user -> {
+        LOGGER.info("Logged out '{}'", user.getLogin());
+        LOGGER.trace("Application closed");
+      });
     };
   }
 }
