@@ -6,5 +6,5 @@ public interface Cacheable {
 
   void backup();
 
-  void recovery();
+  void recover();
 }
