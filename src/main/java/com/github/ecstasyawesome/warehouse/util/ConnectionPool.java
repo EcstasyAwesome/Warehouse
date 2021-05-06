@@ -3,9 +3,13 @@ package com.github.ecstasyawesome.warehouse.util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class ConnectionPool {
 
+  private static final Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
   private static final String USERS_TABLE = """
       CREATE TABLE USERS (
           ID          BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -33,11 +37,13 @@ public final class ConnectionPool {
       try (var statement = connection.prepareStatement(sql)) {
         statement.execute();
         connection.commit();
+        LOGGER.debug("Table created"); // TODO table name
       } catch (SQLException exception) {
         connection.rollback();
+        LOGGER.debug("Table exists"); // TODO table name
       }
     } catch (SQLException exception) {
-      // TODO maybe should write some information to log
+      throw new ExceptionInInitializerError(LOGGER.throwing(Level.FATAL, exception));
     }
   }
 }

@@ -61,7 +61,7 @@ public final class WindowManager {
       throw exception;
     }
     instance = new WindowManager(stage);
-    LOGGER.debug("{} is initialized successfully", WindowManager.class.getSimpleName());
+    LOGGER.debug("Initialized");
   }
 
   public void showAuthorization() {
@@ -69,11 +69,6 @@ public final class WindowManager {
     var user = getUserFromContext();
     if (user.isEmpty()) {
       configureAuthorizationStage();
-      closeAllExtraStages();
-      currentModuleProvider = null;
-      currentCachedController = null;
-      cachedControllers.clear();
-      mainStage.close();
       LOGGER.trace("Showed the authorization stage");
       authorizationStage.show();
     } else {
@@ -289,9 +284,14 @@ public final class WindowManager {
       authorizationStage.initOwner(root);
       authorizationStage.setResizable(false);
       authorizationStage.setOnCloseRequest(event ->
-          LOGGER.info("Application closed without authorized user"));
+          LOGGER.trace("Application closed without authorized user"));
       LOGGER.debug("Configured authorization stage for the first time");
     }
+    closeAllExtraStages();
+    currentModuleProvider = null;
+    currentCachedController = null;
+    cachedControllers.clear();
+    mainStage.close();
     var provider = AuthorizationProvider.INSTANCE;
     var module = provider.create();
     applyFadeAnimation(module.getParent());

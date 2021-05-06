@@ -46,6 +46,14 @@ public final class ViewSettings extends Settings {
     return Double.parseDouble(heightDefaultValue);
   }
 
+  public boolean isMaximized() {
+    return Boolean.parseBoolean(properties.getProperty(maximizedKey));
+  }
+
+  public void setMaximized(boolean maximized) {
+    properties.setProperty(maximizedKey, String.valueOf(maximized));
+  }
+
   private double getVerifiedWithDefaultLengthValue(String key, String defaultValue) {
     var value = properties.getProperty(key, defaultValue);
     var result = Double.parseDouble(value);
@@ -55,13 +63,5 @@ public final class ViewSettings extends Settings {
       return defaultDoubleValue;
     }
     return result;
-  }
-
-  public boolean isMaximized() {
-    return Boolean.parseBoolean(properties.getProperty(maximizedKey));
-  }
-
-  public void setMaximized(boolean maximized) {
-    properties.setProperty(maximizedKey, String.valueOf(maximized));
   }
 }

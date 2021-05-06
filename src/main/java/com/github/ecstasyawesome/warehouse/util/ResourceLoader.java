@@ -4,13 +4,18 @@ import com.github.ecstasyawesome.warehouse.core.ApplicationSettings;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class ResourceLoader {
 
+  private static final Logger LOGGER = LogManager.getLogger(ResourceLoader.class);
   private static final ResourceBundle LANGUAGE_BUNDLE = loadResourceBundle();
 
   private ResourceLoader() {
@@ -19,10 +24,11 @@ public final class ResourceLoader {
   public static <T extends Parent> T load(URL resource) {
     Objects.requireNonNull(resource);
     try {
-      return FXMLLoader.load(resource, LANGUAGE_BUNDLE);
+      T parent = FXMLLoader.load(resource, LANGUAGE_BUNDLE);
+      LOGGER.debug("A parent loaded successfully from the resource '{}'", resource);
+      return parent;
     } catch (IOException exception) {
-      // TODO save to some logger
-      throw new IllegalArgumentException(exception);
+      throw new IllegalArgumentException(LOGGER.throwing(Level.FATAL, exception));
     }
   }
 
@@ -32,8 +38,14 @@ public final class ResourceLoader {
   }
 
   private static ResourceBundle loadResourceBundle() {
-    var settings = ApplicationSettings.getInstance();
-    return ResourceBundle.getBundle("language/locale", settings.getLanguage().locale);
+    var language = ApplicationSettings.getInstance().getLanguage();
+    try {
+      var bundle = ResourceBundle.getBundle("language/locale", language.locale);
+      LOGGER.debug("Resource bundle loaded. Language is {}", language);
+      return bundle;
+    } catch (MissingResourceException exception) {
+      throw LOGGER.throwing(Level.FATAL, exception);
+    }
   }
 
   public enum Language {

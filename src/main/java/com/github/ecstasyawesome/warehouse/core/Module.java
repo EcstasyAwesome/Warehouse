@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URL;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 
 public abstract class Module<T extends Controller> {
 
@@ -13,20 +15,22 @@ public abstract class Module<T extends Controller> {
   private final T controller;
 
   public Module(final URL url) {
+    var logger = LogManager.getLogger(getClass());
     var fxmlLoader = ResourceLoader.createFxmlLoader(url);
     try {
       parent = fxmlLoader.load();
+      logger.debug("The resource '{}' loaded", url);
     } catch (IOException exception) {
-      // TODO save a crash to some log
-      throw new IllegalArgumentException(exception);
+      throw new IllegalArgumentException(logger.throwing(Level.FATAL, exception));
     }
     try {
       controller = fxmlLoader.getController();
+      logger.debug("The controller '{}' created", controller.getClass().getName());
     } catch (ClassCastException exception) {
-      // TODO save a crash to some log
-      throw new ClassCastException(exception.getMessage());
+      throw logger.throwing(Level.FATAL, exception);
     }
     scene = new Scene(parent);
+    logger.debug("The module initialized successfully");
   }
 
   @SuppressWarnings("unchecked")
