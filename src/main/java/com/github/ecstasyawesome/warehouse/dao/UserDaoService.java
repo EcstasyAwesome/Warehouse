@@ -8,12 +8,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserDaoService extends UserDao {
 
-  public static final UserDaoService INSTANCE = new UserDaoService();
+  private static final UserDaoService INSTANCE = new UserDaoService();
+  private final Logger logger = LogManager.getLogger(UserDaoService.class);
 
   private UserDaoService() {
+  }
+
+  public static UserDaoService getInstance() {
+    return INSTANCE;
   }
 
   @Override
@@ -22,8 +30,7 @@ public class UserDaoService extends UserDao {
     try {
       return hasQueryResult(query);
     } catch (SQLException exception) {
-      exception.printStackTrace(); // TODO logger
-      throw new UnsupportedOperationException(exception);
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
   }
 
@@ -32,8 +39,7 @@ public class UserDaoService extends UserDao {
     try {
       return !hasQueryResult("SELECT * FROM USERS");
     } catch (SQLException exception) {
-      exception.printStackTrace(); // TODO logger
-      throw new UnsupportedOperationException(exception);
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
   }
 
@@ -42,8 +48,7 @@ public class UserDaoService extends UserDao {
     try {
       return getAllByTable("USERS", this::getUserFromResultSet);
     } catch (SQLException exception) {
-      exception.printStackTrace(); // TODO logger
-      throw new NullPointerException(exception.getMessage());
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
   }
 
@@ -69,8 +74,7 @@ public class UserDaoService extends UserDao {
         throw exception;
       }
     } catch (SQLException exception) {
-      exception.printStackTrace(); // TODO logger
-      throw new UnsupportedOperationException(exception);
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
   }
 
@@ -81,14 +85,11 @@ public class UserDaoService extends UserDao {
         var statement = connection.prepareStatement(query)) {
       statement.setString(1, login);
       try (var resultSet = statement.executeQuery()) {
-        if (resultSet.next()) {
-          return getUserFromResultSet(resultSet);
-        }
-        throw new NullPointerException();
+        resultSet.first();
+        return getUserFromResultSet(resultSet);
       }
     } catch (SQLException exception) {
-      exception.printStackTrace(); // TODO logger
-      throw new NullPointerException(exception.getMessage());
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
   }
 
@@ -97,8 +98,7 @@ public class UserDaoService extends UserDao {
     try {
       return getById("USERS", "ID", id, this::getUserFromResultSet);
     } catch (SQLException exception) {
-      exception.printStackTrace(); // TODO logger
-      throw new NullPointerException(exception.getMessage());
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
   }
 
@@ -121,8 +121,7 @@ public class UserDaoService extends UserDao {
         throw exception;
       }
     } catch (SQLException exception) {
-      exception.printStackTrace(); // TODO logger
-      throw new UnsupportedOperationException(exception);
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
   }
 
@@ -131,8 +130,7 @@ public class UserDaoService extends UserDao {
     try {
       deleteById("USERS", "ID", id);
     } catch (SQLException exception) {
-      exception.printStackTrace(); // TODO logger
-      throw new UnsupportedOperationException(exception);
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
   }
 
@@ -159,7 +157,7 @@ public class UserDaoService extends UserDao {
           .access(Access.valueOf(resultSet.getString("ACCESS")))
           .build();
     } catch (SQLException exception) {
-      throw new NullPointerException(exception.getMessage());
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
   }
 }

@@ -1,5 +1,6 @@
 package com.github.ecstasyawesome.warehouse.util;
 
+import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDaoService;
 import java.util.regex.Pattern;
 import javafx.scene.control.ChoiceBox;
@@ -50,7 +51,15 @@ public final class InputValidator {
   }
 
   public static boolean isLoginValid(final TextField field) {
-    if (UserDaoService.INSTANCE.isLoginExist(field.getText())) {
+    var userDao = UserDaoService.getInstance();
+    var windowManager = WindowManager.getInstance();
+    var result = false;
+    try {
+      result = userDao.isLoginExist(field.getText());
+    } catch (NullPointerException exception) {
+      windowManager.showDialog(exception);
+    }
+    if (result) {
       field.setEffect(RED_ADJUST);
       return false;
     }

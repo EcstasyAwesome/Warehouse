@@ -11,6 +11,7 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isLoginVal
 import com.github.ecstasyawesome.warehouse.core.Access;
 import com.github.ecstasyawesome.warehouse.core.FeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
+import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.dao.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.User;
 import javafx.collections.FXCollections;
@@ -19,11 +20,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NewUser extends FeedbackController<User> {
 
-  private final UserDaoService userDaoService = UserDaoService.INSTANCE;
+  private final UserDao userDaoService = UserDaoService.getInstance();
   private final WindowManager windowManager = WindowManager.getInstance();
+  private final Logger logger = LogManager.getLogger(NewUser.class);
   private User result;
 
   @FXML
@@ -67,10 +71,12 @@ public class NewUser extends FeedbackController<User> {
           .access(accessChoiceBox.getValue())
           .build();
       try {
-        user.setId(userDaoService.create(user));
+        var id = userDaoService.create(user);
+        user.setId(id);
+        logger.info("Added a user with id={}", id);
         result = user;
         closeCurrentStage(event);
-      } catch (Exception exception) {
+      } catch (NullPointerException exception) {
         windowManager.showDialog(exception);
       }
     }

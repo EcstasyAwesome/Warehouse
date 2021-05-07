@@ -39,11 +39,9 @@ public abstract class GenericDao<T> {
     try (var connection = ConnectionPool.getConnection();
         var statement = connection.prepareStatement(query);
         var resultSet = statement.executeQuery()) {
-      if (resultSet.next()) {
-        return parser.apply(resultSet);
-      }
+      resultSet.first();
+      return parser.apply(resultSet);
     }
-    throw new NullPointerException();
   }
 
   protected final void deleteById(final String table, final String column, final long id)
@@ -68,5 +66,12 @@ public abstract class GenericDao<T> {
         var resultSet = statement.executeQuery()) {
       return resultSet.first() && resultSet.getBoolean(1);
     }
+  }
+
+  protected final NullPointerException createNpeWithSuppressedException(
+      final SQLException sqlException) {
+    var exception = new NullPointerException();
+    exception.addSuppressed(sqlException);
+    return exception;
   }
 }

@@ -9,17 +9,21 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 import com.github.ecstasyawesome.warehouse.core.Access;
 import com.github.ecstasyawesome.warehouse.core.FeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
+import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.dao.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AdministratorRegistration extends FeedbackController<String> {
 
   private final WindowManager windowManager = WindowManager.getInstance();
-  private final UserDaoService userDaoService = UserDaoService.INSTANCE;
+  private final UserDao userDaoService = UserDaoService.getInstance();
+  private final Logger logger = LogManager.getLogger(AdministratorRegistration.class);
   private String result;
 
   @FXML
@@ -60,9 +64,10 @@ public class AdministratorRegistration extends FeedbackController<String> {
           .build();
       try {
         userDaoService.create(user);
+        logger.info("Root user registered");
         result = user.getLogin();
         closeCurrentStage(event);
-      } catch (Exception exception) {
+      } catch (NullPointerException exception) {
         windowManager.showDialog(exception);
       }
     }
@@ -77,6 +82,4 @@ public class AdministratorRegistration extends FeedbackController<String> {
   private void initialize() {
     loginField.setText("admin");
   }
-
 }
-
