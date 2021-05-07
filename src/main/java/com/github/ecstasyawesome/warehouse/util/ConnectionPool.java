@@ -28,6 +28,7 @@ public final class ConnectionPool {
   }
 
   public static Connection getConnection() throws SQLException {
+    LOGGER.debug("Try to connect to database");
     return DriverManager.getConnection("jdbc:h2:./database/default", "root", "root");
   }
 
