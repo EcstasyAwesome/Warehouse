@@ -23,9 +23,9 @@ public final class PropertyTool {
     final var result = new Properties();
     try (var inputStream = Files.newInputStream(pathToFile)) {
       result.load(inputStream);
-      LOGGER.debug(String.format("'%s' config loaded", config.fileName));
+      LOGGER.debug(String.format("%s loaded", config.fileName));
     } catch (IOException exception) {
-      LOGGER.warn(String.format("'%s' config is absent", config.fileName));
+      LOGGER.warn(String.format("%s is absent", config.fileName));
     }
     return result;
   }
@@ -36,9 +36,9 @@ public final class PropertyTool {
     final var pathToFile = preparePath(config);
     try (var outputStream = Files.newOutputStream(pathToFile)) {
       properties.store(outputStream, "DO NOT MODIFY THIS FILE");
-      LOGGER.debug(String.format("'%s' config saved", config.fileName));
+      LOGGER.debug(String.format("'%s' saved", config.fileName));
     } catch (IOException exception) {
-      var message = String.format("Cannot save the config '%s'", config.fileName);
+      var message = String.format("Cannot save %s", config.fileName);
       LOGGER.error(message, exception);
       WINDOW_MANAGER.showDialog(exception);
     }

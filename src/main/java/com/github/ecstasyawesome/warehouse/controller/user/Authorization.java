@@ -1,4 +1,4 @@
-package com.github.ecstasyawesome.warehouse.controller;
+package com.github.ecstasyawesome.warehouse.controller.user;
 
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;

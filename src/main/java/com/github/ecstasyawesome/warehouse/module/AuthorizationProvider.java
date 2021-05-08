@@ -1,6 +1,6 @@
 package com.github.ecstasyawesome.warehouse.module;
 
-import com.github.ecstasyawesome.warehouse.controller.Authorization;
+import com.github.ecstasyawesome.warehouse.controller.user.Authorization;
 import com.github.ecstasyawesome.warehouse.core.Access;
 import com.github.ecstasyawesome.warehouse.core.Module;
 import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
@@ -9,7 +9,7 @@ import java.net.URL;
 public class AuthorizationProvider extends ModuleProvider<Authorization> {
 
   public static final AuthorizationProvider INSTANCE = new AuthorizationProvider();
-  public final URL fxml = getClass().getResource("/model/Authorization.fxml");
+  public final URL fxml = getClass().getResource("/model/user/Authorization.fxml");
 
   private AuthorizationProvider() {
   }
