@@ -45,9 +45,9 @@ public final class ConnectionPool {
       """;
 
   static {
-    createTableIfNotExist(USERS_TABLE, "USERS");
-    createTableIfNotExist(CATEGORIES_TABLE, "CATEGORIES");
-    createTableIfNotExist(PRODUCTS_TABLE, "PRODUCTS");
+    createTableIfAbsent(USERS_TABLE, "USERS");
+    createTableIfAbsent(CATEGORIES_TABLE, "CATEGORIES");
+    createTableIfAbsent(PRODUCTS_TABLE, "PRODUCTS");
   }
 
   public static Connection getConnection() throws SQLException {
@@ -55,7 +55,7 @@ public final class ConnectionPool {
     return DriverManager.getConnection("jdbc:h2:./database/default", "root", "root");
   }
 
-  private static void createTableIfNotExist(String sql, String tableName) {
+  private static void createTableIfAbsent(String sql, String tableName) {
     try (var connection = getConnection();
         var statement = connection.createStatement()) {
       statement.execute(sql);
