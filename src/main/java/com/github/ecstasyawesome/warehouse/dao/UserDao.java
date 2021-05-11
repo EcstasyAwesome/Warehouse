@@ -6,7 +6,7 @@ public abstract class UserDao extends GenericDao<User> {
 
   public abstract User get(String login);
 
-  public abstract boolean isEmptyTable();
+  public abstract boolean isTableEmpty();
 
-  public abstract boolean isLoginExist(String login);
+  public abstract boolean isLoginPresent(String login);
 }

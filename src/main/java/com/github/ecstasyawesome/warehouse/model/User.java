@@ -3,11 +3,9 @@ package com.github.ecstasyawesome.warehouse.model;
 import com.github.ecstasyawesome.warehouse.core.Access;
 import java.util.Objects;
 
-public class User {
+public class User extends BaseRecord {
 
-  private long id;
   private String surname;
-  private String name;
   private String secondName;
   private String phone;
   private String login;
@@ -16,9 +14,8 @@ public class User {
 
   private User(long id, String surname, String name, String secondName, String phone, String login,
       String password, Access access) {
-    this.id = id;
+    super(id, name);
     this.surname = surname;
-    this.name = name;
     this.secondName = secondName;
     this.phone = phone;
     this.login = login;
@@ -30,28 +27,12 @@ public class User {
     return new Builder();
   }
 
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
   public String getSurname() {
     return surname;
   }
 
   public void setSurname(String surname) {
     this.surname = surname;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   public String getSecondName() {
@@ -96,7 +77,7 @@ public class User {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, surname, name, secondName, phone, login, password, access);
+    return super.hashCode() + Objects.hash(surname, secondName, phone, login, password, access);
   }
 
   @Override
@@ -108,15 +89,14 @@ public class User {
       return false;
     }
 
-    User user = (User) obj;
-    return this.id == user.id
-           && this.surname.equals(user.surname)
-           && this.name.equals(user.name)
-           && this.secondName.equals(user.secondName)
-           && this.phone.equals(user.phone)
-           && this.login.equals(user.login)
-           && this.password.equals(user.password)
-           && this.access.equals(user.access);
+    var that = (User) obj;
+    return super.equals(obj)
+           && this.surname.equals(that.surname)
+           && this.secondName.equals(that.secondName)
+           && this.phone.equals(that.phone)
+           && this.login.equals(that.login)
+           && this.password.equals(that.password)
+           && this.access.equals(that.access);
   }
 
   public static class Builder {

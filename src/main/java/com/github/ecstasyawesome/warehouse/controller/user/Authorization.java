@@ -51,7 +51,7 @@ public class Authorization extends Controller {
   @FXML
   private void initialize() {
     try {
-      if (userDaoService.isEmptyTable()) {
+      if (userDaoService.isTableEmpty()) {
         var result = windowManager.showAndGet(AdministratorRegistrationProvider.INSTANCE);
         if (result.isPresent()) {
           loginField.setText(result.get());

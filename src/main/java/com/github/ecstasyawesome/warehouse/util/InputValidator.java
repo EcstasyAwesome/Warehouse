@@ -55,7 +55,7 @@ public final class InputValidator {
     var windowManager = WindowManager.getInstance();
     var result = false;
     try {
-      result = userDao.isLoginExist(field.getText());
+      result = userDao.isLoginPresent(field.getText());
     } catch (NullPointerException exception) {
       windowManager.showDialog(exception);
     }
