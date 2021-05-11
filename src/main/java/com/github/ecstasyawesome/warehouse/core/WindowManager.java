@@ -314,10 +314,12 @@ public final class WindowManager {
   private EventHandler<WindowEvent> getOnCloseActions() {
     return event -> {
       var viewSettings = ViewSettings.getInstance();
+      var applicationSettings = ApplicationSettings.getInstance();
       viewSettings.setWidth(mainStage.getWidth());
       viewSettings.setHeight(mainStage.getHeight());
       viewSettings.setMaximized(mainStage.isMaximized());
       viewSettings.save();
+      applicationSettings.save();
       getUserFromContext().ifPresent(user -> {
         LOGGER.info("Logged out '{}'", user.getLogin());
         LOGGER.trace("Application closed");
