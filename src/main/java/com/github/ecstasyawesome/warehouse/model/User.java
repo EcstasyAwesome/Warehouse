@@ -77,7 +77,7 @@ public class User extends BaseRecord {
 
   @Override
   public int hashCode() {
-    return super.hashCode() + Objects.hash(surname, secondName, phone, login, password, access);
+    return Objects.hash(super.hashCode(), surname, secondName, phone, login, password, access);
   }
 
   @Override
@@ -88,10 +88,11 @@ public class User extends BaseRecord {
     if (obj == null || this.getClass() != obj.getClass()) {
       return false;
     }
-
+    if (!super.equals(obj)) {
+      return false;
+    }
     var that = (User) obj;
-    return super.equals(obj)
-           && this.surname.equals(that.surname)
+    return this.surname.equals(that.surname)
            && this.secondName.equals(that.secondName)
            && this.phone.equals(that.phone)
            && this.login.equals(that.login)

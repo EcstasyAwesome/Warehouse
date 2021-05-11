@@ -8,8 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 public abstract class GenericDao<T> {
 
@@ -23,12 +21,15 @@ public abstract class GenericDao<T> {
 
   public abstract void delete(long id);
 
-  protected final long insertRecord(final String query, final T instance,
-      final BiConsumer<PreparedStatement, T> setter) throws SQLException {
+  protected abstract void serialize(PreparedStatement statement, T instance) throws SQLException;
+
+  protected abstract T deserialize(ResultSet resultSet) throws SQLException;
+
+  protected final long insertRecord(final String query, final T instance) throws SQLException {
     try (var connection = ConnectionPool.getConnection()) {
       connection.setAutoCommit(false);
       try (var statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-        setter.accept(statement, instance);
+        serialize(statement, instance);
         statement.executeUpdate();
         try (var resultSet = statement.getGeneratedKeys()) {
           resultSet.first();
@@ -43,13 +44,13 @@ public abstract class GenericDao<T> {
     }
   }
 
-  protected final void insertRecords(final String query, final List<T> instances,
-      final BiConsumer<PreparedStatement, T> setter) throws SQLException {
+  protected final void insertRecords(final String query, final List<T> instances)
+      throws SQLException {
     try (var connection = ConnectionPool.getConnection()) {
       connection.setAutoCommit(false);
       try (var statement = connection.prepareStatement(query)) {
         for (T instance : instances) {
-          setter.accept(statement, instance);
+          serialize(statement, instance);
           statement.addBatch();
         }
         statement.executeBatch();
@@ -61,24 +62,22 @@ public abstract class GenericDao<T> {
     }
   }
 
-  protected final T selectRecord(final String query, final Function<ResultSet, T> parser)
-      throws SQLException {
+  protected final T selectRecord(final String query) throws SQLException {
     try (var connection = ConnectionPool.getConnection();
         var statement = connection.prepareStatement(query);
         var resultSet = statement.executeQuery()) {
       resultSet.first();
-      return parser.apply(resultSet);
+      return deserialize(resultSet);
     }
   }
 
-  protected final List<T> selectRecords(final String query, final Function<ResultSet, T> parser)
-      throws SQLException {
+  protected final List<T> selectRecords(final String query) throws SQLException {
     final var result = new ArrayList<T>();
     try (var connection = ConnectionPool.getConnection();
         var statement = connection.prepareStatement(query);
         var resultSet = statement.executeQuery()) {
       while (resultSet.next()) {
-        result.add(parser.apply(resultSet));
+        result.add(deserialize(resultSet));
       }
     }
     return result;
@@ -97,12 +96,11 @@ public abstract class GenericDao<T> {
     }
   }
 
-  protected final void processRecord(final String query, final T instance,
-      final BiConsumer<PreparedStatement, T> setter) throws SQLException {
+  protected final void processRecord(final String query, final T instance) throws SQLException {
     try (var connection = ConnectionPool.getConnection()) {
       connection.setAutoCommit(false);
       try (var statement = connection.prepareStatement(query)) {
-        setter.accept(statement, instance);
+        serialize(statement, instance);
         statement.execute();
         connection.commit();
       } catch (SQLException exception) {
