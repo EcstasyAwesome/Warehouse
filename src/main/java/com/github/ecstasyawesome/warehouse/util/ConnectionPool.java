@@ -11,7 +11,7 @@ public final class ConnectionPool {
 
   private static final Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
   private static final String USERS_TABLE = """
-      CREATE TABLE USERS
+      CREATE TABLE IF NOT EXISTS USERS
       (
           USER_ID          BIGINT PRIMARY KEY AUTO_INCREMENT,
           USER_SURNAME     VARCHAR(25) NOT NULL,
@@ -24,14 +24,14 @@ public final class ConnectionPool {
       )
       """;
   private static final String CATEGORIES_TABLE = """
-      CREATE TABLE CATEGORIES
+      CREATE TABLE IF NOT EXISTS CATEGORIES
       (
           CATEGORY_ID   BIGINT PRIMARY KEY AUTO_INCREMENT,
           CATEGORY_NAME VARCHAR(30) NOT NULL UNIQUE
       )
       """;
   private static final String PRODUCTS_TABLE = """
-      CREATE TABLE PRODUCTS
+      CREATE TABLE IF NOT EXISTS PRODUCTS
       (
           PRODUCT_ID   BIGINT PRIMARY KEY AUTO_INCREMENT,
           PRODUCT_NAME VARCHAR(40) NOT NULL UNIQUE,
@@ -45,9 +45,9 @@ public final class ConnectionPool {
       """;
 
   static {
-    createTableIfExist(USERS_TABLE, "USERS");
-    createTableIfExist(CATEGORIES_TABLE, "CATEGORIES");
-    createTableIfExist(PRODUCTS_TABLE, "PRODUCTS");
+    createTableIfNotExist(USERS_TABLE, "USERS");
+    createTableIfNotExist(CATEGORIES_TABLE, "CATEGORIES");
+    createTableIfNotExist(PRODUCTS_TABLE, "PRODUCTS");
   }
 
   public static Connection getConnection() throws SQLException {
@@ -55,17 +55,11 @@ public final class ConnectionPool {
     return DriverManager.getConnection("jdbc:h2:./database/default", "root", "root");
   }
 
-  private static void createTableIfExist(String sql, String tableName) {
-    try (var connection = getConnection()) {
-      connection.setAutoCommit(false);
-      try (var statement = connection.prepareStatement(sql)) {
-        statement.execute();
-        connection.commit();
-        LOGGER.debug("Table created [{}]", tableName);
-      } catch (SQLException exception) {
-        connection.rollback();
-        LOGGER.debug("Table exists [{}]", tableName);
-      }
+  private static void createTableIfNotExist(String sql, String tableName) {
+    try (var connection = getConnection();
+        var statement = connection.createStatement()) {
+      statement.execute(sql);
+      LOGGER.debug("'{}' table checked", tableName);
     } catch (SQLException exception) {
       throw new ExceptionInInitializerError(LOGGER.throwing(Level.FATAL, exception));
     }
