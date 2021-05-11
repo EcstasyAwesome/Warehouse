@@ -1,5 +1,6 @@
-package com.github.ecstasyawesome.warehouse.dao;
+package com.github.ecstasyawesome.warehouse.dao.impl;
 
+import com.github.ecstasyawesome.warehouse.dao.ProductDao;
 import com.github.ecstasyawesome.warehouse.model.Category;
 import com.github.ecstasyawesome.warehouse.model.Product;
 import com.github.ecstasyawesome.warehouse.model.Unit;

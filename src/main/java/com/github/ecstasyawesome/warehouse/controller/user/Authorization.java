@@ -3,7 +3,7 @@ package com.github.ecstasyawesome.warehouse.controller.user;
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
-import com.github.ecstasyawesome.warehouse.dao.UserDaoService;
+import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
 import com.github.ecstasyawesome.warehouse.module.HomeProvider;
 import com.github.ecstasyawesome.warehouse.module.user.AdministratorRegistrationProvider;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;

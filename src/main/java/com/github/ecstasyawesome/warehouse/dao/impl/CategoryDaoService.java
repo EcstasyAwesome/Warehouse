@@ -1,5 +1,6 @@
-package com.github.ecstasyawesome.warehouse.dao;
+package com.github.ecstasyawesome.warehouse.dao.impl;
 
+import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
 import com.github.ecstasyawesome.warehouse.model.Category;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

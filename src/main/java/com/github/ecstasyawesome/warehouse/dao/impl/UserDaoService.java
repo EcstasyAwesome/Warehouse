@@ -1,6 +1,7 @@
-package com.github.ecstasyawesome.warehouse.dao;
+package com.github.ecstasyawesome.warehouse.dao.impl;
 
 import com.github.ecstasyawesome.warehouse.core.Access;
+import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.model.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
