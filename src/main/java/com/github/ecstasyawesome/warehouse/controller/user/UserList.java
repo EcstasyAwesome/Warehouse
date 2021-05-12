@@ -1,5 +1,8 @@
 package com.github.ecstasyawesome.warehouse.controller.user;
 
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRING;
+
 import com.github.ecstasyawesome.warehouse.core.Access;
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
@@ -7,7 +10,6 @@ import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.module.user.NewUserProvider;
-import java.util.regex.Pattern;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
@@ -27,8 +29,6 @@ import org.apache.logging.log4j.Logger;
 
 public class UserList extends Controller {
 
-  private final Pattern phonePattern = Pattern.compile("^((\\+?3)?8)?\\d{10}$");
-  private final Pattern stringPattern = Pattern.compile("^[A-ZА-Я][A-zА-я]+$");
   private final ObservableList<User> users = FXCollections.observableArrayList();
   private final UserDao userDaoService = UserDaoService.getInstance();
   private final WindowManager windowManager = WindowManager.getInstance();
@@ -80,17 +80,16 @@ public class UserList extends Controller {
     accessColumn.setCellValueFactory(new PropertyValueFactory<>("access"));
     accessColumn.setCellFactory(ChoiceBoxTableCell.forTableColumn(Access.getAccesses()));
 
-    userTable.pressedProperty().addListener(observable -> {
-      var model = userTable.getSelectionModel();
-      if (!model.isEmpty()) {
-        var access = model.getSelectedItem().getAccess();
-        if (rootAccess) {
-          userTable.setEditable(access != Access.ROOT);
-        } else {
-          userTable.setEditable(access.level > Access.ADMIN.level);
-        }
-      }
-    });
+    userTable.getSelectionModel()
+        .selectedItemProperty()
+        .addListener((observable, prevUser, currentUser) -> {
+          var access = currentUser.getAccess();
+          if (rootAccess) {
+            userTable.setEditable(access != Access.ROOT);
+          } else {
+            userTable.setEditable(access.level > Access.ADMIN.level);
+          }
+        });
 
     getUsersFromDatabase();
   }
@@ -138,7 +137,7 @@ public class UserList extends Controller {
     var user = event.getRowValue();
     var oldValue = event.getOldValue();
     var newValue = event.getNewValue();
-    if (newValue.matches(stringPattern.pattern())) {
+    if (newValue.matches(STRING.pattern())) {
       try {
         user.setSurname(newValue);
         userDaoService.update(user);
@@ -157,7 +156,7 @@ public class UserList extends Controller {
     var user = event.getRowValue();
     var oldValue = event.getOldValue();
     var newValue = event.getNewValue();
-    if (newValue.matches(stringPattern.pattern())) {
+    if (newValue.matches(STRING.pattern())) {
       try {
         user.setName(newValue);
         userDaoService.update(user);
@@ -176,7 +175,7 @@ public class UserList extends Controller {
     var user = event.getRowValue();
     var oldValue = event.getOldValue();
     var newValue = event.getNewValue();
-    if (newValue.matches(stringPattern.pattern())) {
+    if (newValue.matches(STRING.pattern())) {
       try {
         user.setSecondName(newValue);
         userDaoService.update(user);
@@ -195,7 +194,7 @@ public class UserList extends Controller {
     var user = event.getRowValue();
     var oldValue = event.getOldValue();
     var newValue = event.getNewValue();
-    if (newValue.matches(phonePattern.pattern())) {
+    if (newValue.matches(PHONE.pattern())) {
       try {
         user.setPhone(newValue);
         userDaoService.update(user);
