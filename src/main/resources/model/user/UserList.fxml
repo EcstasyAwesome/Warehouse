@@ -44,13 +44,13 @@
                <TableView fx:id="userTable" editable="true" GridPane.rowIndex="1">
                   <columns>
                      <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="30.0" prefWidth="30.0" text="id" />
-                     <TableColumn fx:id="surnameColumn" minWidth="100.0" prefWidth="100.0" text="surname" />
-                     <TableColumn fx:id="nameColumn" minWidth="100.0" prefWidth="100.0" text="name" />
-                     <TableColumn fx:id="secondNameColumn" minWidth="100.0" prefWidth="100.0" text="second name" />
-                     <TableColumn fx:id="phoneColumn" minWidth="100.0" prefWidth="100.0" text="phone" />
+                     <TableColumn fx:id="surnameColumn" minWidth="100.0" onEditCommit="#editSurname" prefWidth="100.0" text="surname" />
+                     <TableColumn fx:id="nameColumn" minWidth="100.0" onEditCommit="#editName" prefWidth="100.0" text="name" />
+                     <TableColumn fx:id="secondNameColumn" minWidth="100.0" onEditCommit="#editSecondName" prefWidth="100.0" text="second name" />
+                     <TableColumn fx:id="phoneColumn" minWidth="100.0" onEditCommit="#editPhone" prefWidth="100.0" text="phone" />
                      <TableColumn fx:id="loginColumn" minWidth="75.0" prefWidth="75.0" text="login" />
                      <TableColumn fx:id="passwordColumn" minWidth="75.0" prefWidth="75.0" text="password" />
-                     <TableColumn fx:id="accessColumn" minWidth="75.0" prefWidth="75.0" text="access" />
+                     <TableColumn fx:id="accessColumn" minWidth="75.0" onEditCommit="#editAccess" prefWidth="75.0" text="access" />
                   </columns>
                   <opaqueInsets>
                      <Insets />

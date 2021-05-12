@@ -12,7 +12,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -70,21 +69,16 @@ public class UserList extends Controller {
     idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
     surnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
     surnameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-    surnameColumn.setOnEditCommit(editSurnameAction());
     nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-    nameColumn.setOnEditCommit(editNameAction());
     secondNameColumn.setCellValueFactory(new PropertyValueFactory<>("secondName"));
     secondNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-    secondNameColumn.setOnEditCommit(editSecondNameAction());
     phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
     phoneColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-    phoneColumn.setOnEditCommit(editPhoneAction());
     loginColumn.setCellValueFactory(getPropertyValueFactoryWithGag("login"));
     passwordColumn.setCellValueFactory(getPropertyValueFactoryWithGag("password"));
     accessColumn.setCellValueFactory(new PropertyValueFactory<>("access"));
     accessColumn.setCellFactory(ChoiceBoxTableCell.forTableColumn(Access.getAccesses()));
-    accessColumn.setOnEditCommit(editAccessAction());
 
     userTable.pressedProperty().addListener(observable -> {
       var model = userTable.getSelectionModel();
@@ -139,6 +133,98 @@ public class UserList extends Controller {
     getUsersFromDatabase();
   }
 
+  @FXML
+  private void editSurname(CellEditEvent<User, String> event) {
+    var user = event.getRowValue();
+    var oldValue = event.getOldValue();
+    var newValue = event.getNewValue();
+    if (newValue.matches(stringPattern.pattern())) {
+      try {
+        user.setSurname(newValue);
+        userDaoService.update(user);
+        logChanges("surname", oldValue, newValue, user);
+      } catch (NullPointerException exception) {
+        user.setSurname(oldValue);
+        refreshAndShowError(exception);
+      }
+    } else {
+      refreshAndShowDialog("Incorrect surname"); // TODO i18n
+    }
+  }
+
+  @FXML
+  private void editName(CellEditEvent<User, String> event) {
+    var user = event.getRowValue();
+    var oldValue = event.getOldValue();
+    var newValue = event.getNewValue();
+    if (newValue.matches(stringPattern.pattern())) {
+      try {
+        user.setName(newValue);
+        userDaoService.update(user);
+        logChanges("name", oldValue, newValue, user);
+      } catch (NullPointerException exception) {
+        user.setName(oldValue);
+        refreshAndShowError(exception);
+      }
+    } else {
+      refreshAndShowDialog("Incorrect name"); // TODO i18n
+    }
+  }
+
+  @FXML
+  private void editSecondName(CellEditEvent<User, String> event) {
+    var user = event.getRowValue();
+    var oldValue = event.getOldValue();
+    var newValue = event.getNewValue();
+    if (newValue.matches(stringPattern.pattern())) {
+      try {
+        user.setSecondName(newValue);
+        userDaoService.update(user);
+        logChanges("second name", oldValue, newValue, user);
+      } catch (NullPointerException exception) {
+        user.setSecondName(oldValue);
+        refreshAndShowError(exception);
+      }
+    } else {
+      refreshAndShowDialog("Incorrect second name"); // TODO i18n
+    }
+  }
+
+  @FXML
+  private void editPhone(CellEditEvent<User, String> event) {
+    var user = event.getRowValue();
+    var oldValue = event.getOldValue();
+    var newValue = event.getNewValue();
+    if (newValue.matches(phonePattern.pattern())) {
+      try {
+        user.setPhone(newValue);
+        userDaoService.update(user);
+        logChanges("phone", oldValue, newValue, user);
+      } catch (NullPointerException exception) {
+        user.setPhone(oldValue);
+        refreshAndShowError(exception);
+      }
+    } else {
+      refreshAndShowDialog("Incorrect phone number"); // TODO i18n
+    }
+  }
+
+  @FXML
+  private void editAccess(CellEditEvent<User, Access> event) {
+    var user = event.getRowValue();
+    var oldValue = event.getOldValue();
+    var newValue = event.getNewValue();
+    try {
+      user.setAccess(newValue);
+      userDaoService.update(user);
+      logChanges("access", oldValue, newValue, user);
+      userTable.refresh();
+    } catch (NullPointerException exception) {
+      user.setAccess(oldValue);
+      refreshAndShowError(exception);
+    }
+  }
+
   private void getUsersFromDatabase() {
     try {
       users.addAll(userDaoService.getAll());
@@ -177,102 +263,5 @@ public class UserList extends Controller {
   private void logChanges(String field, Object oldValue, Object newValue, User user) {
     logger.info("Edited user's {} from '{}' to '{}' with id={}", field, oldValue, newValue,
         user.getId());
-  }
-
-  private EventHandler<CellEditEvent<User, Access>> editAccessAction() {
-    return event -> {
-      var user = event.getRowValue();
-      var oldValue = event.getOldValue();
-      var newValue = event.getNewValue();
-      try {
-        user.setAccess(newValue);
-        userDaoService.update(user);
-        logChanges("access", oldValue, newValue, user);
-        userTable.refresh();
-      } catch (NullPointerException exception) {
-        user.setAccess(oldValue);
-        refreshAndShowError(exception);
-      }
-    };
-  }
-
-  private EventHandler<CellEditEvent<User, String>> editNameAction() {
-    return event -> {
-      var user = event.getRowValue();
-      var oldValue = event.getOldValue();
-      var newValue = event.getNewValue();
-      if (newValue.matches(stringPattern.pattern())) {
-        try {
-          user.setName(newValue);
-          userDaoService.update(user);
-          logChanges("name", oldValue, newValue, user);
-        } catch (NullPointerException exception) {
-          user.setName(oldValue);
-          refreshAndShowError(exception);
-        }
-      } else {
-        refreshAndShowDialog("Incorrect name"); // TODO i18n
-      }
-    };
-  }
-
-  private EventHandler<CellEditEvent<User, String>> editPhoneAction() {
-    return event -> {
-      var user = event.getRowValue();
-      var oldValue = event.getOldValue();
-      var newValue = event.getNewValue();
-      if (newValue.matches(phonePattern.pattern())) {
-        try {
-          user.setPhone(newValue);
-          userDaoService.update(user);
-          logChanges("phone", oldValue, newValue, user);
-        } catch (NullPointerException exception) {
-          user.setPhone(oldValue);
-          refreshAndShowError(exception);
-        }
-      } else {
-        refreshAndShowDialog("Incorrect phone number"); // TODO i18n
-      }
-    };
-  }
-
-  private EventHandler<CellEditEvent<User, String>> editSecondNameAction() {
-    return event -> {
-      var user = event.getRowValue();
-      var oldValue = event.getOldValue();
-      var newValue = event.getNewValue();
-      if (newValue.matches(stringPattern.pattern())) {
-        try {
-          user.setSecondName(newValue);
-          userDaoService.update(user);
-          logChanges("second name", oldValue, newValue, user);
-        } catch (NullPointerException exception) {
-          user.setSecondName(oldValue);
-          refreshAndShowError(exception);
-        }
-      } else {
-        refreshAndShowDialog("Incorrect second name"); // TODO i18n
-      }
-    };
-  }
-
-  private EventHandler<CellEditEvent<User, String>> editSurnameAction() {
-    return event -> {
-      var user = event.getRowValue();
-      var oldValue = event.getOldValue();
-      var newValue = event.getNewValue();
-      if (newValue.matches(stringPattern.pattern())) {
-        try {
-          user.setSurname(newValue);
-          userDaoService.update(user);
-          logChanges("surname", oldValue, newValue, user);
-        } catch (NullPointerException exception) {
-          user.setSurname(oldValue);
-          refreshAndShowError(exception);
-        }
-      } else {
-        refreshAndShowDialog("Incorrect surname"); // TODO i18n
-      }
-    };
   }
 }
