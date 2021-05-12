@@ -113,7 +113,7 @@ public class UserDaoService extends UserDao {
             USER_LOGIN=?,
             USER_PASSWORD=?,
             USER_ACCESS=?
-        WHERE ID=%d
+        WHERE USER_ID=%d
         """, instance.getId());
     try {
       processRecord(query, instance);
