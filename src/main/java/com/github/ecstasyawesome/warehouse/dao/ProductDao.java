@@ -9,4 +9,6 @@ public abstract class ProductDao extends GenericDao<Product> {
   public abstract boolean isNamePresent(String name);
 
   public abstract List<Product> getAll(Category category);
+
+  public abstract List<Product> search(String name);
 }

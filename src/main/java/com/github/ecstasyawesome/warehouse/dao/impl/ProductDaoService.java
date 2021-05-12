@@ -30,8 +30,9 @@ public class ProductDaoService extends ProductDao {
   public List<Product> getAll() {
     final var query = """
         SELECT *
-        FROM PRODUCTS INNER JOIN CATEGORIES
-        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
+        FROM PRODUCTS
+             INNER JOIN CATEGORIES
+                        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
         """;
     try {
       var result = selectRecords(query);
@@ -47,13 +48,34 @@ public class ProductDaoService extends ProductDao {
     Objects.requireNonNull(category);
     final var query = String.format("""
         SELECT *
-        FROM PRODUCTS INNER JOIN CATEGORIES
-        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
+        FROM PRODUCTS
+             INNER JOIN CATEGORIES
+                        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
         WHERE PRODUCTS.CATEGORY_ID=%d
         """, category.getId());
     try {
       var result = selectRecords(query);
       logger.debug("Selected all products by category id={} [{} records]", category.getId(),
+          result.size());
+      return result;
+    } catch (SQLException exception) {
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
+    }
+  }
+
+  @Override
+  public List<Product> search(String name) {
+    Objects.requireNonNull(name);
+    final var query = String.format("""
+        SELECT *
+        FROM PRODUCTS
+             INNER JOIN CATEGORIES
+                        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
+        WHERE LOWER(PRODUCT_NAME) LIKE LOWER('%%%s%%')
+        """, name);
+    try {
+      var result = selectRecords(query);
+      logger.debug("Selected all products where name contains '{}' [{} records]", name,
           result.size());
       return result;
     } catch (SQLException exception) {
@@ -81,8 +103,9 @@ public class ProductDaoService extends ProductDao {
   public Product get(final long id) {
     final var query = String.format("""
         SELECT *
-        FROM PRODUCTS INNER JOIN CATEGORIES
-        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
+        FROM PRODUCTS
+             INNER JOIN CATEGORIES
+                        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
         WHERE PRODUCT_ID=%d
         """, id);
     try {
