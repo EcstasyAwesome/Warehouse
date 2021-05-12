@@ -102,13 +102,13 @@ public class UserList extends Controller {
   }
 
   @FXML
-  void add() {
+  private void add() {
     var result = windowManager.showAndGet(NewUserProvider.INSTANCE);
     result.ifPresent(users::add);
   }
 
   @FXML
-  void delete() {
+  private void delete() {
     var model = userTable.getSelectionModel();
     if (!model.isEmpty()) {
       var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
@@ -134,7 +134,7 @@ public class UserList extends Controller {
   }
 
   @FXML
-  void refresh() {
+  private void refresh() {
     users.clear();
     getUsersFromDatabase();
   }

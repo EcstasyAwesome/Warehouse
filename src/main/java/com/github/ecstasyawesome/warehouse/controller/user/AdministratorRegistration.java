@@ -48,7 +48,12 @@ public class AdministratorRegistration extends FeedbackController<String> {
   private PasswordField repeatedPasswordField;
 
   @FXML
-  void register(ActionEvent event) {
+  private void initialize() {
+    loginField.setText("admin");
+  }
+
+  @FXML
+  private void register(ActionEvent event) {
     if (isFieldValid(surnameField, STRING) & isFieldValid(nameField, STRING)
         & isFieldValid(secondNameField, STRING) & isFieldValid(phoneField, PHONE)
         & isFieldValid(passwordField, PASSWORD)
@@ -76,10 +81,5 @@ public class AdministratorRegistration extends FeedbackController<String> {
   @Override
   public String get() {
     return result;
-  }
-
-  @FXML
-  private void initialize() {
-    loginField.setText("admin");
   }
 }

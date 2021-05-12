@@ -27,7 +27,24 @@ public class Authorization extends Controller {
   private PasswordField passwordField;
 
   @FXML
-  void login() {
+  private void initialize() {
+    try {
+      if (userDaoService.isTableEmpty()) {
+        var result = windowManager.showAndGet(AdministratorRegistrationProvider.INSTANCE);
+        if (result.isPresent()) {
+          loginField.setText(result.get());
+        } else {
+          windowManager.shutdown();
+        }
+      }
+    } catch (NullPointerException exception) {
+      windowManager.showDialog(exception);
+      windowManager.shutdown();
+    }
+  }
+
+  @FXML
+  private void login() {
     var colorEffect = new ColorAdjust(0, 0.1, 0, 0);
     var login = loginField.getText();
     try {
@@ -45,23 +62,6 @@ public class Authorization extends Controller {
     } catch (NullPointerException exception) {
       loginField.setEffect(colorEffect);
       logger.info("Try to log in with incorrect login '{}'", login);
-    }
-  }
-
-  @FXML
-  private void initialize() {
-    try {
-      if (userDaoService.isTableEmpty()) {
-        var result = windowManager.showAndGet(AdministratorRegistrationProvider.INSTANCE);
-        if (result.isPresent()) {
-          loginField.setText(result.get());
-        } else {
-          windowManager.shutdown();
-        }
-      }
-    } catch (NullPointerException exception) {
-      windowManager.showDialog(exception);
-      windowManager.shutdown();
     }
   }
 }

@@ -1,4 +1,4 @@
-package com.github.ecstasyawesome.warehouse.module;
+package com.github.ecstasyawesome.warehouse.module.user;
 
 import com.github.ecstasyawesome.warehouse.controller.user.Authorization;
 import com.github.ecstasyawesome.warehouse.core.Access;
