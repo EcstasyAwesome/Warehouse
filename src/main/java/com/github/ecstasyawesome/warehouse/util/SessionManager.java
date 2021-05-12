@@ -15,8 +15,11 @@ public final class SessionManager {
   }
 
   public static void store(final String key, final Object obj) {
-    STORAGE.put(key, obj);
-    LOGGER.debug("Added a new value with key '{}'", key);
+    if (STORAGE.put(key, obj) == null) {
+      LOGGER.debug("Added a new value with key '{}'", key);
+    } else {
+      LOGGER.debug("Updated a value by key '{}'", key);
+    }
   }
 
   public static Optional<Object> get(final String key) {
