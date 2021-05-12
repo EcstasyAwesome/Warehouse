@@ -12,6 +12,11 @@ public class Category extends BaseRecord {
     return new Builder();
   }
 
+  @Override
+  public String toString() {
+    return name;
+  }
+
   public static class Builder {
 
     private long id = -1L;
