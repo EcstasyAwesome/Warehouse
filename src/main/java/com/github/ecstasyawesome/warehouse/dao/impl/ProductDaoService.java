@@ -43,6 +43,25 @@ public class ProductDaoService extends ProductDao {
   }
 
   @Override
+  public List<Product> getAll(final Category category) {
+    Objects.requireNonNull(category);
+    final var query = String.format("""
+        SELECT *
+        FROM PRODUCTS INNER JOIN CATEGORIES
+        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
+        WHERE PRODUCTS.CATEGORY_ID=%d
+        """, category.getId());
+    try {
+      var result = selectRecords(query);
+      logger.debug("Selected all products by category id={} [{} records]", category.getId(),
+          result.size());
+      return result;
+    } catch (SQLException exception) {
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
+    }
+  }
+
+  @Override
   public long create(final Product instance) {
     Objects.requireNonNull(instance);
     final var query = """
@@ -69,25 +88,6 @@ public class ProductDaoService extends ProductDao {
     try {
       var result = selectRecord(query);
       logger.debug("Selected a product with id={}", result.getId());
-      return result;
-    } catch (SQLException exception) {
-      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
-    }
-  }
-
-  @Override
-  public Product get(final Category category) {
-    Objects.requireNonNull(category);
-    final var query = String.format("""
-        SELECT *
-        FROM PRODUCTS INNER JOIN CATEGORIES
-        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
-        WHERE CATEGORY_ID=%d
-        """, category.getId());
-    try {
-      var result = selectRecord(query);
-      logger.debug("Selected a product with id={} by category id={}", result.getId(),
-          category.getId());
       return result;
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
