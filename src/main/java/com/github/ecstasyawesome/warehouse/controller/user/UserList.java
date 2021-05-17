@@ -1,7 +1,7 @@
 package com.github.ecstasyawesome.warehouse.controller.user;
 
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
-import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRING;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
 
 import com.github.ecstasyawesome.warehouse.core.Access;
 import com.github.ecstasyawesome.warehouse.core.Controller;
@@ -137,17 +137,19 @@ public class UserList extends Controller {
     var user = event.getRowValue();
     var oldValue = event.getOldValue();
     var newValue = event.getNewValue();
-    if (newValue.matches(STRING.pattern())) {
-      try {
-        user.setSurname(newValue);
-        userDaoService.update(user);
-        logChanges("surname", oldValue, newValue, user);
-      } catch (NullPointerException exception) {
-        user.setSurname(oldValue);
-        refreshAndShowError(exception);
+    if (!oldValue.equals(newValue)) {
+      if (newValue.matches(STRICT_NAME.pattern())) {
+        try {
+          user.setSurname(newValue);
+          userDaoService.update(user);
+          logChanges("surname", oldValue, newValue, user);
+        } catch (NullPointerException exception) {
+          user.setSurname(oldValue);
+          refreshAndShowError(exception);
+        }
+      } else {
+        refreshAndShowDialog("Incorrect surname"); // TODO i18n
       }
-    } else {
-      refreshAndShowDialog("Incorrect surname"); // TODO i18n
     }
   }
 
@@ -156,17 +158,19 @@ public class UserList extends Controller {
     var user = event.getRowValue();
     var oldValue = event.getOldValue();
     var newValue = event.getNewValue();
-    if (newValue.matches(STRING.pattern())) {
-      try {
-        user.setName(newValue);
-        userDaoService.update(user);
-        logChanges("name", oldValue, newValue, user);
-      } catch (NullPointerException exception) {
-        user.setName(oldValue);
-        refreshAndShowError(exception);
+    if (!oldValue.equals(newValue)) {
+      if (newValue.matches(STRICT_NAME.pattern())) {
+        try {
+          user.setName(newValue);
+          userDaoService.update(user);
+          logChanges("name", oldValue, newValue, user);
+        } catch (NullPointerException exception) {
+          user.setName(oldValue);
+          refreshAndShowError(exception);
+        }
+      } else {
+        refreshAndShowDialog("Incorrect name"); // TODO i18n
       }
-    } else {
-      refreshAndShowDialog("Incorrect name"); // TODO i18n
     }
   }
 
@@ -175,17 +179,19 @@ public class UserList extends Controller {
     var user = event.getRowValue();
     var oldValue = event.getOldValue();
     var newValue = event.getNewValue();
-    if (newValue.matches(STRING.pattern())) {
-      try {
-        user.setSecondName(newValue);
-        userDaoService.update(user);
-        logChanges("second name", oldValue, newValue, user);
-      } catch (NullPointerException exception) {
-        user.setSecondName(oldValue);
-        refreshAndShowError(exception);
+    if (!oldValue.equals(newValue)) {
+      if (newValue.matches(STRICT_NAME.pattern())) {
+        try {
+          user.setSecondName(newValue);
+          userDaoService.update(user);
+          logChanges("second name", oldValue, newValue, user);
+        } catch (NullPointerException exception) {
+          user.setSecondName(oldValue);
+          refreshAndShowError(exception);
+        }
+      } else {
+        refreshAndShowDialog("Incorrect second name"); // TODO i18n
       }
-    } else {
-      refreshAndShowDialog("Incorrect second name"); // TODO i18n
     }
   }
 
@@ -194,17 +200,19 @@ public class UserList extends Controller {
     var user = event.getRowValue();
     var oldValue = event.getOldValue();
     var newValue = event.getNewValue();
-    if (newValue.matches(PHONE.pattern())) {
-      try {
-        user.setPhone(newValue);
-        userDaoService.update(user);
-        logChanges("phone", oldValue, newValue, user);
-      } catch (NullPointerException exception) {
-        user.setPhone(oldValue);
-        refreshAndShowError(exception);
+    if (!oldValue.equals(newValue)) {
+      if (newValue.matches(PHONE.pattern())) {
+        try {
+          user.setPhone(newValue);
+          userDaoService.update(user);
+          logChanges("phone", oldValue, newValue, user);
+        } catch (NullPointerException exception) {
+          user.setPhone(oldValue);
+          refreshAndShowError(exception);
+        }
+      } else {
+        refreshAndShowDialog("Incorrect phone number"); // TODO i18n
       }
-    } else {
-      refreshAndShowDialog("Incorrect phone number"); // TODO i18n
     }
   }
 
@@ -213,14 +221,16 @@ public class UserList extends Controller {
     var user = event.getRowValue();
     var oldValue = event.getOldValue();
     var newValue = event.getNewValue();
-    try {
-      user.setAccess(newValue);
-      userDaoService.update(user);
-      logChanges("access", oldValue, newValue, user);
-      userTable.refresh();
-    } catch (NullPointerException exception) {
-      user.setAccess(oldValue);
-      refreshAndShowError(exception);
+    if (!oldValue.equals(newValue)) {
+      try {
+        user.setAccess(newValue);
+        userDaoService.update(user);
+        logChanges("access", oldValue, newValue, user);
+        userTable.refresh();
+      } catch (NullPointerException exception) {
+        user.setAccess(oldValue);
+        refreshAndShowError(exception);
+      }
     }
   }
 

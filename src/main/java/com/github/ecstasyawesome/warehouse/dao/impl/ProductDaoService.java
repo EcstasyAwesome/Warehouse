@@ -147,12 +147,12 @@ public class ProductDaoService extends ProductDao {
   }
 
   @Override
-  public boolean isNamePresent(final String name) {
+  public boolean isFieldUnique(final String name) {
     checkStringParameter(name);
     final var query = String.format("SELECT * FROM PRODUCTS WHERE PRODUCT_NAME='%s'", name);
     try {
-      var result = hasQueryResult(query);
-      logger.debug("Name '{}' is present [{}]", name, result);
+      var result = !hasQueryResult(query);
+      logger.debug("Name '{}' is unique [{}]", name, result);
       return result;
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));

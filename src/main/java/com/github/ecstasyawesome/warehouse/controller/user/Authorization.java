@@ -29,7 +29,7 @@ public class Authorization extends Controller {
   @FXML
   private void initialize() {
     try {
-      if (userDaoService.isTableEmpty()) {
+      if (!userDaoService.hasTableRecords()) {
         var result = windowManager.showAndGet(AdministratorRegistrationProvider.INSTANCE);
         if (result.isPresent()) {
           loginField.setText(result.get());

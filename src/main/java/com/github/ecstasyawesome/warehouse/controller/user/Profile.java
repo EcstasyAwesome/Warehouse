@@ -2,7 +2,7 @@ package com.github.ecstasyawesome.warehouse.controller.user;
 
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PASSWORD;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
-import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRING;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.arePasswordsEqual;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
@@ -49,8 +49,8 @@ public class Profile extends ConfiguredFeedbackController<User> {
 
   @FXML
   private void save(ActionEvent event) {
-    if (isFieldValid(surnameField, STRING) & isFieldValid(nameField, STRING)
-        & isFieldValid(secondNameField, STRING) & isFieldValid(phoneField, PHONE)
+    if (isFieldValid(surnameField, STRICT_NAME) & isFieldValid(nameField, STRICT_NAME)
+        & isFieldValid(secondNameField, STRICT_NAME) & isFieldValid(phoneField, PHONE)
         & isFieldValid(passwordField, PASSWORD)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
       currentUser.setSurname(surnameField.getText());

@@ -25,12 +25,12 @@ public class UserDaoService extends UserDao {
   }
 
   @Override
-  public boolean isLoginPresent(final String login) {
+  public boolean isFieldUnique(final String login) {
     checkStringParameter(login);
     final var query = String.format("SELECT * FROM USERS WHERE USER_LOGIN='%s'", login);
     try {
-      var result = hasQueryResult(query);
-      logger.debug("Login '{}' is present [{}]", login, result);
+      var result = !hasQueryResult(query);
+      logger.debug("Login '{}' is unique [{}]", login, result);
       return result;
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
@@ -38,10 +38,10 @@ public class UserDaoService extends UserDao {
   }
 
   @Override
-  public boolean isTableEmpty() {
+  public boolean hasTableRecords() {
     try {
-      var result = !hasQueryResult("SELECT * FROM USERS");
-      logger.debug("Table is empty [{}]", result);
+      var result = hasQueryResult("SELECT * FROM USERS");
+      logger.debug("Table has records [{}]", result);
       return result;
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));

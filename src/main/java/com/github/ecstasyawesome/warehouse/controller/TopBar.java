@@ -4,6 +4,7 @@ import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.module.HomeProvider;
+import com.github.ecstasyawesome.warehouse.module.product.ProductListProvider;
 import com.github.ecstasyawesome.warehouse.module.user.ProfileProvider;
 import com.github.ecstasyawesome.warehouse.module.user.UserListProvider;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
@@ -26,9 +27,13 @@ public class TopBar {
   private MenuItem userListItem;
 
   @FXML
+  private MenuItem productListItem;
+
+  @FXML
   private void initialize() {
     checkModule(HomeProvider.INSTANCE, homeItem);
     checkModule(UserListProvider.INSTANCE, userListItem);
+    checkModule(ProductListProvider.INSTANCE, productListItem);
   }
 
   @FXML
@@ -76,6 +81,12 @@ public class TopBar {
   @FXML
   private void showUserList() {
     windowManager.show(UserListProvider.INSTANCE);
+  }
+
+
+  @FXML
+  private void showProductList() {
+    windowManager.show(ProductListProvider.INSTANCE);
   }
 
   private void checkModule(ModuleProvider<?> expected, MenuItem menuItem) {
