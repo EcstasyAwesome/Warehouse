@@ -83,11 +83,13 @@ public class UserList extends Controller {
     userTable.getSelectionModel()
         .selectedItemProperty()
         .addListener((observable, prevUser, currentUser) -> {
-          var access = currentUser.getAccess();
-          if (rootAccess) {
-            userTable.setEditable(access != Access.ROOT);
-          } else {
-            userTable.setEditable(access.level > Access.ADMIN.level);
+          if (currentUser != null) {
+            var access = currentUser.getAccess();
+            if (rootAccess) {
+              userTable.setEditable(access != Access.ROOT);
+            } else {
+              userTable.setEditable(access.level > Access.ADMIN.level);
+            }
           }
         });
 
