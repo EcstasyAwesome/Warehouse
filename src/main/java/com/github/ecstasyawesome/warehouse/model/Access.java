@@ -1,4 +1,4 @@
-package com.github.ecstasyawesome.warehouse.core;
+package com.github.ecstasyawesome.warehouse.model;
 
 import java.util.stream.Stream;
 

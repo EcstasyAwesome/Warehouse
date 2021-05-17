@@ -63,5 +63,4 @@
          </GridPane>
       </content>
    </ScrollPane>
-  <fx:include source="../BottomBar.fxml" GridPane.rowIndex="2" />
 </GridPane>

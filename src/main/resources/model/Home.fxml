@@ -21,5 +21,4 @@
          <Font size="70.0" />
       </font>
    </Text>
-  <fx:include source="BottomBar.fxml" GridPane.rowIndex="2" />
 </GridPane>

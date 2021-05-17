@@ -3,7 +3,7 @@ package com.github.ecstasyawesome.warehouse.controller.user;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
 
-import com.github.ecstasyawesome.warehouse.core.Access;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;

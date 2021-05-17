@@ -7,7 +7,7 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAM
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.arePasswordsEqual;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
-import com.github.ecstasyawesome.warehouse.core.Access;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.core.FeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;

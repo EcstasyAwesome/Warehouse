@@ -1,6 +1,5 @@
 package com.github.ecstasyawesome.warehouse.model;
 
-import com.github.ecstasyawesome.warehouse.core.Access;
 import java.util.Objects;
 
 public class User extends BaseRecord {
