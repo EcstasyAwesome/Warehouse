@@ -26,7 +26,7 @@ public class CategoryDaoService extends CategoryDao {
   @Override
   public boolean isFieldUnique(final String name) {
     checkStringParameter(name);
-    final var query = String.format("SELECT * FROM CATEGORIES WHERE CATEGORY_NAME='%s'", name);
+    final var query = String.format("SELECT 1 FROM CATEGORIES WHERE CATEGORY_NAME='%s'", name);
     try {
       var result = !hasQueryResult(query);
       logger.debug("Name '{}' is unique [{}]", name, result);
@@ -93,7 +93,7 @@ public class CategoryDaoService extends CategoryDao {
 
   @Override
   public void delete(final long id) {
-    final var query = String.format("DELETE * FROM CATEGORIES WHERE CATEGORY_ID=%d", id);
+    final var query = String.format("DELETE FROM CATEGORIES WHERE CATEGORY_ID=%d", id);
     try {
       processRecord(query);
       logger.debug("Deleted a category with id={}", id);

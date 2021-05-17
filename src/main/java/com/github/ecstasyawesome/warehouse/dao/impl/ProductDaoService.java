@@ -149,7 +149,7 @@ public class ProductDaoService extends ProductDao {
   @Override
   public boolean isFieldUnique(final String name) {
     checkStringParameter(name);
-    final var query = String.format("SELECT * FROM PRODUCTS WHERE PRODUCT_NAME='%s'", name);
+    final var query = String.format("SELECT 1 FROM PRODUCTS WHERE PRODUCT_NAME='%s'", name);
     try {
       var result = !hasQueryResult(query);
       logger.debug("Name '{}' is unique [{}]", name, result);
