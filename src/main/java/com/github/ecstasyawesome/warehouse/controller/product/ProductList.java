@@ -7,6 +7,7 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
+import com.github.ecstasyawesome.warehouse.dao.GenericDao;
 import com.github.ecstasyawesome.warehouse.dao.ProductDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.CategoryDaoService;
 import com.github.ecstasyawesome.warehouse.dao.impl.ProductDaoService;
@@ -14,10 +15,13 @@ import com.github.ecstasyawesome.warehouse.model.BaseRecord;
 import com.github.ecstasyawesome.warehouse.model.Category;
 import com.github.ecstasyawesome.warehouse.model.Product;
 import com.github.ecstasyawesome.warehouse.model.Unit;
+import com.github.ecstasyawesome.warehouse.module.product.NewCategoryProvider;
+import com.github.ecstasyawesome.warehouse.module.product.NewProductProvider;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
@@ -91,21 +95,51 @@ public class ProductList extends Controller {
 
   @FXML
   private void addCategory() {
-
+    var result = windowManager.showAndGet(NewCategoryProvider.INSTANCE);
+    result.ifPresent(categoryList::add);
   }
 
   @FXML
   private void addProduct() {
-
+    var result = windowManager.showAndGet(NewProductProvider.INSTANCE);
+    result.ifPresent(product -> {
+      var selectionModel = categoryTable.getSelectionModel();
+      var productCategory = product.getCategory();
+      if (selectionModel.isEmpty() || productCategory.equals(selectionModel.getSelectedItem())) {
+        productList.add(product);
+      }
+    });
   }
 
   @FXML
   private void deleteCategory() {
-
+    deleteRecord("category", categoryTable, categoryDao);
   }
 
   @FXML
   private void deleteProduct() {
+    deleteRecord("product", productTable, productDao);
+  }
+
+  private <T extends BaseRecord> void deleteRecord(String name, TableView<T> table,
+      GenericDao<T> dao) {
+    var selectionModel = table.getSelectionModel();
+    if (!selectionModel.isEmpty()) {
+      var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
+          "All related data will be removed too, are you sure?"); // TODO i18n
+      if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
+        try {
+          var record = selectionModel.getSelectedItem();
+          dao.delete(record.getId());
+          table.getItems().remove(record);
+          logger.info("Deleted a {} with id={}", name, record.getId());
+        } catch (NullPointerException exception) {
+          windowManager.showDialog(exception);
+        }
+      }
+    } else {
+      windowManager.showDialog(AlertType.INFORMATION, "First choose some item"); // TODO i18n
+    }
 
   }
 

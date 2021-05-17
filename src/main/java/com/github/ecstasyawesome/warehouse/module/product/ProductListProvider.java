@@ -27,6 +27,6 @@ public class ProductListProvider extends ModuleProvider<ProductList> {
 
   @Override
   public String getTitle() {
-    return "Product list"; // TODO i18n;
+    return "Product list"; // TODO i18n
   }
 }

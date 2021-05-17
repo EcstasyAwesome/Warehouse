@@ -3,11 +3,11 @@ package com.github.ecstasyawesome.warehouse.controller.user;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
 
-import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.module.user.NewUserProvider;
 import javafx.beans.value.ObservableValue;
@@ -113,7 +113,7 @@ public class UserList extends Controller {
           try {
             userDaoService.delete(user.getId());
             users.remove(user);
-            logger.info("Deleted user with id={}", user.getId());
+            logger.info("Deleted a user with id={}", user.getId());
           } catch (NullPointerException exception) {
             windowManager.showDialog(exception);
           }
