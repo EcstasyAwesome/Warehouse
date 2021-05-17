@@ -111,17 +111,23 @@ public class ProductList extends Controller {
 
   @FXML
   private void refresh() {
-    resetCategoryAndSearch();
+    if (searchField.getLength() > 0) {
+      search();
+    } else if (categoryTable.getSelectionModel().isEmpty()) {
+      getProductsFromDatabase(null);
+    }
     getCategoriesFromDatabase();
-    getProductsFromDatabase(null);
   }
 
   @FXML
   private void clear() {
-    if (searchField.getLength() > 0 || !categoryTable.getSelectionModel().isEmpty()) {
-      resetCategoryAndSearch();
-      getProductsFromDatabase(null);
+    if (searchField.getLength() > 0) {
+      searchField.deleteText(0, searchField.getLength());
+    } else if (!categoryTable.getSelectionModel().isEmpty()) {
+      categoryTable.getSelectionModel().clearSelection();
     }
+    getProductsFromDatabase(null);
+
   }
 
   @FXML
@@ -202,9 +208,17 @@ public class ProductList extends Controller {
   }
 
   private void getCategoriesFromDatabase() {
+    var selectionModel = categoryTable.getSelectionModel();
+    var selectedCategory = (Category) null;
+    if (!selectionModel.isEmpty()) {
+      selectedCategory = selectionModel.getSelectedItem();
+    }
     categoryList.clear();
     try {
       categoryList.addAll(categoryDao.getAll());
+      if (selectedCategory != null) {
+        selectionModel.select(selectedCategory);
+      }
     } catch (NullPointerException exception) {
       windowManager.showDialog(exception);
     }
@@ -217,11 +231,6 @@ public class ProductList extends Controller {
     } catch (NullPointerException exception) {
       windowManager.showDialog(exception);
     }
-  }
-
-  private void resetCategoryAndSearch() {
-    searchField.deleteText(0, searchField.getLength());
-    categoryTable.getSelectionModel().clearSelection();
   }
 
   private void refreshAndShowError(TableView<?> tableView, Exception exception) {
