@@ -1,16 +1,18 @@
 package com.github.ecstasyawesome.warehouse.model;
 
 import java.util.Objects;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 public class Product extends BaseRecord {
 
-  private Category category;
-  private Unit unit;
+  private final ObjectProperty<Category> category;
+  private final ObjectProperty<Unit> unit;
 
   private Product(long id, String name, Category category, Unit unit) {
     super(id, name);
-    this.category = category;
-    this.unit = unit;
+    this.category = new SimpleObjectProperty<>(category);
+    this.unit = new SimpleObjectProperty<>(unit);
   }
 
   public static Builder builder() {
@@ -18,19 +20,24 @@ public class Product extends BaseRecord {
   }
 
   public Category getCategory() {
-    return category;
+    return category.get();
   }
 
   public void setCategory(Category category) {
-    this.category = category;
+    this.category.set(category);
   }
 
   public Unit getUnit() {
-    return unit;
+    return unit.get();
   }
 
   public void setUnit(Unit unit) {
-    this.unit = unit;
+    this.unit.set(unit);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), category.get(), unit.get());
   }
 
   @Override
@@ -46,12 +53,7 @@ public class Product extends BaseRecord {
     }
 
     var that = (Product) obj;
-    return this.category.equals(that.category) && this.unit == that.unit;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), category, unit);
+    return this.category.get().equals(that.category.get()) && this.unit.get() == that.unit.get();
   }
 
   public static class Builder {

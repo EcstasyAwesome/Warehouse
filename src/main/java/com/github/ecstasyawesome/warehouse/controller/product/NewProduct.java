@@ -41,7 +41,7 @@ public class NewProduct extends FeedbackController<Product> {
   private void initialize() {
     unitChoiceBox.setItems(FXCollections.observableArrayList(Unit.values()));
     try {
-      categoryChoiceBox.setItems(FXCollections.observableArrayList(categoryDao.getAll()));
+      categoryChoiceBox.setItems(categoryDao.getAll());
     } catch (NullPointerException exception) {
       windowManager.showDialog(exception);
     }

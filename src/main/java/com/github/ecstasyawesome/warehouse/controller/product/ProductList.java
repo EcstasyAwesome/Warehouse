@@ -17,8 +17,6 @@ import com.github.ecstasyawesome.warehouse.model.Product;
 import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.module.product.NewCategoryProvider;
 import com.github.ecstasyawesome.warehouse.module.product.NewProductProvider;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -38,8 +36,6 @@ public class ProductList extends Controller {
   private final CategoryDao categoryDao = CategoryDaoService.getInstance();
   private final ProductDao productDao = ProductDaoService.getInstance();
   private final Logger logger = LogManager.getLogger(ProductList.class);
-  private final ObservableList<Category> categoryList = FXCollections.observableArrayList();
-  private final ObservableList<Product> productList = FXCollections.observableArrayList();
 
   @FXML
   private TableView<Category> categoryTable;
@@ -67,9 +63,6 @@ public class ProductList extends Controller {
 
   @FXML
   private void initialize() {
-    categoryTable.setItems(categoryList);
-    productTable.setItems(productList);
-
     categoryNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
     categoryNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
@@ -77,7 +70,8 @@ public class ProductList extends Controller {
     productNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
     productNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     productUnitColumn.setCellValueFactory(new PropertyValueFactory<>("unit"));
-    productCategoryColumn.setCellFactory(ChoiceBoxTableCell.forTableColumn(categoryList));
+    productCategoryColumn.setCellFactory(
+        ChoiceBoxTableCell.forTableColumn(categoryTable.getItems()));
     productCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
 
     categoryTable.getSelectionModel()
@@ -96,7 +90,7 @@ public class ProductList extends Controller {
   @FXML
   private void addCategory() {
     var result = windowManager.showAndGet(NewCategoryProvider.INSTANCE);
-    result.ifPresent(categoryList::add);
+    result.ifPresent(categoryTable.getItems()::add);
   }
 
   @FXML
@@ -106,7 +100,7 @@ public class ProductList extends Controller {
       var selectionModel = categoryTable.getSelectionModel();
       var productCategory = product.getCategory();
       if (selectionModel.isEmpty() || productCategory.equals(selectionModel.getSelectedItem())) {
-        productList.add(product);
+        productTable.getItems().add(product);
       }
     });
   }
@@ -161,15 +155,13 @@ public class ProductList extends Controller {
       categoryTable.getSelectionModel().clearSelection();
     }
     getProductsFromDatabase(null);
-
   }
 
   @FXML
   private void search() {
     categoryTable.getSelectionModel().clearSelection();
-    productList.clear();
     try {
-      productList.addAll(productDao.search(searchField.getText()));
+      productTable.setItems(productDao.search(searchField.getText()));
     } catch (NullPointerException exception) {
       windowManager.showDialog(exception);
     }
@@ -185,7 +177,8 @@ public class ProductList extends Controller {
         try {
           category.setName(newValue);
           categoryDao.update(category);
-          productList.stream()
+          productTable.getItems()
+              .stream()
               .filter(product -> product.getCategory().getId() == category.getId())
               .forEach(product -> product.setCategory(category));
           productTable.refresh();
@@ -195,7 +188,7 @@ public class ProductList extends Controller {
           refreshAndShowError(categoryTable, exception);
         }
       } else {
-        refreshAndShowDialog(categoryTable, "Incorrect name"); // TODO i18n
+        refreshAndShowDialog(categoryTable, "Incorrect category name"); // TODO i18n
       }
     }
   }
@@ -210,7 +203,7 @@ public class ProductList extends Controller {
         product.setCategory(newValue);
         productDao.update(product);
         if (!categoryTable.getSelectionModel().isEmpty()) {
-          productList.remove(product);
+          productTable.getItems().remove(product);
         }
         logChanges("product", "category", oldValue, newValue, product);
       } catch (NullPointerException exception) {
@@ -236,7 +229,7 @@ public class ProductList extends Controller {
           refreshAndShowError(productTable, exception);
         }
       } else {
-        refreshAndShowDialog(productTable, "Incorrect name"); // TODO i18n
+        refreshAndShowDialog(productTable, "Incorrect product name"); // TODO i18n
       }
     }
   }
@@ -247,9 +240,8 @@ public class ProductList extends Controller {
     if (!selectionModel.isEmpty()) {
       selectedCategory = selectionModel.getSelectedItem();
     }
-    categoryList.clear();
     try {
-      categoryList.addAll(categoryDao.getAll());
+      categoryTable.setItems(categoryDao.getAll());
       if (selectedCategory != null) {
         selectionModel.select(selectedCategory);
       }
@@ -259,9 +251,8 @@ public class ProductList extends Controller {
   }
 
   private void getProductsFromDatabase(Category category) {
-    productList.clear();
     try {
-      productList.addAll(category == null ? productDao.getAll() : productDao.getAll(category));
+      productTable.setItems(category == null ? productDao.getAll() : productDao.getAll(category));
     } catch (NullPointerException exception) {
       windowManager.showDialog(exception);
     }

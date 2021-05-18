@@ -5,13 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public abstract class GenericDao<T> {
 
-  public abstract List<T> getAll();
+  public abstract ObservableList<T> getAll();
 
   public abstract long create(T instance);
 
@@ -71,8 +72,8 @@ public abstract class GenericDao<T> {
     }
   }
 
-  protected final List<T> selectRecords(final String query) throws SQLException {
-    final var result = new ArrayList<T>();
+  protected final ObservableList<T> selectRecords(final String query) throws SQLException {
+    final var result = FXCollections.<T>observableArrayList();
     try (var connection = ConnectionPool.getConnection();
         var statement = connection.prepareStatement(query);
         var resultSet = statement.executeQuery()) {

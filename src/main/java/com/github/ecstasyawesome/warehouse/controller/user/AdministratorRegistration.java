@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class AdministratorRegistration extends FeedbackController<String> {
 
   private final WindowManager windowManager = WindowManager.getInstance();
-  private final UserDao userDaoService = UserDaoService.getInstance();
+  private final UserDao userDao = UserDaoService.getInstance();
   private final Logger logger = LogManager.getLogger(AdministratorRegistration.class);
   private String result;
 
@@ -68,7 +68,7 @@ public class AdministratorRegistration extends FeedbackController<String> {
           .access(Access.ROOT)
           .build();
       try {
-        userDaoService.create(user);
+        userDao.create(user);
         logger.info("Root user registered");
         result = user.getLogin();
         closeCurrentStage(event);

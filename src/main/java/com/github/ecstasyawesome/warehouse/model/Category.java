@@ -14,7 +14,7 @@ public class Category extends BaseRecord {
 
   @Override
   public String toString() {
-    return name;
+    return name.get();
   }
 
   public static class Builder {

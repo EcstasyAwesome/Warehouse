@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import javafx.collections.ObservableList;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,7 +50,7 @@ public class UserDaoService extends UserDao {
   }
 
   @Override
-  public List<User> getAll() {
+  public ObservableList<User> getAll() {
     try {
       var result = selectRecords("SELECT * FROM USERS");
       logger.debug("Selected all users [{} records]", result.size());

@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import javafx.collections.ObservableList;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +38,7 @@ public class CategoryDaoService extends CategoryDao {
   }
 
   @Override
-  public List<Category> getAll() {
+  public ObservableList<Category> getAll() {
     try {
       var result = selectRecords("SELECT * FROM CATEGORIES");
       logger.debug("Selected all categories [{} records]", result.size());

@@ -1,25 +1,29 @@
 package com.github.ecstasyawesome.warehouse.model;
 
 import java.util.Objects;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class User extends BaseRecord {
 
-  private String surname;
-  private String secondName;
-  private String phone;
-  private String login;
-  private String password;
-  private Access access;
+  private final StringProperty surname;
+  private final StringProperty secondName;
+  private final StringProperty phone;
+  private final StringProperty login;
+  private final StringProperty password;
+  private final ObjectProperty<Access> access;
 
   private User(long id, String surname, String name, String secondName, String phone, String login,
       String password, Access access) {
     super(id, name);
-    this.surname = surname;
-    this.secondName = secondName;
-    this.phone = phone;
-    this.login = login;
-    this.password = password;
-    this.access = access;
+    this.surname = new SimpleStringProperty(surname);
+    this.secondName = new SimpleStringProperty(secondName);
+    this.phone = new SimpleStringProperty(phone);
+    this.login = new SimpleStringProperty(login);
+    this.password = new SimpleStringProperty(password);
+    this.access = new SimpleObjectProperty<>(access);
   }
 
   public static Builder builder() {
@@ -27,56 +31,57 @@ public class User extends BaseRecord {
   }
 
   public String getSurname() {
-    return surname;
+    return surname.get();
   }
 
   public void setSurname(String surname) {
-    this.surname = surname;
+    this.surname.set(surname);
   }
 
   public String getSecondName() {
-    return secondName;
+    return secondName.get();
   }
 
   public void setSecondName(String secondName) {
-    this.secondName = secondName;
+    this.secondName.set(secondName);
   }
 
   public String getPhone() {
-    return phone;
+    return phone.get();
   }
 
   public void setPhone(String phone) {
-    this.phone = phone;
+    this.phone.set(phone);
   }
 
   public String getLogin() {
-    return login;
+    return login.get();
   }
 
   public void setLogin(String login) {
-    this.login = login;
+    this.login.set(login);
   }
 
   public String getPassword() {
-    return password;
+    return password.get();
   }
 
   public void setPassword(String password) {
-    this.password = password;
+    this.password.set(password);
   }
 
   public Access getAccess() {
-    return access;
+    return access.get();
   }
 
   public void setAccess(Access access) {
-    this.access = access;
+    this.access.set(access);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), surname, secondName, phone, login, password, access);
+    return Objects.hash(super.hashCode(), surname.get(), secondName.get(), phone.get(), login.get(),
+        password.get(), access.get());
   }
 
   @Override
@@ -91,12 +96,12 @@ public class User extends BaseRecord {
       return false;
     }
     var that = (User) obj;
-    return this.surname.equals(that.surname)
-           && this.secondName.equals(that.secondName)
-           && this.phone.equals(that.phone)
-           && this.login.equals(that.login)
-           && this.password.equals(that.password)
-           && this.access.equals(that.access);
+    return this.surname.get().equals(that.surname.get())
+           && this.secondName.get().equals(that.secondName.get())
+           && this.phone.get().equals(that.phone.get())
+           && this.login.get().equals(that.login.get())
+           && this.password.get().equals(that.password.get())
+           && this.access.get().equals(that.access.get());
   }
 
   public static class Builder {

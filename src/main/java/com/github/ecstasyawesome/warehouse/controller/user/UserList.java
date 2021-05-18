@@ -12,8 +12,6 @@ import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.module.user.NewUserProvider;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -29,8 +27,7 @@ import org.apache.logging.log4j.Logger;
 
 public class UserList extends Controller {
 
-  private final ObservableList<User> users = FXCollections.observableArrayList();
-  private final UserDao userDaoService = UserDaoService.getInstance();
+  private final UserDao userDao = UserDaoService.getInstance();
   private final WindowManager windowManager = WindowManager.getInstance();
   private final Logger logger = LogManager.getLogger(UserList.class);
   private final boolean rootAccess = windowManager.isAccessGranted(Access.ROOT);
@@ -64,8 +61,6 @@ public class UserList extends Controller {
 
   @FXML
   private void initialize() {
-    userTable.setItems(users);
-
     idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
     surnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
     surnameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -99,7 +94,7 @@ public class UserList extends Controller {
   @FXML
   private void add() {
     var result = windowManager.showAndGet(NewUserProvider.INSTANCE);
-    result.ifPresent(users::add);
+    result.ifPresent(userTable.getItems()::add);
   }
 
   @FXML
@@ -113,8 +108,8 @@ public class UserList extends Controller {
         if ((rootAccess && user.getAccess() != Access.ROOT)
             || user.getAccess().level > Access.ADMIN.level) {
           try {
-            userDaoService.delete(user.getId());
-            users.remove(user);
+            userDao.delete(user.getId());
+            userTable.getItems().remove(user);
             logger.info("Deleted a user with id={}", user.getId());
           } catch (NullPointerException exception) {
             windowManager.showDialog(exception);
@@ -130,7 +125,6 @@ public class UserList extends Controller {
 
   @FXML
   private void refresh() {
-    users.clear();
     getUsersFromDatabase();
   }
 
@@ -143,7 +137,7 @@ public class UserList extends Controller {
       if (newValue.matches(STRICT_NAME.pattern())) {
         try {
           user.setSurname(newValue);
-          userDaoService.update(user);
+          userDao.update(user);
           logChanges("surname", oldValue, newValue, user);
         } catch (NullPointerException exception) {
           user.setSurname(oldValue);
@@ -164,7 +158,7 @@ public class UserList extends Controller {
       if (newValue.matches(STRICT_NAME.pattern())) {
         try {
           user.setName(newValue);
-          userDaoService.update(user);
+          userDao.update(user);
           logChanges("name", oldValue, newValue, user);
         } catch (NullPointerException exception) {
           user.setName(oldValue);
@@ -185,7 +179,7 @@ public class UserList extends Controller {
       if (newValue.matches(STRICT_NAME.pattern())) {
         try {
           user.setSecondName(newValue);
-          userDaoService.update(user);
+          userDao.update(user);
           logChanges("second name", oldValue, newValue, user);
         } catch (NullPointerException exception) {
           user.setSecondName(oldValue);
@@ -206,7 +200,7 @@ public class UserList extends Controller {
       if (newValue.matches(PHONE.pattern())) {
         try {
           user.setPhone(newValue);
-          userDaoService.update(user);
+          userDao.update(user);
           logChanges("phone", oldValue, newValue, user);
         } catch (NullPointerException exception) {
           user.setPhone(oldValue);
@@ -226,7 +220,7 @@ public class UserList extends Controller {
     if (!oldValue.equals(newValue)) {
       try {
         user.setAccess(newValue);
-        userDaoService.update(user);
+        userDao.update(user);
         logChanges("access", oldValue, newValue, user);
         userTable.refresh();
       } catch (NullPointerException exception) {
@@ -238,7 +232,7 @@ public class UserList extends Controller {
 
   private void getUsersFromDatabase() {
     try {
-      users.addAll(userDaoService.getAll());
+      userTable.setItems(userDao.getAll());
     } catch (NullPointerException exception) {
       windowManager.showDialog(exception);
     }

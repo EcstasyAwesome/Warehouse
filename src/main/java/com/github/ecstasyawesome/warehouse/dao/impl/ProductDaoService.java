@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import javafx.collections.ObservableList;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +28,7 @@ public class ProductDaoService extends ProductDao {
   }
 
   @Override
-  public List<Product> getAll() {
+  public ObservableList<Product> getAll() {
     final var query = """
         SELECT *
         FROM PRODUCTS
@@ -44,7 +45,7 @@ public class ProductDaoService extends ProductDao {
   }
 
   @Override
-  public List<Product> getAll(final Category category) {
+  public ObservableList<Product> getAll(final Category category) {
     Objects.requireNonNull(category);
     final var query = String.format("""
         SELECT *
@@ -64,7 +65,7 @@ public class ProductDaoService extends ProductDao {
   }
 
   @Override
-  public List<Product> search(String name) {
+  public ObservableList<Product> search(String name) {
     Objects.requireNonNull(name);
     final var query = String.format("""
         SELECT *

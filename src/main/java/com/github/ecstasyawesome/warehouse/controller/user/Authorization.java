@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 public class Authorization extends Controller {
 
   private final WindowManager windowManager = WindowManager.getInstance();
-  private final UserDao userDaoService = UserDaoService.getInstance();
+  private final UserDao userDao = UserDaoService.getInstance();
   private final Logger logger = LogManager.getLogger(Authorization.class);
 
   @FXML
@@ -29,7 +29,7 @@ public class Authorization extends Controller {
   @FXML
   private void initialize() {
     try {
-      if (!userDaoService.hasTableRecords()) {
+      if (!userDao.hasTableRecords()) {
         var result = windowManager.showAndGet(AdministratorRegistrationProvider.INSTANCE);
         if (result.isPresent()) {
           loginField.setText(result.get());
@@ -48,7 +48,7 @@ public class Authorization extends Controller {
     var colorEffect = new ColorAdjust(0, 0.1, 0, 0);
     var login = loginField.getText();
     try {
-      var user = userDaoService.get(login);
+      var user = userDao.get(login);
       loginField.setEffect(null);
       if (passwordField.getText().equals(user.getPassword())) {
         passwordField.setEffect(null);

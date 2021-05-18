@@ -1,31 +1,35 @@
 package com.github.ecstasyawesome.warehouse.model;
 
 import java.util.Objects;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public abstract class BaseRecord {
 
-  protected long id;
-  protected String name;
+  protected final LongProperty id;
+  protected final StringProperty name;
 
   protected BaseRecord(long id, String name) {
-    this.id = id;
-    this.name = name;
+    this.id = new SimpleLongProperty(id);
+    this.name = new SimpleStringProperty(name);
   }
 
   public long getId() {
-    return id;
+    return id.get();
   }
 
   public void setId(long id) {
-    this.id = id;
+    this.id.set(id);
   }
 
   public String getName() {
-    return name;
+    return name.get();
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.name.set(name);
   }
 
   @Override
@@ -37,11 +41,11 @@ public abstract class BaseRecord {
       return false;
     }
     var that = (BaseRecord) obj;
-    return this.id == that.id && this.name.equals(that.name);
+    return this.id.get() == that.id.get() && this.name.get().equals(that.name.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name);
+    return Objects.hash(id.get(), name.get());
   }
 }

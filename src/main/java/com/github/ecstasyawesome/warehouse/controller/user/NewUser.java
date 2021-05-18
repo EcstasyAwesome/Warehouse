@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 public class NewUser extends FeedbackController<User> {
 
-  private final UserDao userDaoService = UserDaoService.getInstance();
+  private final UserDao userDao = UserDaoService.getInstance();
   private final WindowManager windowManager = WindowManager.getInstance();
   private final Logger logger = LogManager.getLogger(NewUser.class);
   private User result;
@@ -62,7 +62,7 @@ public class NewUser extends FeedbackController<User> {
   private void register(ActionEvent event) {
     if (isFieldValid(surnameField, STRICT_NAME) & isFieldValid(nameField, STRICT_NAME)
         & isFieldValid(secondNameField, STRICT_NAME) & isFieldValid(phoneField, PHONE)
-        & isFieldValid(loginField, LOGIN, userDaoService) & isFieldValid(passwordField, PASSWORD)
+        & isFieldValid(loginField, LOGIN, userDao) & isFieldValid(passwordField, PASSWORD)
         & isFieldValid(accessChoiceBox)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
       var user = User.builder()
@@ -75,7 +75,7 @@ public class NewUser extends FeedbackController<User> {
           .access(accessChoiceBox.getValue())
           .build();
       try {
-        var id = userDaoService.create(user);
+        var id = userDao.create(user);
         user.setId(id);
         logger.info("Added a user with id={}", id);
         result = user;
