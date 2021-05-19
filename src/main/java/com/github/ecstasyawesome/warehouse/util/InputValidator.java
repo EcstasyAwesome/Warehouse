@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class InputValidator {
 
@@ -17,6 +19,7 @@ public final class InputValidator {
   public static final ColorAdjust RED_ADJUST = new ColorAdjust(0, 0.1, 0, 0);
   public static final ColorAdjust NO_ADJUST = new ColorAdjust(0, 0, 0, 0);
   private static final WindowManager WINDOW_MANAGER = WindowManager.getInstance();
+  private static final Logger LOGGER = LogManager.getLogger(InputValidator.class);
 
   private InputValidator() {
   }
@@ -24,23 +27,17 @@ public final class InputValidator {
   public static boolean arePasswordsEqual(final TextField password1, final TextField password2) {
     var pass1 = password1.getText();
     var pass2 = password2.getText();
+    var result = false;
     if (pass1.isBlank() || pass2.isBlank() || !pass1.equals(pass2)) {
       password1.setEffect(RED_ADJUST);
       password2.setEffect(RED_ADJUST);
-      return false;
+    } else {
+      password1.setEffect(NO_ADJUST);
+      password2.setEffect(NO_ADJUST);
+      result = true;
     }
-    password1.setEffect(NO_ADJUST);
-    password2.setEffect(NO_ADJUST);
-    return true;
-  }
-
-  public static boolean isFieldValid(final TextField field, final Pattern pattern) {
-    if (field.getText().matches(pattern.pattern())) {
-      field.setEffect(NO_ADJUST);
-      return true;
-    }
-    field.setEffect(RED_ADJUST);
-    return false;
+    LOGGER.debug("Password fields are equal [{}]", result);
+    return result;
   }
 
   public static boolean isFieldValid(final ChoiceBox<?> checkBox) {
@@ -52,31 +49,47 @@ public final class InputValidator {
     return false;
   }
 
+  public static boolean isFieldValid(final TextField field, final Pattern pattern) {
+    var text = field.getText();
+    var result = false;
+    if (text.matches(pattern.pattern())) {
+      field.setEffect(NO_ADJUST);
+      result = true;
+    } else {
+      field.setEffect(RED_ADJUST);
+    }
+    LOGGER.debug("Field with text '{}' matches pattern '{}' [{}]", text, pattern, result);
+    return result;
+  }
+
   public static boolean isFieldValid(final TextField field, final Pattern pattern,
       final UniqueField daoImpl) {
+    var text = field.getText();
+    var result = false;
     if (isFieldValid(field, pattern)) {
-      var result = false;
       try {
-        result = daoImpl.isFieldUnique(field.getText());
+        result = daoImpl.isFieldUnique(text);
       } catch (NullPointerException exception) {
         WINDOW_MANAGER.showDialog(exception);
       }
       field.setEffect(result ? NO_ADJUST : RED_ADJUST);
-      return result;
     }
-    return false;
+    LOGGER.debug("Field with text '{}' validated successfully [{}]", text, result);
+    return result;
   }
 
   public static boolean isFieldValid(final String text, final Pattern pattern,
       final UniqueField daoImpl) {
+    var result = false;
     if (text.matches(pattern.pattern())) {
+      LOGGER.debug("Text '{}' matches pattern '{}' [{}]", text, pattern, true);
       try {
-        return daoImpl.isFieldUnique(text);
+        result = daoImpl.isFieldUnique(text);
       } catch (NullPointerException exception) {
         WINDOW_MANAGER.showDialog(exception);
       }
-      return false;
     }
-    return false;
+    LOGGER.debug("Text '{}' validated successfully [{}]", text, result);
+    return result;
   }
 }
