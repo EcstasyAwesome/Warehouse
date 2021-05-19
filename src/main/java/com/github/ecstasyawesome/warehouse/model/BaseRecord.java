@@ -3,17 +3,13 @@ package com.github.ecstasyawesome.warehouse.model;
 import java.util.Objects;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 public abstract class BaseRecord {
 
   protected final LongProperty id;
-  protected final StringProperty name;
 
-  protected BaseRecord(long id, String name) {
+  protected BaseRecord(long id) {
     this.id = new SimpleLongProperty(id);
-    this.name = new SimpleStringProperty(name);
   }
 
   public long getId() {
@@ -22,14 +18,6 @@ public abstract class BaseRecord {
 
   public void setId(long id) {
     this.id.set(id);
-  }
-
-  public String getName() {
-    return name.get();
-  }
-
-  public void setName(String name) {
-    this.name.set(name);
   }
 
   @Override
@@ -41,11 +29,11 @@ public abstract class BaseRecord {
       return false;
     }
     var that = (BaseRecord) obj;
-    return this.id.get() == that.id.get() && this.name.get().equals(that.name.get());
+    return this.id.get() == that.id.get();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id.get(), name.get());
+    return Objects.hash(id.get());
   }
 }

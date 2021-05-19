@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class User extends BaseRecord {
+public class User extends NamedRecord {
 
   private final StringProperty surname;
   private final StringProperty secondName;

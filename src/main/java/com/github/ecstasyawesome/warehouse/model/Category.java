@@ -2,7 +2,7 @@ package com.github.ecstasyawesome.warehouse.model;
 
 import java.util.Objects;
 
-public class Category extends BaseRecord {
+public class Category extends NamedRecord {
 
   private Category(long id, String name) {
     super(id, name);
@@ -10,11 +10,6 @@ public class Category extends BaseRecord {
 
   public static Builder builder() {
     return new Builder();
-  }
-
-  @Override
-  public String toString() {
-    return name.get();
   }
 
   public static class Builder {

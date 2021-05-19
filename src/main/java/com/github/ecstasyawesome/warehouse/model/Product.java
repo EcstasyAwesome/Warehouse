@@ -4,7 +4,7 @@ import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class Product extends BaseRecord {
+public class Product extends NamedRecord {
 
   private final ObjectProperty<Category> category;
   private final ObjectProperty<Unit> unit;
