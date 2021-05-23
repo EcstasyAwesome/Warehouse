@@ -1,20 +1,21 @@
 package com.github.ecstasyawesome.warehouse.dao;
 
+import com.github.ecstasyawesome.warehouse.model.Record;
 import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public abstract class GenericDao<T> {
+public abstract class GenericDao<T extends Record> {
 
   public abstract ObservableList<T> getAll();
 
-  public abstract long create(T instance);
+  public abstract void create(T instance);
 
   public abstract T get(long id);
 
@@ -22,16 +23,27 @@ public abstract class GenericDao<T> {
 
   public abstract void delete(long id);
 
-  protected abstract void serialize(PreparedStatement statement, T instance) throws SQLException;
+  protected abstract T transformToObj(ResultSet resultSet) throws SQLException;
 
-  protected abstract T deserialize(ResultSet resultSet) throws SQLException;
+  protected final long insertRecord(final Connection connection, final String query,
+      final Object... values) throws SQLException {
+    try (var statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+      configureStatement(statement, values);
+      statement.execute();
+      try (var resultSet = statement.getGeneratedKeys()) {
+        resultSet.first();
+        return resultSet.getLong(1);
+      }
+    }
+  }
 
-  protected final long insertRecord(final String query, final T instance) throws SQLException {
+  protected final long insertRecord(final String query, final Object... values)
+      throws SQLException {
     try (var connection = ConnectionPool.getConnection()) {
       connection.setAutoCommit(false);
       try (var statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-        serialize(statement, instance);
-        statement.executeUpdate();
+        configureStatement(statement, values);
+        statement.execute();
         try (var resultSet = statement.getGeneratedKeys()) {
           resultSet.first();
           var id = resultSet.getLong(1);
@@ -45,51 +57,42 @@ public abstract class GenericDao<T> {
     }
   }
 
-  protected final void insertRecords(final String query, final List<T> instances)
-      throws SQLException {
-    try (var connection = ConnectionPool.getConnection()) {
-      connection.setAutoCommit(false);
-      try (var statement = connection.prepareStatement(query)) {
-        for (T instance : instances) {
-          serialize(statement, instance);
-          statement.addBatch();
-        }
-        statement.executeBatch();
-        connection.commit();
-      } catch (SQLException exception) {
-        connection.rollback();
-        throw exception;
+  protected final T selectRecord(final String query, final Object... values) throws SQLException {
+    try (var connection = ConnectionPool.getConnection();
+        var statement = connection.prepareStatement(query)) {
+      configureStatement(statement, values);
+      statement.execute();
+      try (var resultSet = statement.getResultSet()) {
+        resultSet.first();
+        return transformToObj(resultSet);
       }
     }
   }
 
-  protected final T selectRecord(final String query) throws SQLException {
-    try (var connection = ConnectionPool.getConnection();
-        var statement = connection.prepareStatement(query);
-        var resultSet = statement.executeQuery()) {
-      resultSet.first();
-      return deserialize(resultSet);
-    }
-  }
-
-  protected final ObservableList<T> selectRecords(final String query) throws SQLException {
+  protected final ObservableList<T> selectRecords(final String query, final Object... values)
+      throws SQLException {
     final var result = FXCollections.<T>observableArrayList();
     try (var connection = ConnectionPool.getConnection();
-        var statement = connection.prepareStatement(query);
-        var resultSet = statement.executeQuery()) {
-      while (resultSet.next()) {
-        result.add(deserialize(resultSet));
+        var statement = connection.prepareStatement(query)) {
+      configureStatement(statement, values);
+      statement.execute();
+      try (var resultSet = statement.getResultSet()) {
+        while (resultSet.next()) {
+          result.add(transformToObj(resultSet));
+        }
       }
     }
     return result;
   }
 
-  protected final void processRecord(final String query) throws SQLException {
+  protected final int execute(final String query, final Object... values) throws SQLException {
     try (var connection = ConnectionPool.getConnection()) {
       connection.setAutoCommit(false);
       try (var statement = connection.prepareStatement(query)) {
-        statement.execute();
+        configureStatement(statement, values);
+        var result = statement.executeUpdate();
         connection.commit();
+        return result;
       } catch (SQLException exception) {
         connection.rollback();
         throw exception;
@@ -97,26 +100,14 @@ public abstract class GenericDao<T> {
     }
   }
 
-  protected final void processRecord(final String query, final T instance) throws SQLException {
-    try (var connection = ConnectionPool.getConnection()) {
-      connection.setAutoCommit(false);
-      try (var statement = connection.prepareStatement(query)) {
-        serialize(statement, instance);
-        statement.execute();
-        connection.commit();
-      } catch (SQLException exception) {
-        connection.rollback();
-        throw exception;
-      }
-    }
-  }
-
-  protected final boolean hasQueryResult(final String query) throws SQLException {
-    final var request = String.format("SELECT EXISTS (%s)", query);
+  protected final boolean check(final String query, final Object... values) throws SQLException {
     try (var connection = ConnectionPool.getConnection();
-        var statement = connection.prepareStatement(request);
-        var resultSet = statement.executeQuery()) {
-      return resultSet.first() && resultSet.getBoolean(1);
+        var statement = connection.prepareStatement(query)) {
+      configureStatement(statement, values);
+      statement.execute();
+      try (var resultSet = statement.getResultSet()) {
+        return resultSet.first() && resultSet.getBoolean(1);
+      }
     }
   }
 
@@ -132,5 +123,13 @@ public abstract class GenericDao<T> {
     var exception = new NullPointerException();
     exception.addSuppressed(sqlException);
     return exception;
+  }
+
+  private void configureStatement(PreparedStatement statement, Object... values)
+      throws SQLException {
+    var index = 1;
+    for (var value : values) {
+      statement.setObject(index++, value);
+    }
   }
 }

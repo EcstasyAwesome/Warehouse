@@ -10,20 +10,21 @@ public class User extends NamedRecord {
 
   private final StringProperty surname;
   private final StringProperty secondName;
-  private final StringProperty phone;
-  private final StringProperty login;
-  private final StringProperty password;
-  private final ObjectProperty<Access> access;
+  private final ObjectProperty<UserContact> userContact;
+  private final ObjectProperty<UserSecurity> userSecurity;
 
-  private User(long id, String surname, String name, String secondName, String phone, String login,
-      String password, Access access) {
+  public User(User instance) {
+    this(instance.getId(), instance.getSurname(), instance.getName(), instance.getSecondName(),
+        new UserContact(instance.getUserContact()), new UserSecurity(instance.getUserSecurity()));
+  }
+
+  private User(long id, String surname, String name, String secondName, UserContact userContact,
+      UserSecurity userSecurity) {
     super(id, name);
     this.surname = new SimpleStringProperty(surname);
     this.secondName = new SimpleStringProperty(secondName);
-    this.phone = new SimpleStringProperty(phone);
-    this.login = new SimpleStringProperty(login);
-    this.password = new SimpleStringProperty(password);
-    this.access = new SimpleObjectProperty<>(access);
+    this.userContact = new SimpleObjectProperty<>(userContact);
+    this.userSecurity = new SimpleObjectProperty<>(userSecurity);
   }
 
   public static Builder builder() {
@@ -38,6 +39,10 @@ public class User extends NamedRecord {
     this.surname.set(surname);
   }
 
+  public StringProperty surnameProperty() {
+    return surname;
+  }
+
   public String getSecondName() {
     return secondName.get();
   }
@@ -46,42 +51,32 @@ public class User extends NamedRecord {
     this.secondName.set(secondName);
   }
 
-  public String getPhone() {
-    return phone.get();
+  public StringProperty secondNameProperty() {
+    return secondName;
   }
 
-  public void setPhone(String phone) {
-    this.phone.set(phone);
+  public UserContact getUserContact() {
+    return userContact.get();
   }
 
-  public String getLogin() {
-    return login.get();
+  public void setUserContact(UserContact userContact) {
+    this.userContact.set(userContact);
   }
 
-  public void setLogin(String login) {
-    this.login.set(login);
+  public ObjectProperty<UserContact> userContactProperty() {
+    return userContact;
   }
 
-  public String getPassword() {
-    return password.get();
+  public UserSecurity getUserSecurity() {
+    return userSecurity.get();
   }
 
-  public void setPassword(String password) {
-    this.password.set(password);
+  public void setUserSecurity(UserSecurity userSecurity) {
+    this.userSecurity.set(userSecurity);
   }
 
-  public Access getAccess() {
-    return access.get();
-  }
-
-  public void setAccess(Access access) {
-    this.access.set(access);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), surname.get(), secondName.get(), phone.get(), login.get(),
-        password.get(), access.get());
+  public ObjectProperty<UserSecurity> userSecurityProperty() {
+    return userSecurity;
   }
 
   @Override
@@ -89,19 +84,24 @@ public class User extends NamedRecord {
     if (this == obj) {
       return true;
     }
-    if (obj == null || this.getClass() != obj.getClass()) {
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
     if (!super.equals(obj)) {
       return false;
     }
+
     var that = (User) obj;
-    return this.surname.get().equals(that.surname.get())
-           && this.secondName.get().equals(that.secondName.get())
-           && this.phone.get().equals(that.phone.get())
-           && this.login.get().equals(that.login.get())
-           && this.password.get().equals(that.password.get())
-           && this.access.get().equals(that.access.get());
+    return Objects.equals(surname.get(), that.surname.get())
+           && Objects.equals(secondName.get(), that.secondName.get())
+           && Objects.equals(userContact.get(), that.userContact.get())
+           && Objects.equals(userSecurity.get(), that.userSecurity.get());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), surname.get(), secondName.get(), userContact.get(),
+        userSecurity.get());
   }
 
   public static class Builder {
@@ -110,10 +110,8 @@ public class User extends NamedRecord {
     private String surname;
     private String name;
     private String secondName;
-    private String phone;
-    private String login;
-    private String password;
-    private Access access;
+    private UserContact userContact;
+    private UserSecurity userSecurity;
 
     private Builder() {
     }
@@ -138,36 +136,23 @@ public class User extends NamedRecord {
       return this;
     }
 
-    public Builder phone(String phone) {
-      this.phone = phone;
+    public Builder userContact(UserContact userContact) {
+      this.userContact = userContact;
       return this;
     }
 
-    public Builder login(String login) {
-      this.login = login;
-      return this;
-    }
-
-    public Builder password(String password) {
-      this.password = password;
-      return this;
-    }
-
-    public Builder access(Access access) {
-      this.access = access;
+    public Builder userSecurity(UserSecurity userSecurity) {
+      this.userSecurity = userSecurity;
       return this;
     }
 
     public User build() {
-      return new User(
-          id,
+      return new User(id,
           Objects.requireNonNull(surname),
           Objects.requireNonNull(name),
           Objects.requireNonNull(secondName),
-          Objects.requireNonNull(phone),
-          Objects.requireNonNull(login),
-          Objects.requireNonNull(password),
-          Objects.requireNonNull(access));
+          Objects.requireNonNull(userContact),
+          Objects.requireNonNull(userSecurity));
     }
   }
 }

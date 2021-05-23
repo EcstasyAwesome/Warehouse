@@ -2,7 +2,6 @@ package com.github.ecstasyawesome.warehouse.controller;
 
 import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.module.HomeProvider;
 import com.github.ecstasyawesome.warehouse.module.product.ProductListProvider;
 import com.github.ecstasyawesome.warehouse.module.user.ProfileProvider;
@@ -62,15 +61,7 @@ public class TopBar {
 
   @FXML
   private void showProfile() {
-    var currentUser = SessionManager.get("currentUser");
-    if (currentUser.isPresent()) {
-      windowManager.showAndGet(ProfileProvider.INSTANCE, (User) currentUser.get());
-    } else {
-      logger.fatal("Unbelievable happens. Session user is absent");
-      windowManager.showDialog(AlertType.ERROR, "Session user is absent!"); // TODO i18n
-      windowManager.shutdown();
-    }
-
+    windowManager.showAndWait(ProfileProvider.INSTANCE);
   }
 
   @FXML

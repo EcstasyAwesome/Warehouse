@@ -4,11 +4,11 @@ import java.util.Objects;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
 
-public abstract class BaseRecord {
+public abstract class Record {
 
   protected final LongProperty id;
 
-  protected BaseRecord(long id) {
+  protected Record(long id) {
     this.id = new SimpleLongProperty(id);
   }
 
@@ -20,16 +20,20 @@ public abstract class BaseRecord {
     this.id.set(id);
   }
 
+  public LongProperty idProperty() {
+    return id;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
-    if (obj == null || this.getClass() != obj.getClass()) {
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    var that = (BaseRecord) obj;
-    return this.id.get() == that.id.get();
+    var that = (Record) obj;
+    return id.get() == that.id.get();
   }
 
   @Override

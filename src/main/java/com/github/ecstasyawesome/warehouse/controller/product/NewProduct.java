@@ -57,9 +57,8 @@ public class NewProduct extends FeedbackController<Product> {
           .category(categoryChoiceBox.getValue())
           .build();
       try {
-        var id = productDao.create(product);
-        product.setId(id);
-        logger.info("Added a product with id={}", id);
+        productDao.create(product);
+        logger.info("Added a product with id={}", product.getId());
         result = product;
         closeCurrentStage(event);
       } catch (NullPointerException exception) {

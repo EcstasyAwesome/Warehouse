@@ -78,7 +78,8 @@ public final class WindowManager {
   }
 
   public <T> void show(final ModuleProvider<? super T> provider) {
-    LOGGER.debug("Request to show the module provider '{}'", provider.getClass().getName());
+    LOGGER.debug("Request to show the module provider '{}' at the main stage",
+        provider.getClass().getName());
     if (isAccessGranted(provider.getAccess())) {
       configureMainStage(provider);
       var module = provider.create();
@@ -94,7 +95,8 @@ public final class WindowManager {
   }
 
   public <T> void show(final CachedModuleProvider<? super T> provider) {
-    LOGGER.debug("Request to show the cached module provider '{}'", provider.getClass().getName());
+    LOGGER.debug("Request to show the cached module provider '{}' at the main stage",
+        provider.getClass().getName());
     if (isAccessGranted(provider.getAccess())) {
       configureMainStage(provider);
       var module = provider.create();
@@ -104,6 +106,20 @@ public final class WindowManager {
       mainStage.setScene(module.getScene());
       LOGGER.trace("Showed the stage '{}'", title);
       mainStage.show();
+    } else {
+      showAccessWarning();
+    }
+  }
+
+  public <T> void showAndWait(final ModuleProvider<? super T> provider) {
+    LOGGER.debug("Request to show the module provider '{}'",
+        provider.getClass().getName());
+    if (isAccessGranted(provider.getAccess())) {
+      var module = provider.create();
+      var stage = createNewExtraStage(provider.getTitle(), module.getScene());
+      stages.add(stage);
+      LOGGER.trace("Showed the extra stage '{}'", stage.getTitle());
+      stage.showAndWait();
     } else {
       showAccessWarning();
     }
@@ -189,7 +205,7 @@ public final class WindowManager {
     if (user.isEmpty()) {
       return false;
     }
-    return user.get().getAccess().level <= access.level;
+    return user.get().getUserSecurity().getAccess().level <= access.level;
   }
 
   private void checkAbilityToCache(CachedController controller) {
@@ -301,7 +317,7 @@ public final class WindowManager {
   }
 
   private String prepareStageName(String moduleName) {
-    return String.format("Warehouse - %s", moduleName);
+    return String.format("%s - Warehouse", moduleName);
   }
 
   private void applyFadeAnimation(Parent parent) {
@@ -322,7 +338,7 @@ public final class WindowManager {
       viewSettings.save();
       applicationSettings.save();
       getUserFromContext().ifPresent(user -> {
-        LOGGER.info("Logged out '{}'", user.getLogin());
+        LOGGER.info("Logged out '{}'", user.getUserSecurity().getLogin());
         LOGGER.trace("Application closed");
       });
     };

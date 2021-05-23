@@ -4,10 +4,8 @@ import com.github.ecstasyawesome.warehouse.dao.ProductDao;
 import com.github.ecstasyawesome.warehouse.model.Category;
 import com.github.ecstasyawesome.warehouse.model.Product;
 import com.github.ecstasyawesome.warehouse.model.Unit;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Objects;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.Level;
@@ -47,15 +45,15 @@ public class ProductDaoService extends ProductDao {
   @Override
   public ObservableList<Product> getAll(final Category category) {
     Objects.requireNonNull(category);
-    final var query = String.format("""
+    final var query = """
         SELECT *
         FROM PRODUCTS
              INNER JOIN CATEGORIES
                         ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
-        WHERE PRODUCTS.CATEGORY_ID=%d
-        """, category.getId());
+        WHERE PRODUCTS.CATEGORY_ID=?
+        """;
     try {
-      var result = selectRecords(query);
+      var result = selectRecords(query, category.getId());
       logger.debug("Selected all products by category id={} [{} records]", category.getId(),
           result.size());
       return result;
@@ -67,15 +65,15 @@ public class ProductDaoService extends ProductDao {
   @Override
   public ObservableList<Product> search(String name) {
     Objects.requireNonNull(name);
-    final var query = String.format("""
+    final var query = """
         SELECT *
         FROM PRODUCTS
              INNER JOIN CATEGORIES
                         ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
-        WHERE LOWER(PRODUCT_NAME) LIKE LOWER('%%%s%%')
-        """, name);
+        WHERE LOWER(PRODUCT_NAME) LIKE LOWER(?)
+        """;
     try {
-      var result = selectRecords(query);
+      var result = selectRecords(query, name);
       logger.debug("Selected all products where name contains '{}' [{} records]", name,
           result.size());
       return result;
@@ -85,16 +83,17 @@ public class ProductDaoService extends ProductDao {
   }
 
   @Override
-  public long create(final Product instance) {
+  public void create(final Product instance) {
     Objects.requireNonNull(instance);
     final var query = """
-        INSERT INTO PRODUCTS (PRODUCT_NAME, PRODUCT_UNIT, CATEGORY_ID)
-        VALUES (?,?,?);
+        INSERT INTO PRODUCTS (CATEGORY_ID, PRODUCT_NAME, PRODUCT_UNIT)
+        VALUES (?, ?, ?)
         """;
     try {
-      var result = insertRecord(query, instance);
+      var result = insertRecord(query, instance.getCategory().getId(), instance.getName(),
+          instance.getUnit().name());
+      instance.setId(result);
       logger.debug("Created a new product with id={}", result);
-      return result;
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
@@ -102,16 +101,16 @@ public class ProductDaoService extends ProductDao {
 
   @Override
   public Product get(final long id) {
-    final var query = String.format("""
+    final var query = """
         SELECT *
         FROM PRODUCTS
              INNER JOIN CATEGORIES
                         ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
-        WHERE PRODUCT_ID=%d
-        """, id);
+        WHERE PRODUCT_ID=?
+        """;
     try {
-      var result = selectRecord(query);
-      logger.debug("Selected a product with id={}", result.getId());
+      var result = selectRecord(query, id);
+      logger.debug("Selected a product with id={}", id);
       return result;
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
@@ -121,15 +120,16 @@ public class ProductDaoService extends ProductDao {
   @Override
   public void update(final Product instance) {
     Objects.requireNonNull(instance);
-    final var query = String.format("""
+    final var query = """
         UPDATE PRODUCTS
-        SET PRODUCT_NAME=?,
-            PRODUCT_UNIT=?,
-            CATEGORY_ID=?
-        WHERE PRODUCT_ID=%d
-        """, instance.getId());
+        SET CATEGORY_ID=?,
+            PRODUCT_NAME=?,
+            PRODUCT_UNIT=?
+        WHERE PRODUCT_ID=?
+        """;
     try {
-      processRecord(query, instance);
+      execute(query, instance.getCategory().getId(), instance.getName(), instance.getUnit().name(),
+          instance.getId());
       logger.debug("Updated a user with id={}", instance.getId());
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
@@ -138,9 +138,11 @@ public class ProductDaoService extends ProductDao {
 
   @Override
   public void delete(final long id) {
-    final var query = String.format("DELETE FROM PRODUCTS WHERE PRODUCT_ID=%d", id);
     try {
-      processRecord(query);
+      var result = execute("DELETE FROM PRODUCTS WHERE PRODUCT_ID=?", id);
+      if (result == 0) {
+        throw new SQLException("Deleted nothing");
+      }
       logger.debug("Deleted a product with id={}", id);
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
@@ -150,9 +152,8 @@ public class ProductDaoService extends ProductDao {
   @Override
   public boolean isFieldUnique(final String name) {
     checkStringParameter(name);
-    final var query = String.format("SELECT 1 FROM PRODUCTS WHERE PRODUCT_NAME='%s'", name);
     try {
-      var result = !hasQueryResult(query);
+      var result = !check("SELECT EXISTS(SELECT 1 FROM PRODUCTS WHERE PRODUCT_NAME=?)", name);
       logger.debug("Name '{}' is unique [{}]", name, result);
       return result;
     } catch (SQLException exception) {
@@ -161,19 +162,11 @@ public class ProductDaoService extends ProductDao {
   }
 
   @Override
-  protected void serialize(final PreparedStatement statement, final Product instance)
-      throws SQLException {
-    statement.setString(1, instance.getName());
-    statement.setString(2, instance.getUnit().name());
-    statement.setLong(3, instance.getCategory().getId());
-  }
-
-  @Override
-  protected Product deserialize(final ResultSet resultSet) throws SQLException {
+  protected Product transformToObj(final ResultSet resultSet) throws SQLException {
     return Product.builder()
         .id(resultSet.getLong("PRODUCT_ID"))
+        .category(categoryDaoService.transformToObj(resultSet))
         .name(resultSet.getString("PRODUCT_NAME"))
-        .category(categoryDaoService.deserialize(resultSet))
         .unit(Unit.valueOf(resultSet.getString("PRODUCT_UNIT")))
         .build();
   }

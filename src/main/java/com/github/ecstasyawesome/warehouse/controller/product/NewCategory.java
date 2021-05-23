@@ -29,9 +29,8 @@ public class NewCategory extends FeedbackController<Category> {
     if (isFieldValid(nameField, STRICT_NAME, categoryDao)) {
       var category = Category.builder().name(nameField.getText()).build();
       try {
-        var id = categoryDao.create(category);
-        category.setId(id);
-        logger.info("Added a category with id={}", id);
+        categoryDao.create(category);
+        logger.info("Added a category with id={}", category.getId());
         result = category;
         closeCurrentStage(event);
       } catch (NullPointerException exception) {

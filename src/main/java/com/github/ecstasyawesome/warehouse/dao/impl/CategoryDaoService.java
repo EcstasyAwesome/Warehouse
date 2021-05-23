@@ -2,10 +2,8 @@ package com.github.ecstasyawesome.warehouse.dao.impl;
 
 import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
 import com.github.ecstasyawesome.warehouse.model.Category;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Objects;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.Level;
@@ -27,9 +25,8 @@ public class CategoryDaoService extends CategoryDao {
   @Override
   public boolean isFieldUnique(final String name) {
     checkStringParameter(name);
-    final var query = String.format("SELECT 1 FROM CATEGORIES WHERE CATEGORY_NAME='%s'", name);
     try {
-      var result = !hasQueryResult(query);
+      var result = !check("SELECT EXISTS(SELECT 1 FROM CATEGORIES WHERE CATEGORY_NAME=?)", name);
       logger.debug("Name '{}' is unique [{}]", name, result);
       return result;
     } catch (SQLException exception) {
@@ -49,16 +46,16 @@ public class CategoryDaoService extends CategoryDao {
   }
 
   @Override
-  public long create(final Category instance) {
+  public void create(final Category instance) {
     Objects.requireNonNull(instance);
     final var query = """
-        INSERT INTO CATEGORIES (CATEGORY_NAME)
-        VALUES (?);
+        INSERT INTO CATEGORIES (CATEGORY_NAME, CATEGORY_DESCRIPTION)
+        VALUES (?, ?)
         """;
     try {
-      var result = insertRecord(query, instance);
+      var result = insertRecord(query, instance.getName(), instance.getDescription());
+      instance.setId(result);
       logger.debug("Created a new category with id={}", result);
-      return result;
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
@@ -66,10 +63,9 @@ public class CategoryDaoService extends CategoryDao {
 
   @Override
   public Category get(final long id) {
-    final var query = String.format("SELECT * FROM CATEGORIES WHERE CATEGORY_ID=%d", id);
     try {
-      var result = selectRecord(query);
-      logger.debug("Selected a category with id={}", result.getId());
+      var result = selectRecord("SELECT * FROM CATEGORIES WHERE CATEGORY_ID=?", id);
+      logger.debug("Selected a category with id={}", id);
       return result;
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
@@ -79,13 +75,14 @@ public class CategoryDaoService extends CategoryDao {
   @Override
   public void update(final Category instance) {
     Objects.requireNonNull(instance);
-    final var query = String.format("""
+    final var query = """
         UPDATE CATEGORIES
-        SET CATEGORY_NAME=?
-        WHERE CATEGORY_ID=%d
-        """, instance.getId());
+        SET CATEGORY_NAME=?,
+            CATEGORY_DESCRIPTION=?
+        WHERE CATEGORY_ID=?
+        """;
     try {
-      processRecord(query, instance);
+      execute(query, instance.getName(), instance.getDescription(), instance.getId());
       logger.debug("Updated a category with id={}", instance.getId());
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
@@ -94,9 +91,11 @@ public class CategoryDaoService extends CategoryDao {
 
   @Override
   public void delete(final long id) {
-    final var query = String.format("DELETE FROM CATEGORIES WHERE CATEGORY_ID=%d", id);
     try {
-      processRecord(query);
+      var result = execute("DELETE FROM CATEGORIES WHERE CATEGORY_ID=?", id);
+      if (result == 0) {
+        throw new SQLException("Deleted nothing");
+      }
       logger.debug("Deleted a category with id={}", id);
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
@@ -104,15 +103,11 @@ public class CategoryDaoService extends CategoryDao {
   }
 
   @Override
-  protected void serialize(final PreparedStatement statement, final Category instance)
-      throws SQLException {
-    statement.setString(1, instance.getName());
-  }
-
-  @Override
-  protected Category deserialize(final ResultSet resultSet) throws SQLException {
+  protected Category transformToObj(final ResultSet resultSet) throws SQLException {
     return Category.builder()
         .id(resultSet.getLong("CATEGORY_ID"))
-        .name(resultSet.getString("CATEGORY_NAME")).build();
+        .name(resultSet.getString("CATEGORY_NAME"))
+        .description(resultSet.getString("CATEGORY_DESCRIPTION"))
+        .build();
   }
 }

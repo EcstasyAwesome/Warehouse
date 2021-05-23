@@ -1,30 +1,34 @@
 package com.github.ecstasyawesome.warehouse.controller.user;
 
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.EMAIL;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.NO_ADJUST;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PASSWORD;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.RED_ADJUST;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.arePasswordsEqual;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
-import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackController;
+import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.model.UserSecurity;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
-import javafx.event.ActionEvent;
+import java.util.Objects;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Profile extends ConfiguredFeedbackController<User> {
+public class Profile extends Controller {
 
   private final WindowManager windowManager = WindowManager.getInstance();
   private final UserDao userDao = UserDaoService.getInstance();
   private final Logger logger = LogManager.getLogger(Profile.class);
-  private User currentUser;
+  private final User currentUser = (User) SessionManager.get("currentUser").orElseThrow();
 
   @FXML
   private TextField surnameField;
@@ -39,54 +43,77 @@ public class Profile extends ConfiguredFeedbackController<User> {
   private TextField phoneField;
 
   @FXML
-  private TextField loginField;
+  private TextField emailField;
 
   @FXML
-  private PasswordField passwordField;
+  private PasswordField newPasswordField;
 
   @FXML
-  private PasswordField repeatedPasswordField;
+  private PasswordField newRepeatedPasswordField;
 
   @FXML
-  private void save(ActionEvent event) {
-    if (isFieldValid(surnameField, STRICT_NAME) & isFieldValid(nameField, STRICT_NAME)
-        & isFieldValid(secondNameField, STRICT_NAME) & isFieldValid(phoneField, PHONE)
-        & isFieldValid(passwordField, PASSWORD)
-        && arePasswordsEqual(passwordField, repeatedPasswordField)) {
+  private PasswordField currentPasswordField;
+
+  @FXML
+  private void initialize() {
+    surnameField.setText(currentUser.getSurname());
+    nameField.setText(currentUser.getName());
+    secondNameField.setText(currentUser.getSecondName());
+    phoneField.setText(currentUser.getUserContact().getPhone());
+    emailField.setText(Objects.requireNonNullElse(currentUser.getUserContact().getEmail(), ""));
+  }
+
+  @FXML
+  private void save() {
+    if (isFieldValid(surnameField, STRICT_NAME, false) & isFieldValid(nameField, STRICT_NAME, false)
+        & isFieldValid(secondNameField, STRICT_NAME, false) & isFieldValid(phoneField, PHONE, false)
+        & isFieldValid(emailField, EMAIL, true)) {
+      var userCopy = new User(currentUser);
       currentUser.setSurname(surnameField.getText());
       currentUser.setName(nameField.getText());
       currentUser.setSecondName(secondNameField.getText());
-      currentUser.setPhone(phoneField.getText());
-      currentUser.setPassword(passwordField.getText());
-      try {
-        userDao.update(currentUser);
-        SessionManager.store("currentUser", currentUser);
-        logger.info("The user has edited his own profile");
-        closeCurrentStage(event);
-      } catch (NullPointerException exception) {
-        windowManager.showDialog(exception);
+      currentUser.getUserContact().setPhone(phoneField.getText());
+      currentUser.getUserContact()
+          .setEmail(emailField.getText().isEmpty() ? null : emailField.getText());
+      if (!currentUser.equals(userCopy)) {
+        try {
+          userDao.update(currentUser);
+          logger.info("The user has edited his own profile");
+        } catch (NullPointerException exception) {
+          currentUser.setSurname(userCopy.getSurname());
+          currentUser.setName(userCopy.getName());
+          currentUser.setSecondName(userCopy.getSecondName());
+          currentUser.setUserContact(userCopy.getUserContact());
+          windowManager.showDialog(exception);
+        }
       }
     }
   }
 
-  @Override
-  public void accept(final User user) {
-    try {
-      currentUser = userDao.get(user.getId());
-    } catch (NullPointerException exception) {
-      logger.fatal("Cannot get session user from database");
-      windowManager.showDialog(exception);
-      windowManager.shutdown();
+  @FXML
+  private void changePassword() {
+    var userSecurity = currentUser.getUserSecurity();
+    if (userSecurity.getPassword().equals(currentPasswordField.getText())) {
+      currentPasswordField.setEffect(NO_ADJUST);
+      if (isFieldValid(newPasswordField, PASSWORD, false)
+          && arePasswordsEqual(newPasswordField, newRepeatedPasswordField)) {
+        var securityCopy = new UserSecurity(userSecurity);
+        userSecurity.setPassword(newPasswordField.getText());
+        if (!securityCopy.equals(userSecurity)) {
+          try {
+            userDao.update(currentUser);
+            currentPasswordField.clear();
+            newPasswordField.clear();
+            newRepeatedPasswordField.clear();
+            logger.info("The user has changed his password");
+          } catch (NullPointerException exception) {
+            currentUser.setUserSecurity(securityCopy);
+            windowManager.showDialog(exception);
+          }
+        }
+      }
+    } else {
+      currentPasswordField.setEffect(RED_ADJUST);
     }
-    surnameField.setText(currentUser.getSurname());
-    nameField.setText(currentUser.getName());
-    secondNameField.setText(currentUser.getSecondName());
-    phoneField.setText(currentUser.getPhone());
-    loginField.setText(currentUser.getLogin());
-  }
-
-  @Override
-  public User get() {
-    return currentUser;
   }
 }

@@ -1,9 +1,9 @@
 package com.github.ecstasyawesome.warehouse.module.user;
 
 import com.github.ecstasyawesome.warehouse.controller.user.Authorization;
-import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.core.Module;
 import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import java.net.URL;
 
 public class AuthorizationProvider extends ModuleProvider<Authorization> {

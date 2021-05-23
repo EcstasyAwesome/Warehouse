@@ -14,7 +14,7 @@
 
 <ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.ecstasyawesome.warehouse.controller.user.NewUser">
   <content>
-    <VBox alignment="CENTER" prefHeight="300.0" prefWidth="350.0" spacing="10.0">
+    <VBox alignment="CENTER" prefHeight="320.0" prefWidth="350.0" spacing="10.0">
       <children>
         <GridPane alignment="CENTER" VBox.vgrow="NEVER">
           <columnConstraints>
@@ -29,7 +29,8 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
           </rowConstraints>
           <children>
             <TextField fx:id="surnameField" alignment="CENTER" maxWidth="-Infinity" prefWidth="200.0" promptText="surname" GridPane.columnIndex="1" />
@@ -56,25 +57,31 @@
                 <Insets right="10.0" />
               </GridPane.margin>
             </Text>
-            <ChoiceBox fx:id="accessChoiceBox" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Access" GridPane.rowIndex="4">
+                  <TextField fx:id="emailField" alignment="CENTER" layoutX="126.0" layoutY="103.0" maxWidth="-Infinity" prefWidth="200.0" promptText="email" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Text layoutX="82.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" GridPane.rowIndex="4">
+                     <GridPane.margin>
+                        <Insets right="10.0" />
+                     </GridPane.margin>
+                  </Text>
+            <ChoiceBox fx:id="accessChoiceBox" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Access" GridPane.rowIndex="5">
               <GridPane.margin>
                 <Insets right="10.0" />
               </GridPane.margin>
             </Text>
-            <TextField fx:id="loginField" alignment="CENTER" maxWidth="-Infinity" prefWidth="200.0" promptText="login" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Login" GridPane.rowIndex="5">
+            <TextField fx:id="loginField" alignment="CENTER" maxWidth="-Infinity" prefWidth="200.0" promptText="login" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Login" GridPane.rowIndex="6">
               <GridPane.margin>
                 <Insets right="10.0" />
               </GridPane.margin>
             </Text>
-            <PasswordField fx:id="passwordField" alignment="CENTER" maxWidth="-Infinity" prefWidth="200.0" promptText="password" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password" GridPane.rowIndex="6">
+            <PasswordField fx:id="passwordField" alignment="CENTER" maxWidth="-Infinity" prefWidth="200.0" promptText="password" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password" GridPane.rowIndex="7">
               <GridPane.margin>
                 <Insets right="10.0" />
               </GridPane.margin>
             </Text>
-            <PasswordField fx:id="repeatedPasswordField" alignment="CENTER" maxWidth="-Infinity" prefWidth="200.0" promptText="repeat password" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <PasswordField fx:id="repeatedPasswordField" alignment="CENTER" maxWidth="-Infinity" prefWidth="200.0" promptText="repeat password" GridPane.columnIndex="1" GridPane.rowIndex="8" />
           </children>
         </GridPane>
         <Button mnemonicParsing="false" onAction="#register" text="Register" textAlignment="CENTER" />

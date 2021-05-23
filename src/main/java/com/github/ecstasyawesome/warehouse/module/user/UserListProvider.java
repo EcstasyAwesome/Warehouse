@@ -1,9 +1,9 @@
 package com.github.ecstasyawesome.warehouse.module.user;
 
 import com.github.ecstasyawesome.warehouse.controller.user.UserList;
-import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.core.Module;
 import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import java.net.URL;
 
 public class UserListProvider extends ModuleProvider<UserList> {
@@ -22,7 +22,7 @@ public class UserListProvider extends ModuleProvider<UserList> {
 
   @Override
   public Access getAccess() {
-    return Access.ADMIN;
+    return Access.USER;
   }
 
   @Override

@@ -1,12 +1,13 @@
 package com.github.ecstasyawesome.warehouse.dao.impl;
 
-import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.User;
-import java.sql.PreparedStatement;
+import com.github.ecstasyawesome.warehouse.model.UserContact;
+import com.github.ecstasyawesome.warehouse.model.UserSecurity;
+import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Objects;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.Level;
@@ -28,9 +29,9 @@ public class UserDaoService extends UserDao {
   @Override
   public boolean isFieldUnique(final String login) {
     checkStringParameter(login);
-    final var query = String.format("SELECT 1 FROM USERS WHERE USER_LOGIN='%s'", login);
+    final var query = "SELECT EXISTS(SELECT 1 FROM USERS_SECURITY WHERE USER_SECURITY_LOGIN=?)";
     try {
-      var result = !hasQueryResult(query);
+      var result = !check(query, login);
       logger.debug("Login '{}' is unique [{}]", login, result);
       return result;
     } catch (SQLException exception) {
@@ -41,7 +42,7 @@ public class UserDaoService extends UserDao {
   @Override
   public boolean hasTableRecords() {
     try {
-      var result = hasQueryResult("SELECT 1 FROM USERS LIMIT 1");
+      var result = check("SELECT EXISTS(SELECT 1 FROM USERS LIMIT 1)");
       logger.debug("Table has records [{}]", result);
       return result;
     } catch (SQLException exception) {
@@ -51,8 +52,16 @@ public class UserDaoService extends UserDao {
 
   @Override
   public ObservableList<User> getAll() {
+    final var query = """
+        SELECT *
+        FROM USERS
+                 INNER JOIN USERS_CONTACTS
+                            ON USERS.USER_ID = USERS_CONTACTS.USER_ID
+                 INNER JOIN USERS_SECURITY
+                            ON USERS.USER_ID = USERS_SECURITY.USER_ID
+        """;
     try {
-      var result = selectRecords("SELECT * FROM USERS");
+      var result = selectRecords(query);
       logger.debug("Selected all users [{} records]", result.size());
       return result;
     } catch (SQLException exception) {
@@ -61,17 +70,41 @@ public class UserDaoService extends UserDao {
   }
 
   @Override
-  public long create(final User instance) {
+  public void create(final User instance) {
     Objects.requireNonNull(instance);
-    final var query = """
-        INSERT INTO USERS (USER_SURNAME, USER_NAME, USER_SECOND_NAME, USER_PHONE, USER_LOGIN,
-                           USER_PASSWORD, USER_ACCESS)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+    final var userQuery = """
+        INSERT INTO USERS (USER_SURNAME, USER_NAME, USER_SECOND_NAME)
+        VALUES (?, ?, ?)
         """;
-    try {
-      var result = insertRecord(query, instance);
-      logger.debug("Created a new user with id={}", result);
-      return result;
+    final var userContactQuery = """
+        INSERT INTO USERS_CONTACTS (USER_ID, USER_CONTACT_PHONE, USER_CONTACT_EMAIL)
+        VALUES (?, ?, ?)
+        """;
+    final var userSecurityQuery = """
+        INSERT INTO USERS_SECURITY (USER_ID, USER_SECURITY_LOGIN, USER_SECURITY_PASSWORD,
+                                    USER_SECURITY_ACCESS)
+        VALUES (?, ?, ?, ?)
+        """;
+    try (var connection = ConnectionPool.getConnection()) {
+      connection.setAutoCommit(false);
+      try {
+        final var userId = insertRecord(connection, userQuery, instance.getSurname(),
+            instance.getName(), instance.getSecondName());
+        final var contact = instance.getUserContact();
+        final var contactId = insertRecord(connection, userContactQuery, userId, contact.getPhone(),
+            contact.getEmail());
+        final var security = instance.getUserSecurity();
+        final var securityId = insertRecord(connection, userSecurityQuery, userId,
+            security.getLogin(), security.getPassword(), security.getAccess().name());
+        connection.commit();
+        contact.setId(contactId);
+        security.setId(securityId);
+        instance.setId(userId);
+        logger.debug("Created a new user with id={}", userId);
+      } catch (SQLException exception) {
+        connection.rollback();
+        throw exception;
+      }
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
@@ -80,9 +113,17 @@ public class UserDaoService extends UserDao {
   @Override
   public User get(final String login) {
     checkStringParameter(login);
-    final var query = String.format("SELECT * FROM USERS WHERE USER_LOGIN='%s'", login);
+    final var query = """
+        SELECT *
+        FROM USERS
+                 INNER JOIN USERS_CONTACTS
+                            ON USERS.USER_ID = USERS_CONTACTS.USER_ID
+                 INNER JOIN USERS_SECURITY
+                            ON USERS.USER_ID = USERS_SECURITY.USER_ID
+        WHERE USER_SECURITY_LOGIN=?
+        """;
     try {
-      var result = selectRecord(query);
+      var result = selectRecord(query, login);
       logger.debug("Selected a user with id={} by login '{}'", result.getId(), login);
       return result;
     } catch (SQLException exception) {
@@ -92,9 +133,17 @@ public class UserDaoService extends UserDao {
 
   @Override
   public User get(final long id) {
-    final var query = String.format("SELECT * FROM USERS WHERE USER_ID=%d", id);
+    final var query = """
+        SELECT *
+        FROM USERS
+                 INNER JOIN USERS_CONTACTS
+                            ON USERS.USER_ID = USERS_CONTACTS.USER_ID
+                 INNER JOIN USERS_SECURITY
+                            ON USERS.USER_ID = USERS_SECURITY.USER_ID
+        WHERE USERS.USER_ID=?
+        """;
     try {
-      var result = selectRecord(query);
+      var result = selectRecord(query, id);
       logger.debug("Selected a user with id={}", result.getId());
       return result;
     } catch (SQLException exception) {
@@ -105,19 +154,28 @@ public class UserDaoService extends UserDao {
   @Override
   public void update(final User instance) {
     Objects.requireNonNull(instance);
-    final var query = String.format("""
+    final var query = """
+        UPDATE USERS_CONTACTS
+        SET USER_CONTACT_PHONE=?,
+            USER_CONTACT_EMAIL=?
+        WHERE USER_CONTACT_ID=?;
+        UPDATE USERS_SECURITY
+        SET USER_SECURITY_LOGIN=?,
+            USER_SECURITY_PASSWORD=?,
+            USER_SECURITY_ACCESS=?
+        WHERE USER_SECURITY_ID=?;
         UPDATE USERS
         SET USER_SURNAME=?,
             USER_NAME=?,
-            USER_SECOND_NAME=?,
-            USER_PHONE=?,
-            USER_LOGIN=?,
-            USER_PASSWORD=?,
-            USER_ACCESS=?
-        WHERE USER_ID=%d
-        """, instance.getId());
+            USER_SECOND_NAME=?
+        WHERE USER_ID=?
+        """;
+    final var contact = instance.getUserContact();
+    final var security = instance.getUserSecurity();
     try {
-      processRecord(query, instance);
+      execute(query, contact.getPhone(), contact.getEmail(), contact.getId(), security.getLogin(),
+          security.getPassword(), security.getAccess().name(), security.getId(),
+          instance.getSurname(), instance.getName(), instance.getSecondName(), instance.getId());
       logger.debug("Updated a user with id={}", instance.getId());
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
@@ -126,9 +184,11 @@ public class UserDaoService extends UserDao {
 
   @Override
   public void delete(final long id) {
-    final var query = String.format("DELETE FROM USERS WHERE USER_ID=%d", id);
     try {
-      processRecord(query);
+      var result = execute("DELETE FROM USERS WHERE USER_ID=?", id);
+      if (result == 0) {
+        throw new SQLException("Deleted nothing");
+      }
       logger.debug("Deleted a user with id={}", id);
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
@@ -136,28 +196,25 @@ public class UserDaoService extends UserDao {
   }
 
   @Override
-  protected void serialize(final PreparedStatement statement, final User instance)
-      throws SQLException {
-    statement.setString(1, instance.getSurname());
-    statement.setString(2, instance.getName());
-    statement.setString(3, instance.getSecondName());
-    statement.setString(4, instance.getPhone());
-    statement.setString(5, instance.getLogin());
-    statement.setString(6, instance.getPassword());
-    statement.setString(7, instance.getAccess().name());
-  }
-
-  @Override
-  protected User deserialize(final ResultSet resultSet) throws SQLException {
+  protected User transformToObj(final ResultSet resultSet) throws SQLException {
+    var contact = UserContact.builder()
+        .id(resultSet.getLong("USER_CONTACT_ID"))
+        .phone(resultSet.getString("USER_CONTACT_PHONE"))
+        .email(resultSet.getString("USER_CONTACT_EMAIL"))
+        .build();
+    var security = UserSecurity.builder()
+        .id(resultSet.getLong("USER_SECURITY_ID"))
+        .login(resultSet.getString("USER_SECURITY_LOGIN"))
+        .password(resultSet.getString("USER_SECURITY_PASSWORD"))
+        .access(Access.valueOf(resultSet.getString("USER_SECURITY_ACCESS")))
+        .build();
     return User.builder()
         .id(resultSet.getLong("USER_ID"))
         .surname(resultSet.getString("USER_SURNAME"))
         .name(resultSet.getString("USER_NAME"))
         .secondName(resultSet.getString("USER_SECOND_NAME"))
-        .phone(resultSet.getString("USER_PHONE"))
-        .login(resultSet.getString("USER_LOGIN"))
-        .password(resultSet.getString("USER_PASSWORD"))
-        .access(Access.valueOf(resultSet.getString("USER_ACCESS")))
+        .userContact(contact)
+        .userSecurity(security)
         .build();
   }
 }

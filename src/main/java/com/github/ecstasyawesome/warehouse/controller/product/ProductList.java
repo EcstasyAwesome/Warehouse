@@ -11,9 +11,9 @@ import com.github.ecstasyawesome.warehouse.dao.GenericDao;
 import com.github.ecstasyawesome.warehouse.dao.ProductDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.CategoryDaoService;
 import com.github.ecstasyawesome.warehouse.dao.impl.ProductDaoService;
-import com.github.ecstasyawesome.warehouse.model.BaseRecord;
 import com.github.ecstasyawesome.warehouse.model.Category;
 import com.github.ecstasyawesome.warehouse.model.Product;
+import com.github.ecstasyawesome.warehouse.model.Record;
 import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.module.product.NewCategoryProvider;
 import com.github.ecstasyawesome.warehouse.module.product.NewProductProvider;
@@ -25,7 +25,6 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.ChoiceBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,15 +63,15 @@ public class ProductList extends Controller {
   @FXML
   private void initialize() {
     categoryNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-    categoryNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    categoryNameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
 
-    productIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+    productIdColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
     productNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-    productNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    productUnitColumn.setCellValueFactory(new PropertyValueFactory<>("unit"));
+    productNameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
+    productUnitColumn.setCellValueFactory(entry -> entry.getValue().unitProperty());
     productCategoryColumn.setCellFactory(
         ChoiceBoxTableCell.forTableColumn(categoryTable.getItems()));
-    productCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+    productCategoryColumn.setCellValueFactory(entry -> entry.getValue().categoryProperty());
 
     categoryTable.getSelectionModel()
         .selectedItemProperty()
@@ -80,7 +79,7 @@ public class ProductList extends Controller {
           if (currentCategory != null) {
             getProductsFromDatabase(currentCategory);
           }
-          searchField.deleteText(0, searchField.getLength());
+          searchField.clear();
         });
 
     getCategoriesFromDatabase();
@@ -115,28 +114,6 @@ public class ProductList extends Controller {
     deleteRecord("product", productTable, productDao);
   }
 
-  private <T extends BaseRecord> void deleteRecord(String name, TableView<T> table,
-      GenericDao<T> dao) {
-    var selectionModel = table.getSelectionModel();
-    if (!selectionModel.isEmpty()) {
-      var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
-          "All related data will be removed too, are you sure?"); // TODO i18n
-      if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
-        try {
-          var record = selectionModel.getSelectedItem();
-          dao.delete(record.getId());
-          table.getItems().remove(record);
-          logger.info("Deleted a {} with id={}", name, record.getId());
-        } catch (NullPointerException exception) {
-          windowManager.showDialog(exception);
-        }
-      }
-    } else {
-      windowManager.showDialog(AlertType.INFORMATION, "First choose some item"); // TODO i18n
-    }
-
-  }
-
   @FXML
   private void refresh() {
     if (searchField.getLength() > 0) {
@@ -150,11 +127,12 @@ public class ProductList extends Controller {
   @FXML
   private void clear() {
     if (searchField.getLength() > 0) {
-      searchField.deleteText(0, searchField.getLength());
+      searchField.clear();
+      getProductsFromDatabase(null);
     } else if (!categoryTable.getSelectionModel().isEmpty()) {
       categoryTable.getSelectionModel().clearSelection();
+      getProductsFromDatabase(null);
     }
-    getProductsFromDatabase(null);
   }
 
   @FXML
@@ -234,6 +212,28 @@ public class ProductList extends Controller {
     }
   }
 
+  private <T extends Record> void deleteRecord(String name, TableView<T> table,
+      GenericDao<T> dao) {
+    var selectionModel = table.getSelectionModel();
+    if (!selectionModel.isEmpty()) {
+      var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
+          "All related data will be removed too, are you sure?"); // TODO i18n
+      if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
+        try {
+          var record = selectionModel.getSelectedItem();
+          dao.delete(record.getId());
+          table.getItems().remove(record);
+          logger.info("Deleted a {} with id={}", name, record.getId());
+        } catch (NullPointerException exception) {
+          windowManager.showDialog(exception);
+        }
+      }
+    } else {
+      windowManager.showDialog(AlertType.INFORMATION, "First choose some item"); // TODO i18n
+    }
+
+  }
+
   private void getCategoriesFromDatabase() {
     var selectionModel = categoryTable.getSelectionModel();
     var selectedCategory = (Category) null;
@@ -269,7 +269,7 @@ public class ProductList extends Controller {
   }
 
   private void logChanges(String entry, String field, Object oldValue, Object newValue,
-      BaseRecord record) {
+      Record record) {
     logger.info("Edited {} {} from '{}' to '{}' with id={}", entry, field, oldValue, newValue,
         record.getId());
   }

@@ -1,13 +1,12 @@
 package com.github.ecstasyawesome.warehouse.module.user;
 
 import com.github.ecstasyawesome.warehouse.controller.user.Profile;
+import com.github.ecstasyawesome.warehouse.core.Module;
+import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackModule;
-import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackModuleProvider;
-import com.github.ecstasyawesome.warehouse.model.User;
 import java.net.URL;
 
-public class ProfileProvider extends ConfiguredFeedbackModuleProvider<Profile, User> {
+public class ProfileProvider extends ModuleProvider<Profile> {
 
   public static final ProfileProvider INSTANCE = new ProfileProvider();
   public final URL fxml = getClass().getResource("/model/user/Profile.fxml");
@@ -16,8 +15,8 @@ public class ProfileProvider extends ConfiguredFeedbackModuleProvider<Profile, U
   }
 
   @Override
-  public ConfiguredFeedbackModule<Profile, User> create() {
-    return new ConfiguredFeedbackModule<>(fxml) {
+  public Module<Profile> create() {
+    return new Module<>(fxml) {
     };
   }
 

@@ -4,7 +4,7 @@ import java.util.Objects;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public abstract class NamedRecord extends BaseRecord {
+public abstract class NamedRecord extends Record {
 
   protected final StringProperty name;
 
@@ -21,19 +21,23 @@ public abstract class NamedRecord extends BaseRecord {
     this.name.set(name);
   }
 
+  public StringProperty nameProperty() {
+    return name;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
-    if (obj == null || this.getClass() != obj.getClass()) {
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
     if (!super.equals(obj)) {
       return false;
     }
     var that = (NamedRecord) obj;
-    return this.name.get().equals(that.name.get());
+    return Objects.equals(name.get(), that.name.get());
   }
 
   @Override

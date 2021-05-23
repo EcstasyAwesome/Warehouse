@@ -1,9 +1,9 @@
 package com.github.ecstasyawesome.warehouse.module.product;
 
 import com.github.ecstasyawesome.warehouse.controller.product.ProductList;
-import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.core.Module;
 import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import java.net.URL;
 
 public class ProductListProvider extends ModuleProvider<ProductList> {

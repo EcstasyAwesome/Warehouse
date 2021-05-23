@@ -1,9 +1,9 @@
 package com.github.ecstasyawesome.warehouse.module;
 
 import com.github.ecstasyawesome.warehouse.controller.Home;
-import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.core.Module;
 import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import java.net.URL;
 
 public class HomeProvider extends ModuleProvider<Home> {

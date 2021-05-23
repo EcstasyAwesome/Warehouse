@@ -1,6 +1,9 @@
 package com.github.ecstasyawesome.warehouse.model;
 
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public enum Access {
 
@@ -18,9 +21,10 @@ public enum Access {
     this.name = name;
   }
 
-
-  public static Access[] getAccesses() {
-    return Stream.of(values()).filter(access -> access != ROOT).toArray(Access[]::new);
+  public static ObservableList<Access> getAccesses() {
+    return Stream.of(values()).
+        filter(access -> access != ROOT)
+        .collect(Collectors.toCollection(FXCollections::observableArrayList));
   }
 
   @Override

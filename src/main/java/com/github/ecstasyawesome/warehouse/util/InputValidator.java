@@ -16,6 +16,7 @@ public final class InputValidator {
   public static final Pattern NAME = Pattern.compile("^[A-ZА-Я].+$");
   public static final Pattern LOGIN = Pattern.compile("^[a-z_0-9]{5,20}$");
   public static final Pattern PASSWORD = Pattern.compile("^.{8,20}$");
+  public static final Pattern EMAIL = Pattern.compile("^[a-z0-9._]+@[a-z0-9]+\\.[a-z]+$");
   public static final ColorAdjust RED_ADJUST = new ColorAdjust(0, 0.1, 0, 0);
   public static final ColorAdjust NO_ADJUST = new ColorAdjust(0, 0, 0, 0);
   private static final WindowManager WINDOW_MANAGER = WindowManager.getInstance();
@@ -49,16 +50,18 @@ public final class InputValidator {
     return false;
   }
 
-  public static boolean isFieldValid(final TextField field, final Pattern pattern) {
+  public static boolean isFieldValid(final TextField field, final Pattern pattern,
+      final boolean empty) {
     var text = field.getText();
     var result = false;
-    if (text.matches(pattern.pattern())) {
+    if ((empty && text.isEmpty()) || text.matches(pattern.pattern())) {
       field.setEffect(NO_ADJUST);
       result = true;
     } else {
       field.setEffect(RED_ADJUST);
     }
-    LOGGER.debug("Field with text '{}' matches pattern '{}' [{}]", text, pattern, result);
+    LOGGER.debug("Field with the text '{}' is being empty or matches the pattern '{}' [{}]", text,
+        pattern, result);
     return result;
   }
 
@@ -66,7 +69,7 @@ public final class InputValidator {
       final UniqueField daoImpl) {
     var text = field.getText();
     var result = false;
-    if (isFieldValid(field, pattern)) {
+    if (isFieldValid(field, pattern, false)) {
       try {
         result = daoImpl.isFieldUnique(text);
       } catch (NullPointerException exception) {

@@ -1,5 +1,6 @@
 package com.github.ecstasyawesome.warehouse.controller.user;
 
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.EMAIL;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.LOGIN;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PASSWORD;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
@@ -7,12 +8,14 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAM
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.arePasswordsEqual;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
-import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.core.FeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.model.UserContact;
+import com.github.ecstasyawesome.warehouse.model.UserSecurity;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,6 +45,9 @@ public class NewUser extends FeedbackController<User> {
   private TextField phoneField;
 
   @FXML
+  private TextField emailField;
+
+  @FXML
   private ChoiceBox<Access> accessChoiceBox;
 
   @FXML
@@ -60,25 +66,31 @@ public class NewUser extends FeedbackController<User> {
 
   @FXML
   private void register(ActionEvent event) {
-    if (isFieldValid(surnameField, STRICT_NAME) & isFieldValid(nameField, STRICT_NAME)
-        & isFieldValid(secondNameField, STRICT_NAME) & isFieldValid(phoneField, PHONE)
-        & isFieldValid(loginField, LOGIN, userDao) & isFieldValid(passwordField, PASSWORD)
-        & isFieldValid(accessChoiceBox)
+    if (isFieldValid(surnameField, STRICT_NAME, false) & isFieldValid(nameField, STRICT_NAME, false)
+        & isFieldValid(secondNameField, STRICT_NAME, false) & isFieldValid(phoneField, PHONE, false)
+        & isFieldValid(emailField, EMAIL, true) & isFieldValid(loginField, LOGIN, userDao)
+        & isFieldValid(passwordField, PASSWORD, false) & isFieldValid(accessChoiceBox)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
-      var user = User.builder()
-          .surname(surnameField.getText())
-          .name(nameField.getText())
-          .secondName(secondNameField.getText())
+      var contact = UserContact.builder()
           .phone(phoneField.getText())
+          .email(emailField.getText().isEmpty() ? null : emailField.getText())
+          .build();
+      var security = UserSecurity.builder()
           .login(loginField.getText())
           .password(passwordField.getText())
           .access(accessChoiceBox.getValue())
           .build();
+      var user = User.builder()
+          .surname(surnameField.getText())
+          .name(nameField.getText())
+          .secondName(secondNameField.getText())
+          .userContact(contact)
+          .userSecurity(security)
+          .build();
       try {
-        var id = userDao.create(user);
-        user.setId(id);
-        logger.info("Added a user with id={}", id);
+        userDao.create(user);
         result = user;
+        logger.info("Added a user with id={}", user.getId());
         closeCurrentStage(event);
       } catch (NullPointerException exception) {
         windowManager.showDialog(exception);

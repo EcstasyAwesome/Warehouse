@@ -1,17 +1,20 @@
 package com.github.ecstasyawesome.warehouse.controller.user;
 
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.EMAIL;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PASSWORD;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.arePasswordsEqual;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
-import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.core.FeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.model.UserContact;
+import com.github.ecstasyawesome.warehouse.model.UserSecurity;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
@@ -19,12 +22,12 @@ import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AdministratorRegistration extends FeedbackController<String> {
+public class AdministratorRegistration extends FeedbackController<UserSecurity> {
 
   private final WindowManager windowManager = WindowManager.getInstance();
   private final UserDao userDao = UserDaoService.getInstance();
   private final Logger logger = LogManager.getLogger(AdministratorRegistration.class);
-  private String result;
+  private UserSecurity result;
 
   @FXML
   private TextField surnameField;
@@ -42,6 +45,9 @@ public class AdministratorRegistration extends FeedbackController<String> {
   private TextField loginField;
 
   @FXML
+  private TextField emailField;
+
+  @FXML
   private PasswordField passwordField;
 
   @FXML
@@ -54,23 +60,30 @@ public class AdministratorRegistration extends FeedbackController<String> {
 
   @FXML
   private void register(ActionEvent event) {
-    if (isFieldValid(surnameField, STRICT_NAME) & isFieldValid(nameField, STRICT_NAME)
-        & isFieldValid(secondNameField, STRICT_NAME) & isFieldValid(phoneField, PHONE)
-        & isFieldValid(passwordField, PASSWORD)
+    if (isFieldValid(surnameField, STRICT_NAME, false) & isFieldValid(nameField, STRICT_NAME, false)
+        & isFieldValid(secondNameField, STRICT_NAME, false) & isFieldValid(phoneField, PHONE, false)
+        & isFieldValid(emailField, EMAIL, true) & isFieldValid(passwordField, PASSWORD, false)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
-      var user = User.builder()
-          .surname(surnameField.getText())
-          .name(nameField.getText())
-          .secondName(secondNameField.getText())
+      var contact = UserContact.builder()
           .phone(phoneField.getText())
+          .email(emailField.getText().isEmpty() ? null : emailField.getText())
+          .build();
+      var security = UserSecurity.builder()
           .login(loginField.getText())
           .password(passwordField.getText())
           .access(Access.ROOT)
           .build();
+      var user = User.builder()
+          .surname(surnameField.getText())
+          .name(nameField.getText())
+          .secondName(secondNameField.getText())
+          .userContact(contact)
+          .userSecurity(security)
+          .build();
       try {
         userDao.create(user);
+        result = user.getUserSecurity();
         logger.info("Root user registered");
-        result = user.getLogin();
         closeCurrentStage(event);
       } catch (NullPointerException exception) {
         windowManager.showDialog(exception);
@@ -79,7 +92,7 @@ public class AdministratorRegistration extends FeedbackController<String> {
   }
 
   @Override
-  public String get() {
+  public UserSecurity get() {
     return result;
   }
 }

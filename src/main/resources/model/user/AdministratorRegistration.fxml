@@ -14,7 +14,7 @@
 
 <ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.ecstasyawesome.warehouse.controller.user.AdministratorRegistration">
    <content>
-      <VBox alignment="CENTER" prefHeight="350.0" prefWidth="350.0" spacing="10.0">
+      <VBox alignment="CENTER" prefHeight="380.0" prefWidth="350.0" spacing="10.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Warehouse">
                <font>
@@ -32,6 +32,7 @@
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
                </columnConstraints>
                <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -65,19 +66,25 @@
                         <Insets right="10.0" />
                      </GridPane.margin>
                   </Text>
-                  <TextField fx:id="loginField" alignment="CENTER" editable="false" focusTraversable="false" maxWidth="-Infinity" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Login" GridPane.rowIndex="4">
+                  <TextField fx:id="emailField" alignment="CENTER" maxWidth="-Infinity" prefWidth="200.0" promptText="email" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email" GridPane.rowIndex="4">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>
                   </Text>
-                  <PasswordField fx:id="passwordField" alignment="CENTER" maxWidth="-Infinity" prefWidth="200.0" promptText="password" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password" GridPane.rowIndex="5">
+                  <TextField fx:id="loginField" alignment="CENTER" editable="false" focusTraversable="false" maxWidth="-Infinity" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Login" GridPane.rowIndex="5">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>
                   </Text>
-                  <PasswordField fx:id="repeatedPasswordField" alignment="CENTER" maxWidth="-Infinity" prefWidth="200.0" promptText="repeat password" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <PasswordField fx:id="passwordField" alignment="CENTER" maxWidth="-Infinity" prefWidth="200.0" promptText="password" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password" GridPane.rowIndex="6">
+                     <GridPane.margin>
+                        <Insets right="10.0" />
+                     </GridPane.margin>
+                  </Text>
+                  <PasswordField fx:id="repeatedPasswordField" alignment="CENTER" maxWidth="-Infinity" prefWidth="200.0" promptText="repeat password" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                </children>
             </GridPane>
             <Button mnemonicParsing="false" onAction="#register" text="Register" textAlignment="CENTER" />

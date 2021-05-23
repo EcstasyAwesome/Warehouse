@@ -27,6 +27,10 @@ public class Product extends NamedRecord {
     this.category.set(category);
   }
 
+  public ObjectProperty<Category> categoryProperty() {
+    return category;
+  }
+
   public Unit getUnit() {
     return unit.get();
   }
@@ -35,9 +39,8 @@ public class Product extends NamedRecord {
     this.unit.set(unit);
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), category.get(), unit.get());
+  public ObjectProperty<Unit> unitProperty() {
+    return unit;
   }
 
   @Override
@@ -45,7 +48,7 @@ public class Product extends NamedRecord {
     if (this == obj) {
       return true;
     }
-    if (obj == null || this.getClass() != obj.getClass()) {
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
     if (!super.equals(obj)) {
@@ -53,7 +56,13 @@ public class Product extends NamedRecord {
     }
 
     var that = (Product) obj;
-    return this.category.get().equals(that.category.get()) && this.unit.get() == that.unit.get();
+    return Objects.equals(category.get(), that.category.get())
+           && Objects.equals(unit.get(), that.unit.get());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), category.get(), unit.get());
   }
 
   public static class Builder {

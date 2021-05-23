@@ -1,5 +1,8 @@
 package com.github.ecstasyawesome.warehouse.controller.user;
 
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.NO_ADJUST;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.RED_ADJUST;
+
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
@@ -10,7 +13,6 @@ import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.ColorAdjust;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +34,7 @@ public class Authorization extends Controller {
       if (!userDao.hasTableRecords()) {
         var result = windowManager.showAndGet(AdministratorRegistrationProvider.INSTANCE);
         if (result.isPresent()) {
-          loginField.setText(result.get());
+          loginField.setText(result.get().getLogin());
         } else {
           windowManager.shutdown();
         }
@@ -45,22 +47,21 @@ public class Authorization extends Controller {
 
   @FXML
   private void login() {
-    var colorEffect = new ColorAdjust(0, 0.1, 0, 0);
     var login = loginField.getText();
     try {
       var user = userDao.get(login);
-      loginField.setEffect(null);
-      if (passwordField.getText().equals(user.getPassword())) {
-        passwordField.setEffect(null);
+      loginField.setEffect(NO_ADJUST);
+      if (passwordField.getText().equals(user.getUserSecurity().getPassword())) {
+        passwordField.setEffect(NO_ADJUST);
         SessionManager.store("currentUser", user);
         logger.info("Log in '{}'", login);
         windowManager.show(HomeProvider.INSTANCE);
       } else {
-        passwordField.setEffect(colorEffect);
+        passwordField.setEffect(RED_ADJUST);
         logger.info("Try to log in with login '{}' and incorrect password", login);
       }
     } catch (NullPointerException exception) {
-      loginField.setEffect(colorEffect);
+      loginField.setEffect(RED_ADJUST);
       logger.info("Try to log in with incorrect login '{}'", login);
     }
   }
