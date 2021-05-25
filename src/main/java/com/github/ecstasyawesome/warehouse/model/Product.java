@@ -9,6 +9,11 @@ public class Product extends NamedRecord {
   private final ObjectProperty<Category> category;
   private final ObjectProperty<Unit> unit;
 
+  public Product(Product instance) {
+    this(instance.getId(), instance.getName(), new Category(instance.getCategory()),
+        instance.getUnit());
+  }
+
   private Product(long id, String name, Category category, Unit unit) {
     super(id, name);
     this.category = new SimpleObjectProperty<>(category);

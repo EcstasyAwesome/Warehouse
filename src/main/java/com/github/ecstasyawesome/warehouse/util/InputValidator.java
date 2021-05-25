@@ -4,7 +4,8 @@ import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UniqueField;
 import java.util.regex.Pattern;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.effect.ColorAdjust;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +18,7 @@ public final class InputValidator {
   public static final Pattern LOGIN = Pattern.compile("^[a-z_0-9]{5,20}$");
   public static final Pattern PASSWORD = Pattern.compile("^.{8,20}$");
   public static final Pattern EMAIL = Pattern.compile("^[a-z0-9._]+@[a-z0-9]+\\.[a-z]+$");
+  public static final Pattern WILDCARD = Pattern.compile("^.*$");
   public static final ColorAdjust RED_ADJUST = new ColorAdjust(0, 0.1, 0, 0);
   public static final ColorAdjust NO_ADJUST = new ColorAdjust(0, 0, 0, 0);
   private static final WindowManager WINDOW_MANAGER = WindowManager.getInstance();
@@ -25,7 +27,8 @@ public final class InputValidator {
   private InputValidator() {
   }
 
-  public static boolean arePasswordsEqual(final TextField password1, final TextField password2) {
+  public static boolean arePasswordsEqual(final PasswordField password1,
+      final PasswordField password2) {
     var pass1 = password1.getText();
     var pass2 = password2.getText();
     var result = false;
@@ -50,7 +53,7 @@ public final class InputValidator {
     return false;
   }
 
-  public static boolean isFieldValid(final TextField field, final Pattern pattern,
+  public static boolean isFieldValid(final TextInputControl field, final Pattern pattern,
       final boolean empty) {
     var text = field.getText();
     var result = false;
@@ -65,13 +68,13 @@ public final class InputValidator {
     return result;
   }
 
-  public static boolean isFieldValid(final TextField field, final Pattern pattern,
-      final UniqueField daoImpl) {
+  public static boolean isFieldValid(final TextInputControl field, final String previous,
+      final Pattern pattern, final UniqueField daoImpl) {
     var text = field.getText();
     var result = false;
     if (isFieldValid(field, pattern, false)) {
       try {
-        result = daoImpl.isFieldUnique(text);
+        result = text.equals(previous) || daoImpl.isFieldUnique(text);
       } catch (NullPointerException exception) {
         WINDOW_MANAGER.showDialog(exception);
       }
@@ -81,13 +84,13 @@ public final class InputValidator {
     return result;
   }
 
-  public static boolean isFieldValid(final String text, final Pattern pattern,
-      final UniqueField daoImpl) {
+  public static boolean isFieldValid(final String text, final String previous,
+      final Pattern pattern, final UniqueField daoImpl) {
     var result = false;
     if (text.matches(pattern.pattern())) {
       LOGGER.debug("Text '{}' matches pattern '{}' [{}]", text, pattern, true);
       try {
-        result = daoImpl.isFieldUnique(text);
+        result = text.equals(previous) || daoImpl.isFieldUnique(text);
       } catch (NullPointerException exception) {
         WINDOW_MANAGER.showDialog(exception);
       }

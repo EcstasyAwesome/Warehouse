@@ -3,7 +3,7 @@ package com.github.ecstasyawesome.warehouse.controller.product;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.NAME;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
-import com.github.ecstasyawesome.warehouse.core.FeedbackController;
+import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
 import com.github.ecstasyawesome.warehouse.dao.ProductDao;
@@ -12,7 +12,6 @@ import com.github.ecstasyawesome.warehouse.dao.impl.ProductDaoService;
 import com.github.ecstasyawesome.warehouse.model.Category;
 import com.github.ecstasyawesome.warehouse.model.Product;
 import com.github.ecstasyawesome.warehouse.model.Unit;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -20,13 +19,13 @@ import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NewProduct extends FeedbackController<Product> {
+public class EditProduct extends ConfiguredFeedbackController<Product> {
 
-  private final WindowManager windowManager = WindowManager.getInstance();
-  private final CategoryDao categoryDao = CategoryDaoService.getInstance();
   private final ProductDao productDao = ProductDaoService.getInstance();
-  private final Logger logger = LogManager.getLogger(NewProduct.class);
-  private Product result;
+  private final CategoryDao categoryDao = CategoryDaoService.getInstance();
+  private final WindowManager windowManager = WindowManager.getInstance();
+  private final Logger logger = LogManager.getLogger(EditProduct.class);
+  private Product product;
 
   @FXML
   private TextField nameField;
@@ -39,7 +38,6 @@ public class NewProduct extends FeedbackController<Product> {
 
   @FXML
   private void initialize() {
-    unitChoiceBox.setItems(FXCollections.observableArrayList(Unit.values()));
     try {
       categoryChoiceBox.setItems(categoryDao.getAll());
     } catch (NullPointerException exception) {
@@ -48,27 +46,34 @@ public class NewProduct extends FeedbackController<Product> {
   }
 
   @FXML
-  private void add(ActionEvent event) {
-    if (isFieldValid(nameField, null, NAME, productDao)
-        & isFieldValid(unitChoiceBox) & isFieldValid(categoryChoiceBox)) {
-      var product = Product.builder()
-          .name(nameField.getText())
-          .unit(unitChoiceBox.getValue())
-          .category(categoryChoiceBox.getValue())
-          .build();
+  private void save(ActionEvent event) {
+    if (isFieldValid(nameField, product.getName(), NAME, productDao)
+        & isFieldValid(categoryChoiceBox)) {
+      var productCopy = new Product(product);
+      product.setName(nameField.getText());
+      product.setCategory(categoryChoiceBox.getValue());
       try {
-        productDao.create(product);
-        logger.info("Added a product with id={}", product.getId());
-        result = product;
+        productDao.update(product);
+        logger.info("Edited a product with id={}", product.getId());
         closeCurrentStage(event);
       } catch (NullPointerException exception) {
+        product.setName(productCopy.getName());
+        product.setCategory(productCopy.getCategory());
         windowManager.showDialog(exception);
       }
     }
   }
 
   @Override
+  public void accept(Product product) {
+    this.product = product;
+    nameField.setText(product.getName());
+    unitChoiceBox.setValue(product.getUnit());
+    categoryChoiceBox.setValue(product.getCategory());
+  }
+
+  @Override
   public Product get() {
-    return result;
+    return product;
   }
 }

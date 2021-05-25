@@ -68,7 +68,7 @@ public class NewUser extends FeedbackController<User> {
   private void register(ActionEvent event) {
     if (isFieldValid(surnameField, STRICT_NAME, false) & isFieldValid(nameField, STRICT_NAME, false)
         & isFieldValid(secondNameField, STRICT_NAME, false) & isFieldValid(phoneField, PHONE, false)
-        & isFieldValid(emailField, EMAIL, true) & isFieldValid(loginField, LOGIN, userDao)
+        & isFieldValid(emailField, EMAIL, true) & isFieldValid(loginField, null, LOGIN, userDao)
         & isFieldValid(passwordField, PASSWORD, false) & isFieldValid(accessChoiceBox)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
       var contact = UserContact.builder()

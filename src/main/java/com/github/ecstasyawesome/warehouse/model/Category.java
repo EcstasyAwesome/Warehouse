@@ -8,6 +8,10 @@ public class Category extends NamedRecord {
 
   private final StringProperty description;
 
+  public Category(Category instance) {
+    this(instance.getId(), instance.getName(), instance.getDescription());
+  }
+
   private Category(long id, String name, String description) {
     super(id, name);
     this.description = new SimpleStringProperty(description);

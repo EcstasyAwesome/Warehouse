@@ -41,10 +41,12 @@
                <ToolBar prefHeight="40.0" prefWidth="200.0">
                  <items>
                      <Button mnemonicParsing="false" onAction="#addCategory" text="Add category" />
-                     <Button mnemonicParsing="false" onAction="#deleteCategory" text="Delete category" />
+                     <Button fx:id="editCategoryButton" disable="true" layoutX="10.0" layoutY="13.0" mnemonicParsing="false" onAction="#editCategory" text="Edit category" />
+                     <Button fx:id="deleteCategoryButton" disable="true" mnemonicParsing="false" onAction="#deleteCategory" text="Delete category" />
                      <Separator orientation="VERTICAL" />
                      <Button mnemonicParsing="false" onAction="#addProduct" text="Add product" />
-                     <Button mnemonicParsing="false" onAction="#deleteProduct" text="Delete product" />
+                     <Button fx:id="editProductButton" disable="true" layoutX="393.0" layoutY="13.0" mnemonicParsing="false" onAction="#editProduct" text="Edit product" />
+                     <Button fx:id="deleteProductButton" disable="true" mnemonicParsing="false" onAction="#deleteProduct" text="Delete product" />
                      <Separator orientation="VERTICAL" />
                      <Button mnemonicParsing="false" onAction="#refresh" text="Refresh" />
                  </items>
@@ -59,9 +61,9 @@
                  <items>
                      <ScrollPane fitToHeight="true" fitToWidth="true" minViewportWidth="150.0" prefViewportWidth="150.0" SplitPane.resizableWithParent="false">
                         <content>
-                           <TableView fx:id="categoryTable" editable="true">
+                           <TableView fx:id="categoryTable" editable="true" onKeyReleased="#onKeyReleasedOnCategoryTable" onMouseClicked="#onMouseClickOnCategoryTable" onSort="#onSortCategoryTable">
                               <columns>
-                                 <TableColumn fx:id="categoryNameColumn" minWidth="150.0" onEditCommit="#editCategoryName" prefWidth="150.0" text="category" />
+                                 <TableColumn fx:id="categoryNameColumn" minWidth="150.0" prefWidth="150.0" text="category" />
                               </columns>
                               <opaqueInsets>
                                  <Insets />
@@ -72,12 +74,12 @@
                            </TableView>
                         </content>
                      </ScrollPane>
-                     <TableView fx:id="productTable" editable="true">
+                     <TableView fx:id="productTable" editable="true" onKeyReleased="#onKeyReleasedOnProductTable" onMouseClicked="#onMouseClickOnProductTable" onSort="#onSortProductTable">
                         <columns>
                            <TableColumn fx:id="productIdColumn" maxWidth="50.0" minWidth="30.0" prefWidth="30.0" text="id" />
-                           <TableColumn fx:id="productNameColumn" minWidth="200.0" onEditCommit="#editProductName" prefWidth="200.0" text="name" />
+                           <TableColumn fx:id="productNameColumn" minWidth="200.0" prefWidth="200.0" text="name" />
                            <TableColumn fx:id="productUnitColumn" minWidth="75.0" prefWidth="75.0" text="unit" />
-                           <TableColumn fx:id="productCategoryColumn" minWidth="100.0" onEditCommit="#editProductCategory" prefWidth="100.0" text="category" />
+                           <TableColumn fx:id="productCategoryColumn" minWidth="100.0" prefWidth="100.0" text="category" />
                         </columns>
                         <opaqueInsets>
                            <Insets />
