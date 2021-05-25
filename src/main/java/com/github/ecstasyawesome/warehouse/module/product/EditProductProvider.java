@@ -9,10 +9,14 @@ import java.net.URL;
 
 public class EditProductProvider extends ConfiguredFeedbackModuleProvider<EditProduct, Product> {
 
-  public static final EditProductProvider INSTANCE = new EditProductProvider();
+  private static final EditProductProvider INSTANCE = new EditProductProvider();
   public final URL fxml = getClass().getResource("/model/product/EditProduct.fxml");
 
   private EditProductProvider() {
+  }
+
+  public static EditProductProvider getInstance() {
+    return INSTANCE;
   }
 
   @Override

@@ -10,11 +10,15 @@ import java.net.URL;
 public class AdministratorRegistrationProvider
     extends FeedbackModuleProvider<AdministratorRegistration, UserSecurity> {
 
-  public static final AdministratorRegistrationProvider INSTANCE =
+  private static final AdministratorRegistrationProvider INSTANCE =
       new AdministratorRegistrationProvider();
   public final URL fxml = getClass().getResource("/model/user/AdministratorRegistration.fxml");
 
   private AdministratorRegistrationProvider() {
+  }
+
+  public static AdministratorRegistrationProvider getInstance() {
+    return INSTANCE;
   }
 
   @Override

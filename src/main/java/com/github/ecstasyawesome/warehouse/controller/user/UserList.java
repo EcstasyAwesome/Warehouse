@@ -26,6 +26,8 @@ public class UserList extends Controller {
 
   private final UserDao userDao = UserDaoService.getInstance();
   private final WindowManager windowManager = WindowManager.getInstance();
+  private final NewUserProvider newUserProvider = NewUserProvider.getInstance();
+  private final EditUserProvider editUserProvider = EditUserProvider.getInstance();
   private final Logger logger = LogManager.getLogger(UserList.class);
   private final User sessionUser = (User) SessionManager.get("currentUser").orElseThrow();
 
@@ -117,7 +119,7 @@ public class UserList extends Controller {
 
   @FXML
   private void add() {
-    var result = windowManager.showAndGet(NewUserProvider.INSTANCE);
+    var result = windowManager.showAndGet(newUserProvider);
     result.ifPresent(userTable.getItems()::add);
   }
 
@@ -127,7 +129,7 @@ public class UserList extends Controller {
     if (!model.isEmpty()) {
       var selectedUser = model.getSelectedItem();
       if (!sessionUser.equals(selectedUser)) {
-        windowManager.showAndGet(EditUserProvider.INSTANCE, selectedUser);
+        windowManager.showAndGet(editUserProvider);
       } else {
         windowManager.showDialog(AlertType.INFORMATION, "You cannot edit yourself here");
       }

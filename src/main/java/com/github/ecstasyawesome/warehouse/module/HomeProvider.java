@@ -8,10 +8,14 @@ import java.net.URL;
 
 public class HomeProvider extends ModuleProvider<Home> {
 
-  public static final HomeProvider INSTANCE = new HomeProvider();
+  private static final HomeProvider INSTANCE = new HomeProvider();
   public final URL fxml = getClass().getResource("/model/Home.fxml");
 
   private HomeProvider() {
+  }
+
+  public static HomeProvider getInstance() {
+    return INSTANCE;
   }
 
   @Override

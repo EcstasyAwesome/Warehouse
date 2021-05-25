@@ -9,10 +9,14 @@ import java.net.URL;
 
 public class NewUserProvider extends FeedbackModuleProvider<NewUser, User> {
 
-  public static final NewUserProvider INSTANCE = new NewUserProvider();
+  private static final NewUserProvider INSTANCE = new NewUserProvider();
   public final URL fxml = getClass().getResource("/model/user/NewUser.fxml");
 
   private NewUserProvider() {
+  }
+
+  public static NewUserProvider getInstance() {
+    return INSTANCE;
   }
 
   @Override

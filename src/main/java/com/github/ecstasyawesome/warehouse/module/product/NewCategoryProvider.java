@@ -9,10 +9,14 @@ import java.net.URL;
 
 public class NewCategoryProvider extends FeedbackModuleProvider<NewCategory, Category> {
 
-  public static final NewCategoryProvider INSTANCE = new NewCategoryProvider();
+  private static final NewCategoryProvider INSTANCE = new NewCategoryProvider();
   public final URL fxml = getClass().getResource("/model/product/NewCategory.fxml");
 
   private NewCategoryProvider() {
+  }
+
+  public static NewCategoryProvider getInstance() {
+    return INSTANCE;
   }
 
   @Override

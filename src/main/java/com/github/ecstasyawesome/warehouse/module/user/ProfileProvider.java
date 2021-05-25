@@ -8,10 +8,14 @@ import java.net.URL;
 
 public class ProfileProvider extends ModuleProvider<Profile> {
 
-  public static final ProfileProvider INSTANCE = new ProfileProvider();
+  private static final ProfileProvider INSTANCE = new ProfileProvider();
   public final URL fxml = getClass().getResource("/model/user/Profile.fxml");
 
   private ProfileProvider() {
+  }
+
+  public static ProfileProvider getInstance() {
+    return INSTANCE;
   }
 
   @Override

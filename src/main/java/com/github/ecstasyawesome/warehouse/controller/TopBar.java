@@ -11,13 +11,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class TopBar {
 
   private final WindowManager windowManager = WindowManager.getInstance();
-  private final Logger logger = LogManager.getLogger(TopBar.class);
+  private final ProfileProvider profileProvider = ProfileProvider.getInstance();
+  private final HomeProvider homeProvider = HomeProvider.getInstance();
+  private final UserListProvider userListProvider = UserListProvider.getInstance();
+  private final ProductListProvider productListProvider = ProductListProvider.getInstance();
 
   @FXML
   private MenuItem homeItem;
@@ -30,9 +31,9 @@ public class TopBar {
 
   @FXML
   private void initialize() {
-    checkModule(HomeProvider.INSTANCE, homeItem);
-    checkModule(UserListProvider.INSTANCE, userListItem);
-    checkModule(ProductListProvider.INSTANCE, productListItem);
+    checkModule(homeProvider, homeItem);
+    checkModule(userListProvider, userListItem);
+    checkModule(productListProvider, productListItem);
   }
 
   @FXML
@@ -56,12 +57,12 @@ public class TopBar {
 
   @FXML
   private void showHome() {
-    windowManager.show(HomeProvider.INSTANCE);
+    windowManager.show(homeProvider);
   }
 
   @FXML
   private void showProfile() {
-    windowManager.showAndWait(ProfileProvider.INSTANCE);
+    windowManager.showAndWait(profileProvider);
   }
 
   @FXML
@@ -71,13 +72,13 @@ public class TopBar {
 
   @FXML
   private void showUserList() {
-    windowManager.show(UserListProvider.INSTANCE);
+    windowManager.show(userListProvider);
   }
 
 
   @FXML
   private void showProductList() {
-    windowManager.show(ProductListProvider.INSTANCE);
+    windowManager.show(productListProvider);
   }
 
   private void checkModule(ModuleProvider<?> expected, MenuItem menuItem) {

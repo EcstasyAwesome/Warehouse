@@ -8,10 +8,14 @@ import java.net.URL;
 
 public class UserListProvider extends ModuleProvider<UserList> {
 
-  public static final UserListProvider INSTANCE = new UserListProvider();
+  private static final UserListProvider INSTANCE = new UserListProvider();
   public final URL fxml = getClass().getResource("/model/user/UserList.fxml");
 
   private UserListProvider() {
+  }
+
+  public static UserListProvider getInstance() {
+    return INSTANCE;
   }
 
   @Override

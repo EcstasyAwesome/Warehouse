@@ -8,10 +8,14 @@ import java.net.URL;
 
 public class ProductListProvider extends ModuleProvider<ProductList> {
 
-  public static final ProductListProvider INSTANCE = new ProductListProvider();
+  private static final ProductListProvider INSTANCE = new ProductListProvider();
   public final URL fxml = getClass().getResource("/model/product/ProductList.fxml");
 
   private ProductListProvider() {
+  }
+
+  public static ProductListProvider getInstance() {
+    return INSTANCE;
   }
 
   @Override

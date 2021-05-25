@@ -8,10 +8,14 @@ import java.net.URL;
 
 public class AuthorizationProvider extends ModuleProvider<Authorization> {
 
-  public static final AuthorizationProvider INSTANCE = new AuthorizationProvider();
+  private static final AuthorizationProvider INSTANCE = new AuthorizationProvider();
   public final URL fxml = getClass().getResource("/model/user/Authorization.fxml");
 
   private AuthorizationProvider() {
+  }
+
+  public static AuthorizationProvider getInstance() {
+    return INSTANCE;
   }
 
   @Override

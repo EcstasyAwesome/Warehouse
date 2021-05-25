@@ -32,7 +32,7 @@ public class Authorization extends Controller {
   private void initialize() {
     try {
       if (!userDao.hasTableRecords()) {
-        var result = windowManager.showAndGet(AdministratorRegistrationProvider.INSTANCE);
+        var result = windowManager.showAndGet(AdministratorRegistrationProvider.getInstance());
         if (result.isPresent()) {
           loginField.setText(result.get().getLogin());
         } else {
@@ -55,7 +55,7 @@ public class Authorization extends Controller {
         passwordField.setEffect(NO_ADJUST);
         SessionManager.store("currentUser", user);
         logger.info("Log in '{}'", login);
-        windowManager.show(HomeProvider.INSTANCE);
+        windowManager.show(HomeProvider.getInstance());
       } else {
         passwordField.setEffect(RED_ADJUST);
         logger.info("Try to log in with login '{}' and incorrect password", login);

@@ -309,7 +309,7 @@ public final class WindowManager {
     currentCachedController = null;
     cachedControllers.clear();
     mainStage.close();
-    var provider = AuthorizationProvider.INSTANCE;
+    var provider = AuthorizationProvider.getInstance();
     var module = provider.create();
     applyFadeAnimation(module.getParent());
     authorizationStage.setTitle(prepareStageName(provider.getTitle()));

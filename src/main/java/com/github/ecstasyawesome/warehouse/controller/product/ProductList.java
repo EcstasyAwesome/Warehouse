@@ -37,6 +37,10 @@ public class ProductList extends Controller {
   private final WindowManager windowManager = WindowManager.getInstance();
   private final CategoryDao categoryDao = CategoryDaoService.getInstance();
   private final ProductDao productDao = ProductDaoService.getInstance();
+  private final NewProductProvider newProductProvider = NewProductProvider.getInstance();
+  private final NewCategoryProvider newCategoryProvider = NewCategoryProvider.getInstance();
+  private final EditProductProvider editProductProvider = EditProductProvider.getInstance();
+  private final EditCategoryProvider editCategoryProvider = EditCategoryProvider.getInstance();
   private final Logger logger = LogManager.getLogger(ProductList.class);
   private final User sessionUser = (User) SessionManager.get("currentUser").orElseThrow();
 
@@ -120,7 +124,7 @@ public class ProductList extends Controller {
 
   @FXML
   private void addCategory() {
-    var result = windowManager.showAndGet(NewCategoryProvider.INSTANCE);
+    var result = windowManager.showAndGet(newCategoryProvider);
     result.ifPresent(categoryTable.getItems()::add);
   }
 
@@ -129,7 +133,7 @@ public class ProductList extends Controller {
     var model = categoryTable.getSelectionModel();
     if (!model.isEmpty()) {
       var categoryCopy = new Category(model.getSelectedItem());
-      var result = windowManager.showAndGet(EditCategoryProvider.INSTANCE, model.getSelectedItem());
+      var result = windowManager.showAndGet(editCategoryProvider, model.getSelectedItem());
       result.ifPresent(category -> {
         if (!category.getName().equals(categoryCopy.getName())) {
           for (var product : productTable.getItems()) {
@@ -147,7 +151,7 @@ public class ProductList extends Controller {
 
   @FXML
   private void addProduct() {
-    var result = windowManager.showAndGet(NewProductProvider.INSTANCE);
+    var result = windowManager.showAndGet(newProductProvider);
     result.ifPresent(product -> {
       var selectionModel = categoryTable.getSelectionModel();
       var productCategory = product.getCategory();
@@ -162,7 +166,7 @@ public class ProductList extends Controller {
     var model = productTable.getSelectionModel();
     if (!model.isEmpty()) {
       var categoryCopy = new Category(model.getSelectedItem().getCategory());
-      var result = windowManager.showAndGet(EditProductProvider.INSTANCE, model.getSelectedItem());
+      var result = windowManager.showAndGet(editProductProvider, model.getSelectedItem());
       result.ifPresent(product -> {
         var categoryModel = categoryTable.getSelectionModel();
         if (!categoryModel.isEmpty() && !product.getCategory().equals(categoryCopy)) {
