@@ -40,11 +40,11 @@
             <children>
                <ToolBar prefHeight="40.0" prefWidth="200.0">
                  <items>
-                     <Button mnemonicParsing="false" onAction="#addCategory" text="Add category" />
+                     <Button fx:id="addCategoryButton" mnemonicParsing="false" onAction="#addCategory" text="Add category" />
                      <Button fx:id="editCategoryButton" disable="true" layoutX="10.0" layoutY="13.0" mnemonicParsing="false" onAction="#editCategory" text="Edit category" />
                      <Button fx:id="deleteCategoryButton" disable="true" mnemonicParsing="false" onAction="#deleteCategory" text="Delete category" />
                      <Separator orientation="VERTICAL" />
-                     <Button mnemonicParsing="false" onAction="#addProduct" text="Add product" />
+                     <Button fx:id="addProductButton" mnemonicParsing="false" onAction="#addProduct" text="Add product" />
                      <Button fx:id="editProductButton" disable="true" layoutX="393.0" layoutY="13.0" mnemonicParsing="false" onAction="#editProduct" text="Edit product" />
                      <Button fx:id="deleteProductButton" disable="true" mnemonicParsing="false" onAction="#deleteProduct" text="Delete product" />
                      <Separator orientation="VERTICAL" />

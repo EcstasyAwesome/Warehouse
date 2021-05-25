@@ -45,6 +45,12 @@ public class ProductList extends Controller {
   private final User sessionUser = (User) SessionManager.get("currentUser").orElseThrow();
 
   @FXML
+  private Button addCategoryButton;
+
+  @FXML
+  private Button addProductButton;
+
+  @FXML
   private Button editCategoryButton;
 
   @FXML
@@ -82,6 +88,10 @@ public class ProductList extends Controller {
 
   @FXML
   private void initialize() {
+    final var accessLevel = sessionUser.getUserSecurity().getAccess().level;
+    addCategoryButton.setDisable(accessLevel > newCategoryProvider.getAccess().level);
+    addProductButton.setDisable(accessLevel > newProductProvider.getAccess().level);
+
     categoryNameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
 
     productIdColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
@@ -94,10 +104,8 @@ public class ProductList extends Controller {
         .addListener((observable, prevCategory, currentCategory) -> {
           if (currentCategory != null) {
             getProductsFromDatabase(currentCategory);
-            var userAccess = sessionUser.getUserSecurity().getAccess();
-            var condition = userAccess.level > Access.ADMIN.level;
-            editCategoryButton.setDisable(condition);
-            deleteCategoryButton.setDisable(condition);
+            editCategoryButton.setDisable(accessLevel > editCategoryProvider.getAccess().level);
+            deleteCategoryButton.setDisable(accessLevel > Access.ADMIN.level);
           } else {
             editCategoryButton.setDisable(true);
             deleteCategoryButton.setDisable(true);
@@ -109,9 +117,8 @@ public class ProductList extends Controller {
         .selectedItemProperty()
         .addListener((observable, prevProduct, currentProduct) -> {
           if (currentProduct != null) {
-            var userAccess = sessionUser.getUserSecurity().getAccess();
-            editProductButton.setDisable(false);
-            deleteProductButton.setDisable(userAccess.level > Access.ADMIN.level);
+            editProductButton.setDisable(accessLevel > editProductProvider.getAccess().level);
+            deleteProductButton.setDisable(accessLevel > Access.ADMIN.level);
           } else {
             editProductButton.setDisable(true);
             deleteProductButton.setDisable(true);

@@ -66,7 +66,8 @@ public class UserList extends Controller {
 
   @FXML
   private void initialize() {
-    addButton.setDisable(sessionUser.getUserSecurity().getAccess().level > Access.ADMIN.level);
+    final var accessLevel = sessionUser.getUserSecurity().getAccess().level;
+    addButton.setDisable(accessLevel > newUserProvider.getAccess().level);
 
     idColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
     surnameColumn.setCellValueFactory(entry -> entry.getValue().surnameProperty());
@@ -80,11 +81,10 @@ public class UserList extends Controller {
         .selectedItemProperty()
         .addListener((observable, prevUser, currentUser) -> {
           if (currentUser != null) {
-            var access = currentUser.getUserSecurity().getAccess();
-            var sessionUserAccess = sessionUser.getUserSecurity().getAccess();
-            var condition = sessionUserAccess.level >= access.level;
-            editButton.setDisable(condition);
-            deleteButton.setDisable(condition);
+            var currentUserAccessLevel = currentUser.getUserSecurity().getAccess().level;
+            var condition = accessLevel >= currentUserAccessLevel;
+            editButton.setDisable(condition || accessLevel > editUserProvider.getAccess().level);
+            deleteButton.setDisable(condition || accessLevel > Access.ADMIN.level);
           } else {
             editButton.setDisable(true);
             deleteButton.setDisable(true);
@@ -128,11 +128,7 @@ public class UserList extends Controller {
     var model = userTable.getSelectionModel();
     if (!model.isEmpty()) {
       var selectedUser = model.getSelectedItem();
-      if (!sessionUser.equals(selectedUser)) {
-        windowManager.showAndGet(editUserProvider);
-      } else {
-        windowManager.showDialog(AlertType.INFORMATION, "You cannot edit yourself here");
-      }
+      windowManager.showAndGet(editUserProvider, selectedUser);
     }
   }
 
