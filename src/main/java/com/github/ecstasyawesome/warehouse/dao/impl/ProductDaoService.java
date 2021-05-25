@@ -1,8 +1,8 @@
 package com.github.ecstasyawesome.warehouse.dao.impl;
 
 import com.github.ecstasyawesome.warehouse.dao.ProductDao;
-import com.github.ecstasyawesome.warehouse.model.Category;
-import com.github.ecstasyawesome.warehouse.model.Product;
+import com.github.ecstasyawesome.warehouse.model.impl.Category;
+import com.github.ecstasyawesome.warehouse.model.impl.Product;
 import com.github.ecstasyawesome.warehouse.model.Unit;
 import java.sql.ResultSet;
 import java.sql.SQLException;

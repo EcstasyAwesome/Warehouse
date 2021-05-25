@@ -2,9 +2,9 @@ package com.github.ecstasyawesome.warehouse.dao.impl;
 
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.User;
-import com.github.ecstasyawesome.warehouse.model.UserContact;
-import com.github.ecstasyawesome.warehouse.model.UserSecurity;
+import com.github.ecstasyawesome.warehouse.model.impl.User;
+import com.github.ecstasyawesome.warehouse.model.impl.UserContact;
+import com.github.ecstasyawesome.warehouse.model.impl.UserSecurity;
 import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
 import java.sql.ResultSet;
 import java.sql.SQLException;
