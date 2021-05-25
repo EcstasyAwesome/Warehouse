@@ -9,7 +9,7 @@ import java.net.URL;
 public class AuthorizationProvider extends ModuleProvider<Authorization> {
 
   private static final AuthorizationProvider INSTANCE = new AuthorizationProvider();
-  public final URL fxml = getClass().getResource("/model/user/Authorization.fxml");
+  private final URL fxml = getClass().getResource("/model/user/Authorization.fxml");
 
   private AuthorizationProvider() {
   }

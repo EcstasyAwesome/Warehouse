@@ -9,7 +9,7 @@ import java.net.URL;
 public class ProductListProvider extends ModuleProvider<ProductList> {
 
   private static final ProductListProvider INSTANCE = new ProductListProvider();
-  public final URL fxml = getClass().getResource("/model/product/ProductList.fxml");
+  private final URL fxml = getClass().getResource("/model/product/ProductList.fxml");
 
   private ProductListProvider() {
   }

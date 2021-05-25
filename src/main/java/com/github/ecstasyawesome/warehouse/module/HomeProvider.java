@@ -9,7 +9,7 @@ import java.net.URL;
 public class HomeProvider extends ModuleProvider<Home> {
 
   private static final HomeProvider INSTANCE = new HomeProvider();
-  public final URL fxml = getClass().getResource("/model/Home.fxml");
+  private final URL fxml = getClass().getResource("/model/Home.fxml");
 
   private HomeProvider() {
   }

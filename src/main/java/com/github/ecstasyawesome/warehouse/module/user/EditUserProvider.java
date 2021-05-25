@@ -10,7 +10,7 @@ import java.net.URL;
 public class EditUserProvider extends ConfiguredFeedbackModuleProvider<EditUser, User> {
 
   private static final EditUserProvider INSTANCE = new EditUserProvider();
-  public final URL fxml = getClass().getResource("/model/user/EditUser.fxml");
+  private final URL fxml = getClass().getResource("/model/user/EditUser.fxml");
 
   private EditUserProvider() {
   }

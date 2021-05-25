@@ -9,7 +9,7 @@ import java.net.URL;
 public class UserListProvider extends ModuleProvider<UserList> {
 
   private static final UserListProvider INSTANCE = new UserListProvider();
-  public final URL fxml = getClass().getResource("/model/user/UserList.fxml");
+  private final URL fxml = getClass().getResource("/model/user/UserList.fxml");
 
   private UserListProvider() {
   }

@@ -10,7 +10,7 @@ import java.net.URL;
 public class EditCategoryProvider extends ConfiguredFeedbackModuleProvider<EditCategory, Category> {
 
   private static final EditCategoryProvider INSTANCE = new EditCategoryProvider();
-  public final URL fxml = getClass().getResource("/model/product/EditCategory.fxml");
+  private final URL fxml = getClass().getResource("/model/product/EditCategory.fxml");
 
   private EditCategoryProvider() {
   }

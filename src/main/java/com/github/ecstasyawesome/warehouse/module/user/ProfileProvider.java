@@ -9,7 +9,7 @@ import java.net.URL;
 public class ProfileProvider extends ModuleProvider<Profile> {
 
   private static final ProfileProvider INSTANCE = new ProfileProvider();
-  public final URL fxml = getClass().getResource("/model/user/Profile.fxml");
+  private final URL fxml = getClass().getResource("/model/user/Profile.fxml");
 
   private ProfileProvider() {
   }

@@ -12,7 +12,7 @@ public class AdministratorRegistrationProvider
 
   private static final AdministratorRegistrationProvider INSTANCE =
       new AdministratorRegistrationProvider();
-  public final URL fxml = getClass().getResource("/model/user/AdministratorRegistration.fxml");
+  private final URL fxml = getClass().getResource("/model/user/AdministratorRegistration.fxml");
 
   private AdministratorRegistrationProvider() {
   }

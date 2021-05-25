@@ -10,7 +10,7 @@ import java.net.URL;
 public class NewUserProvider extends FeedbackModuleProvider<NewUser, User> {
 
   private static final NewUserProvider INSTANCE = new NewUserProvider();
-  public final URL fxml = getClass().getResource("/model/user/NewUser.fxml");
+  private final URL fxml = getClass().getResource("/model/user/NewUser.fxml");
 
   private NewUserProvider() {
   }
