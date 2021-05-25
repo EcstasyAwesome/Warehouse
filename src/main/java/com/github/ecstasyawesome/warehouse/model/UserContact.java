@@ -12,7 +12,7 @@ public class UserContact extends ContactRecord {
     super(id, phone, email);
   }
 
-  public static Builder builder() {
+  public static Builder getBuilder() {
     return new Builder();
   }
 
@@ -25,17 +25,17 @@ public class UserContact extends ContactRecord {
     private Builder() {
     }
 
-    public Builder id(long id) {
+    public Builder setId(long id) {
       this.id = id;
       return this;
     }
 
-    public Builder phone(String phone) {
+    public Builder setPhone(String phone) {
       this.phone = phone;
       return this;
     }
 
-    public Builder email(String email) {
+    public Builder setEmail(String email) {
       this.email = email;
       return this;
     }

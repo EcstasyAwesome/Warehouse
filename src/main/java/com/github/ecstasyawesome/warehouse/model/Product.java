@@ -20,7 +20,7 @@ public class Product extends NamedRecord {
     this.unit = new SimpleObjectProperty<>(unit);
   }
 
-  public static Builder builder() {
+  public static Builder getBuilder() {
     return new Builder();
   }
 
@@ -80,22 +80,22 @@ public class Product extends NamedRecord {
     private Builder() {
     }
 
-    public Builder id(long id) {
+    public Builder setId(long id) {
       this.id = id;
       return this;
     }
 
-    public Builder name(String name) {
+    public Builder setName(String name) {
       this.name = name;
       return this;
     }
 
-    public Builder category(Category category) {
+    public Builder setCategory(Category category) {
       this.category = category;
       return this;
     }
 
-    public Builder unit(Unit unit) {
+    public Builder setUnit(Unit unit) {
       this.unit = unit;
       return this;
     }

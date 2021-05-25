@@ -64,21 +64,21 @@ public class AdministratorRegistration extends FeedbackController<UserSecurity> 
         & isFieldValid(secondNameField, STRICT_NAME, false) & isFieldValid(phoneField, PHONE, false)
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(passwordField, PASSWORD, false)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
-      var contact = UserContact.builder()
-          .phone(phoneField.getText())
-          .email(emailField.getText().isEmpty() ? null : emailField.getText())
+      var contact = UserContact.getBuilder()
+          .setPhone(phoneField.getText())
+          .setEmail(emailField.getText().isEmpty() ? null : emailField.getText())
           .build();
-      var security = UserSecurity.builder()
-          .login(loginField.getText())
-          .password(passwordField.getText())
-          .access(Access.ROOT)
+      var security = UserSecurity.getBuilder()
+          .setLogin(loginField.getText())
+          .setPassword(passwordField.getText())
+          .setAccess(Access.ROOT)
           .build();
-      var user = User.builder()
-          .surname(surnameField.getText())
-          .name(nameField.getText())
-          .secondName(secondNameField.getText())
-          .userContact(contact)
-          .userSecurity(security)
+      var user = User.getBuilder()
+          .setSurname(surnameField.getText())
+          .setName(nameField.getText())
+          .setSecondName(secondNameField.getText())
+          .setUserContact(contact)
+          .setUserSecurity(security)
           .build();
       try {
         userDao.create(user);

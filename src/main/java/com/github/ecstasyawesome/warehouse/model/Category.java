@@ -17,7 +17,7 @@ public class Category extends NamedRecord {
     this.description = new SimpleStringProperty(description);
   }
 
-  public static Builder builder() {
+  public static Builder getBuilder() {
     return new Builder();
   }
 
@@ -33,6 +33,27 @@ public class Category extends NamedRecord {
     return description;
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+
+    var that = (Category) obj;
+    return Objects.equals(description.get(), that.description.get());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), description.get());
+  }
+
   public static class Builder {
 
     private long id = -1L;
@@ -42,17 +63,17 @@ public class Category extends NamedRecord {
     private Builder() {
     }
 
-    public Builder id(long id) {
+    public Builder setId(long id) {
       this.id = id;
       return this;
     }
 
-    public Builder name(String name) {
+    public Builder setName(String name) {
       this.name = name;
       return this;
     }
 
-    public Builder description(String description) {
+    public Builder setDescription(String description) {
       this.description = description;
       return this;
     }

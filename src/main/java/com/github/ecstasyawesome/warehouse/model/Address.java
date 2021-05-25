@@ -11,6 +11,11 @@ public class Address extends Record {
   private final StringProperty street;
   private final StringProperty number;
 
+  public Address(Address instance) {
+    this(instance.getId(), instance.getRegion(), instance.getTown(), instance.getStreet(),
+        instance.getNumber());
+  }
+
   private Address(long id, String region, String town, String street, String number) {
     super(id);
     this.region = new SimpleStringProperty(region);
@@ -19,7 +24,7 @@ public class Address extends Record {
     this.number = new SimpleStringProperty(number);
   }
 
-  public static Builder builder() {
+  public static Builder getBuilder() {
     return new Builder();
   }
 
@@ -106,27 +111,27 @@ public class Address extends Record {
     private Builder() {
     }
 
-    public Builder id(long id) {
+    public Builder setId(long id) {
       this.id = id;
       return this;
     }
 
-    public Builder region(String region) {
+    public Builder setRegion(String region) {
       this.region = region;
       return this;
     }
 
-    public Builder town(String town) {
+    public Builder setTown(String town) {
       this.town = town;
       return this;
     }
 
-    public Builder street(String street) {
+    public Builder setStreet(String street) {
       this.street = street;
       return this;
     }
 
-    public Builder number(String number) {
+    public Builder setNumber(String number) {
       this.number = number;
       return this;
     }

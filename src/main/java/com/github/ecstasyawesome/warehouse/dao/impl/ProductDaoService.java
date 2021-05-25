@@ -163,11 +163,11 @@ public class ProductDaoService extends ProductDao {
 
   @Override
   protected Product transformToObj(final ResultSet resultSet) throws SQLException {
-    return Product.builder()
-        .id(resultSet.getLong("PRODUCT_ID"))
-        .category(categoryDaoService.transformToObj(resultSet))
-        .name(resultSet.getString("PRODUCT_NAME"))
-        .unit(Unit.valueOf(resultSet.getString("PRODUCT_UNIT")))
+    return Product.getBuilder()
+        .setId(resultSet.getLong("PRODUCT_ID"))
+        .setCategory(categoryDaoService.transformToObj(resultSet))
+        .setName(resultSet.getString("PRODUCT_NAME"))
+        .setUnit(Unit.valueOf(resultSet.getString("PRODUCT_UNIT")))
         .build();
   }
 }

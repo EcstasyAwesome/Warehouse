@@ -23,7 +23,7 @@ public class UserSecurity extends Record {
     this.access = new SimpleObjectProperty<>(access);
   }
 
-  public static Builder builder() {
+  public static Builder getBuilder() {
     return new Builder();
   }
 
@@ -95,22 +95,22 @@ public class UserSecurity extends Record {
     private Builder() {
     }
 
-    public Builder id(long id) {
+    public Builder setId(long id) {
       this.id = id;
       return this;
     }
 
-    public Builder login(String login) {
+    public Builder setLogin(String login) {
       this.login = login;
       return this;
     }
 
-    public Builder password(String password) {
+    public Builder setPassword(String password) {
       this.password = password;
       return this;
     }
 
-    public Builder access(Access access) {
+    public Builder setAccess(Access access) {
       this.access = access;
       return this;
     }

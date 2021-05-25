@@ -27,7 +27,7 @@ public class User extends NamedRecord {
     this.userSecurity = new SimpleObjectProperty<>(userSecurity);
   }
 
-  public static Builder builder() {
+  public static Builder getBuilder() {
     return new Builder();
   }
 
@@ -116,32 +116,32 @@ public class User extends NamedRecord {
     private Builder() {
     }
 
-    public Builder id(long id) {
+    public Builder setId(long id) {
       this.id = id;
       return this;
     }
 
-    public Builder surname(String surname) {
+    public Builder setSurname(String surname) {
       this.surname = surname;
       return this;
     }
 
-    public Builder name(String name) {
+    public Builder setName(String name) {
       this.name = name;
       return this;
     }
 
-    public Builder secondName(String secondName) {
+    public Builder setSecondName(String secondName) {
       this.secondName = secondName;
       return this;
     }
 
-    public Builder userContact(UserContact userContact) {
+    public Builder setUserContact(UserContact userContact) {
       this.userContact = userContact;
       return this;
     }
 
-    public Builder userSecurity(UserSecurity userSecurity) {
+    public Builder setUserSecurity(UserSecurity userSecurity) {
       this.userSecurity = userSecurity;
       return this;
     }

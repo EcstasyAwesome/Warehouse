@@ -33,9 +33,9 @@ public class NewCategory extends FeedbackController<Category> {
   private void add(ActionEvent event) {
     if (isFieldValid(nameField, null, STRICT_NAME, categoryDao)
         & isFieldValid(descriptionArea, WILDCARD, true)) {
-      var category = Category.builder()
-          .name(nameField.getText())
-          .description(descriptionArea.getText().isEmpty() ? null : descriptionArea.getText())
+      var category = Category.getBuilder()
+          .setName(nameField.getText())
+          .setDescription(descriptionArea.getText().isEmpty() ? null : descriptionArea.getText())
           .build();
       try {
         categoryDao.create(category);

@@ -104,10 +104,10 @@ public class CategoryDaoService extends CategoryDao {
 
   @Override
   protected Category transformToObj(final ResultSet resultSet) throws SQLException {
-    return Category.builder()
-        .id(resultSet.getLong("CATEGORY_ID"))
-        .name(resultSet.getString("CATEGORY_NAME"))
-        .description(resultSet.getString("CATEGORY_DESCRIPTION"))
+    return Category.getBuilder()
+        .setId(resultSet.getLong("CATEGORY_ID"))
+        .setName(resultSet.getString("CATEGORY_NAME"))
+        .setDescription(resultSet.getString("CATEGORY_DESCRIPTION"))
         .build();
   }
 }

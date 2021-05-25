@@ -51,10 +51,10 @@ public class NewProduct extends FeedbackController<Product> {
   private void add(ActionEvent event) {
     if (isFieldValid(nameField, null, NAME, productDao)
         & isFieldValid(unitChoiceBox) & isFieldValid(categoryChoiceBox)) {
-      var product = Product.builder()
-          .name(nameField.getText())
-          .unit(unitChoiceBox.getValue())
-          .category(categoryChoiceBox.getValue())
+      var product = Product.getBuilder()
+          .setName(nameField.getText())
+          .setUnit(unitChoiceBox.getValue())
+          .setCategory(categoryChoiceBox.getValue())
           .build();
       try {
         productDao.create(product);

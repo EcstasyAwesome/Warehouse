@@ -197,24 +197,24 @@ public class UserDaoService extends UserDao {
 
   @Override
   protected User transformToObj(final ResultSet resultSet) throws SQLException {
-    var contact = UserContact.builder()
-        .id(resultSet.getLong("USER_CONTACT_ID"))
-        .phone(resultSet.getString("USER_CONTACT_PHONE"))
-        .email(resultSet.getString("USER_CONTACT_EMAIL"))
+    var contact = UserContact.getBuilder()
+        .setId(resultSet.getLong("USER_CONTACT_ID"))
+        .setPhone(resultSet.getString("USER_CONTACT_PHONE"))
+        .setEmail(resultSet.getString("USER_CONTACT_EMAIL"))
         .build();
-    var security = UserSecurity.builder()
-        .id(resultSet.getLong("USER_SECURITY_ID"))
-        .login(resultSet.getString("USER_SECURITY_LOGIN"))
-        .password(resultSet.getString("USER_SECURITY_PASSWORD"))
-        .access(Access.valueOf(resultSet.getString("USER_SECURITY_ACCESS")))
+    var security = UserSecurity.getBuilder()
+        .setId(resultSet.getLong("USER_SECURITY_ID"))
+        .setLogin(resultSet.getString("USER_SECURITY_LOGIN"))
+        .setPassword(resultSet.getString("USER_SECURITY_PASSWORD"))
+        .setAccess(Access.valueOf(resultSet.getString("USER_SECURITY_ACCESS")))
         .build();
-    return User.builder()
-        .id(resultSet.getLong("USER_ID"))
-        .surname(resultSet.getString("USER_SURNAME"))
-        .name(resultSet.getString("USER_NAME"))
-        .secondName(resultSet.getString("USER_SECOND_NAME"))
-        .userContact(contact)
-        .userSecurity(security)
+    return User.getBuilder()
+        .setId(resultSet.getLong("USER_ID"))
+        .setSurname(resultSet.getString("USER_SURNAME"))
+        .setName(resultSet.getString("USER_NAME"))
+        .setSecondName(resultSet.getString("USER_SECOND_NAME"))
+        .setUserContact(contact)
+        .setUserSecurity(security)
         .build();
   }
 }

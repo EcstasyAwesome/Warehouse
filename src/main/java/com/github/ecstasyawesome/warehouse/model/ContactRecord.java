@@ -6,8 +6,8 @@ import javafx.beans.property.StringProperty;
 
 public abstract class ContactRecord extends Record {
 
-  private final StringProperty phone;
-  private final StringProperty email;
+  protected final StringProperty phone;
+  protected final StringProperty email;
 
   protected ContactRecord(long id, String phone, String email) {
     super(id);
