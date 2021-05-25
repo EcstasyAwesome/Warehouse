@@ -18,9 +18,12 @@ public class Commodity extends Record {
   private final ObjectProperty<LocalDateTime> updateTime;
 
   public Commodity(Commodity instance) {
-    this(instance.getId(), new ProductItem(instance.getProductItem()),
+    this(instance.getId(),
+        new ProductItem(instance.getProductItem()),
         new ProductStorage(instance.getProductStorage()), instance.getPurchasePrice(),
-        instance.getRetailPrice(), instance.getUpdateTime());
+        instance.getRetailPrice(),
+        LocalDateTime
+            .of(instance.getUpdateTime().toLocalDate(), instance.getUpdateTime().toLocalTime()));
   }
 
   private Commodity(long id, ProductItem productItem, ProductStorage productStorage,
