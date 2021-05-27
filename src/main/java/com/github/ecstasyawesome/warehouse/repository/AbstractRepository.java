@@ -11,7 +11,7 @@ import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public abstract class Repository<T extends AbstractRecord> {
+public abstract class AbstractRepository<T extends AbstractRecord> {
 
   protected abstract T transformToObj(ResultSet resultSet) throws SQLException;
 

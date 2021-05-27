@@ -14,7 +14,7 @@ import com.github.ecstasyawesome.warehouse.module.product.NewCategoryProvider;
 import com.github.ecstasyawesome.warehouse.module.product.NewProductProvider;
 import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
 import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
-import com.github.ecstasyawesome.warehouse.repository.RecordRepository;
+import com.github.ecstasyawesome.warehouse.repository.AbstractRecordRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
 import com.github.ecstasyawesome.warehouse.repository.impl.ProductRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
@@ -267,7 +267,7 @@ public class ProductList extends Controller {
   }
 
   private <T extends AbstractRecord> void deleteRecord(String name, TableView<T> table,
-      RecordRepository<T> repository) {
+      AbstractRecordRepository<T> repository) {
     var selectionModel = table.getSelectionModel();
     if (!selectionModel.isEmpty()) {
       var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
