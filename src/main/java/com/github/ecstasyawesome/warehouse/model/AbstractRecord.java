@@ -4,13 +4,9 @@ import java.util.Objects;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
 
-public abstract class Record {
+public abstract class AbstractRecord {
 
-  protected final LongProperty id;
-
-  protected Record(long id) {
-    this.id = new SimpleLongProperty(id);
-  }
+  private final LongProperty id = new SimpleLongProperty();
 
   public long getId() {
     return id.get();
@@ -32,7 +28,7 @@ public abstract class Record {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    var that = (Record) obj;
+    var that = (AbstractRecord) obj;
     return id.get() == that.id.get();
   }
 

@@ -5,7 +5,7 @@ import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.impl.User;
+import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.module.user.EditUserProvider;
 import com.github.ecstasyawesome.warehouse.module.user.NewUserProvider;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
@@ -66,22 +66,22 @@ public class UserList extends Controller {
 
   @FXML
   private void initialize() {
-    final var accessLevel = sessionUser.getUserSecurity().getAccess().level;
+    final var accessLevel = sessionUser.getPersonSecurity().getAccess().level;
     addButton.setDisable(accessLevel > newUserProvider.getAccess().level);
 
     idColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
     surnameColumn.setCellValueFactory(entry -> entry.getValue().surnameProperty());
     nameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
     secondNameColumn.setCellValueFactory(entry -> entry.getValue().secondNameProperty());
-    phoneColumn.setCellValueFactory(entry -> entry.getValue().getUserContact().phoneProperty());
-    emailColumn.setCellValueFactory(entry -> entry.getValue().getUserContact().emailProperty());
-    accessColumn.setCellValueFactory(entry -> entry.getValue().getUserSecurity().accessProperty());
+    phoneColumn.setCellValueFactory(entry -> entry.getValue().getPersonContact().phoneProperty());
+    emailColumn.setCellValueFactory(entry -> entry.getValue().getPersonContact().emailProperty());
+    accessColumn.setCellValueFactory(entry -> entry.getValue().getPersonSecurity().accessProperty());
 
     userTable.getSelectionModel()
         .selectedItemProperty()
         .addListener((observable, prevUser, currentUser) -> {
           if (currentUser != null) {
-            var currentUserAccessLevel = currentUser.getUserSecurity().getAccess().level;
+            var currentUserAccessLevel = currentUser.getPersonSecurity().getAccess().level;
             var condition = accessLevel >= currentUserAccessLevel;
             editButton.setDisable(condition || accessLevel > editUserProvider.getAccess().level);
             deleteButton.setDisable(condition || accessLevel > Access.ADMIN.level);

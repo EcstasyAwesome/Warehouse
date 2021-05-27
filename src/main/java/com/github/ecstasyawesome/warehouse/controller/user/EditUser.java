@@ -10,7 +10,7 @@ import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.impl.User;
+import com.github.ecstasyawesome.warehouse.model.User;
 import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -63,9 +63,9 @@ public class EditUser extends ConfiguredFeedbackController<User> {
       user.setSurname(surnameField.getText());
       user.setName(nameField.getText());
       user.setSecondName(secondNameField.getText());
-      user.getUserContact().setPhone(phoneField.getText());
-      user.getUserContact().setEmail(emailField.getText());
-      user.getUserSecurity().setAccess(accessChoiceBox.getValue());
+      user.getPersonContact().setPhone(phoneField.getText());
+      user.getPersonContact().setEmail(emailField.getText());
+      user.getPersonSecurity().setAccess(accessChoiceBox.getValue());
       if (!user.equals(userCopy)) {
         try {
           userDao.update(user);
@@ -75,8 +75,8 @@ public class EditUser extends ConfiguredFeedbackController<User> {
           user.setSurname(userCopy.getSurname());
           user.setName(userCopy.getName());
           user.setSecondName(userCopy.getSecondName());
-          user.setUserContact(userCopy.getUserContact());
-          user.setUserSecurity(userCopy.getUserSecurity());
+          user.setPersonContact(userCopy.getPersonContact());
+          user.setPersonSecurity(userCopy.getPersonSecurity());
           windowManager.showDialog(exception);
         }
       }
@@ -89,11 +89,11 @@ public class EditUser extends ConfiguredFeedbackController<User> {
     surnameField.setText(user.getSurname());
     nameField.setText(user.getName());
     secondNameField.setText(user.getSecondName());
-    phoneField.setText(user.getUserContact().getPhone());
-    emailField.setText(Objects.requireNonNullElse(user.getUserContact().getEmail(), ""));
-    accessChoiceBox.setValue(user.getUserSecurity().getAccess());
-    loginField.setText(user.getUserSecurity().getLogin());
-    passwordField.setText(user.getUserSecurity().getPassword());
+    phoneField.setText(user.getPersonContact().getPhone());
+    emailField.setText(Objects.requireNonNullElse(user.getPersonContact().getEmail(), ""));
+    accessChoiceBox.setValue(user.getPersonSecurity().getAccess());
+    loginField.setText(user.getPersonSecurity().getLogin());
+    passwordField.setText(user.getPersonSecurity().getPassword());
   }
 
   @Override

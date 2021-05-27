@@ -1,6 +1,6 @@
 package com.github.ecstasyawesome.warehouse.dao;
 
-import com.github.ecstasyawesome.warehouse.model.Record;
+import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +11,7 @@ import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public abstract class GenericDao<T extends Record> {
+public abstract class GenericDao<T extends AbstractRecord> {
 
   public abstract ObservableList<T> getAll();
 

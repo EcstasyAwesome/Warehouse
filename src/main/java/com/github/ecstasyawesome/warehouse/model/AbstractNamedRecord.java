@@ -4,14 +4,9 @@ import java.util.Objects;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public abstract class NamedRecord extends Record {
+public abstract class AbstractNamedRecord extends AbstractRecord {
 
-  protected final StringProperty name;
-
-  protected NamedRecord(long id, String name) {
-    super(id);
-    this.name = new SimpleStringProperty(name);
-  }
+  private final StringProperty name = new SimpleStringProperty();
 
   public String getName() {
     return name.get();
@@ -36,7 +31,7 @@ public abstract class NamedRecord extends Record {
     if (!super.equals(obj)) {
       return false;
     }
-    var that = (NamedRecord) obj;
+    var that = (AbstractNamedRecord) obj;
     return Objects.equals(name.get(), that.name.get());
   }
 

@@ -8,7 +8,7 @@ import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.CategoryDaoService;
-import com.github.ecstasyawesome.warehouse.model.impl.Category;
+import com.github.ecstasyawesome.warehouse.model.Category;
 import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

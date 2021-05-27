@@ -4,7 +4,7 @@ import com.github.ecstasyawesome.warehouse.controller.product.EditCategory;
 import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackModuleProvider;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.impl.Category;
+import com.github.ecstasyawesome.warehouse.model.Category;
 import java.net.URL;
 
 public class EditCategoryProvider extends ConfiguredFeedbackModuleProvider<EditCategory, Category> {

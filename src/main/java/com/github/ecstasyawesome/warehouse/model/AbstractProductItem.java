@@ -1,28 +1,15 @@
 package com.github.ecstasyawesome.warehouse.model;
 
-import com.github.ecstasyawesome.warehouse.model.impl.Product;
 import java.util.Objects;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class ProductItem {
+public abstract class AbstractProductItem extends AbstractRecord {
 
-  private final ObjectProperty<Product> product;
-  private final DoubleProperty amount;
-
-  public ProductItem(ProductItem instance) {
-    this(instance.getProduct(), instance.getAmount());
-  }
-
-  private ProductItem(Product product, double amount) {
-    if (amount <= 0D) {
-      throw new NullPointerException("Amount cannot be negative or zero");
-    }
-    this.product = new SimpleObjectProperty<>(product);
-    this.amount = new SimpleDoubleProperty(amount);
-  }
+  private final ObjectProperty<Product> product = new SimpleObjectProperty<>();
+  private final DoubleProperty amount = new SimpleDoubleProperty();
 
   public Product getProduct() {
     return product.get();
@@ -56,13 +43,16 @@ public class ProductItem {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
+    if (!super.equals(obj)) {
+      return false;
+    }
 
-    var that = (ProductItem) obj;
+    var that = (AbstractProductItem) obj;
     return Objects.equals(product.get(), that.product.get()) && amount.get() == that.amount.get();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(product.get(), amount.get());
+    return Objects.hash(super.hashCode(), product.get(), amount.get());
   }
 }

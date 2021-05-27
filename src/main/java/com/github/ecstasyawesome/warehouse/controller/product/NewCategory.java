@@ -8,7 +8,7 @@ import com.github.ecstasyawesome.warehouse.core.FeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.CategoryDaoService;
-import com.github.ecstasyawesome.warehouse.model.impl.Category;
+import com.github.ecstasyawesome.warehouse.model.Category;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -33,7 +33,7 @@ public class NewCategory extends FeedbackController<Category> {
   private void add(ActionEvent event) {
     if (isFieldValid(nameField, null, STRICT_NAME, categoryDao)
         & isFieldValid(descriptionArea, WILDCARD, true)) {
-      var category = Category.getBuilder()
+      var category = Category.Builder.create()
           .setName(nameField.getText())
           .setDescription(descriptionArea.getText().isEmpty() ? null : descriptionArea.getText())
           .build();

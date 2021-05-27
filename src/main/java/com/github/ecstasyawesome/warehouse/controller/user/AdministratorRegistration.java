@@ -12,9 +12,9 @@ import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.model.impl.UserContact;
-import com.github.ecstasyawesome.warehouse.model.impl.UserSecurity;
+import com.github.ecstasyawesome.warehouse.model.PersonSecurity;
+import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.model.PersonContact;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
@@ -22,12 +22,12 @@ import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AdministratorRegistration extends FeedbackController<UserSecurity> {
+public class AdministratorRegistration extends FeedbackController<PersonSecurity> {
 
   private final WindowManager windowManager = WindowManager.getInstance();
   private final UserDao userDao = UserDaoService.getInstance();
   private final Logger logger = LogManager.getLogger(AdministratorRegistration.class);
-  private UserSecurity result;
+  private PersonSecurity result;
 
   @FXML
   private TextField surnameField;
@@ -64,16 +64,16 @@ public class AdministratorRegistration extends FeedbackController<UserSecurity> 
         & isFieldValid(secondNameField, STRICT_NAME, false) & isFieldValid(phoneField, PHONE, false)
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(passwordField, PASSWORD, false)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
-      var contact = UserContact.getBuilder()
+      var contact = PersonContact.Builder.create()
           .setPhone(phoneField.getText())
           .setEmail(emailField.getText().isEmpty() ? null : emailField.getText())
           .build();
-      var security = UserSecurity.getBuilder()
+      var security = PersonSecurity.Builder.create()
           .setLogin(loginField.getText())
           .setPassword(passwordField.getText())
           .setAccess(Access.ROOT)
           .build();
-      var user = User.getBuilder()
+      var user = User.Builder.create()
           .setSurname(surnameField.getText())
           .setName(nameField.getText())
           .setSecondName(secondNameField.getText())
@@ -82,7 +82,7 @@ public class AdministratorRegistration extends FeedbackController<UserSecurity> 
           .build();
       try {
         userDao.create(user);
-        result = user.getUserSecurity();
+        result = user.getPersonSecurity();
         logger.info("Root user registered");
         closeCurrentStage(event);
       } catch (NullPointerException exception) {
@@ -92,7 +92,7 @@ public class AdministratorRegistration extends FeedbackController<UserSecurity> 
   }
 
   @Override
-  public UserSecurity get() {
+  public PersonSecurity get() {
     return result;
   }
 }

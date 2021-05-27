@@ -1,32 +1,25 @@
-package com.github.ecstasyawesome.warehouse.model.impl;
+package com.github.ecstasyawesome.warehouse.model;
 
-import com.github.ecstasyawesome.warehouse.model.Record;
 import java.util.Objects;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Address extends Record {
+public class Address extends AbstractRecord {
 
-  private final StringProperty region;
-  private final StringProperty town;
-  private final StringProperty street;
-  private final StringProperty number;
+  private final StringProperty region = new SimpleStringProperty();
+  private final StringProperty town = new SimpleStringProperty();
+  private final StringProperty street = new SimpleStringProperty();
+  private final StringProperty number = new SimpleStringProperty();
 
   public Address(Address instance) {
-    this(instance.getId(), instance.getRegion(), instance.getTown(), instance.getStreet(),
-        instance.getNumber());
+    setId(instance.getId());
+    setRegion(instance.getRegion());
+    setTown(instance.getTown());
+    setStreet(instance.getStreet());
+    setNumber(instance.getNumber());
   }
 
-  private Address(long id, String region, String town, String street, String number) {
-    super(id);
-    this.region = new SimpleStringProperty(region);
-    this.town = new SimpleStringProperty(town);
-    this.street = new SimpleStringProperty(street);
-    this.number = new SimpleStringProperty(number);
-  }
-
-  public static Builder getBuilder() {
-    return new Builder();
+  private Address() {
   }
 
   public String getRegion() {
@@ -112,6 +105,10 @@ public class Address extends Record {
     private Builder() {
     }
 
+    public static Builder create() {
+      return new Builder();
+    }
+
     public Builder setId(long id) {
       this.id = id;
       return this;
@@ -141,11 +138,13 @@ public class Address extends Record {
       if (number != null) {
         Objects.requireNonNull(street);
       }
-      return new Address(id,
-          Objects.requireNonNull(region),
-          Objects.requireNonNull(town),
-          street,
-          number);
+      var instance = new Address();
+      instance.setId(id);
+      instance.setRegion(Objects.requireNonNull(region));
+      instance.setTown(Objects.requireNonNull(town));
+      instance.setStreet(street);
+      instance.setTown(number);
+      return instance;
     }
   }
 }

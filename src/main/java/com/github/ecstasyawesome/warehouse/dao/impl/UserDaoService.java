@@ -2,9 +2,9 @@ package com.github.ecstasyawesome.warehouse.dao.impl;
 
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.model.impl.UserContact;
-import com.github.ecstasyawesome.warehouse.model.impl.UserSecurity;
+import com.github.ecstasyawesome.warehouse.model.PersonSecurity;
+import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.model.PersonContact;
 import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -90,10 +90,10 @@ public class UserDaoService extends UserDao {
       try {
         final var userId = insertRecord(connection, userQuery, instance.getSurname(),
             instance.getName(), instance.getSecondName());
-        final var contact = instance.getUserContact();
+        final var contact = instance.getPersonContact();
         final var contactId = insertRecord(connection, userContactQuery, userId, contact.getPhone(),
             contact.getEmail());
-        final var security = instance.getUserSecurity();
+        final var security = instance.getPersonSecurity();
         final var securityId = insertRecord(connection, userSecurityQuery, userId,
             security.getLogin(), security.getPassword(), security.getAccess().name());
         connection.commit();
@@ -170,8 +170,8 @@ public class UserDaoService extends UserDao {
             USER_SECOND_NAME=?
         WHERE USER_ID=?
         """;
-    final var contact = instance.getUserContact();
-    final var security = instance.getUserSecurity();
+    final var contact = instance.getPersonContact();
+    final var security = instance.getPersonSecurity();
     try {
       execute(query, contact.getPhone(), contact.getEmail(), contact.getId(), security.getLogin(),
           security.getPassword(), security.getAccess().name(), security.getId(),
@@ -197,18 +197,18 @@ public class UserDaoService extends UserDao {
 
   @Override
   protected User transformToObj(final ResultSet resultSet) throws SQLException {
-    var contact = UserContact.getBuilder()
+    var contact = PersonContact.Builder.create()
         .setId(resultSet.getLong("USER_CONTACT_ID"))
         .setPhone(resultSet.getString("USER_CONTACT_PHONE"))
         .setEmail(resultSet.getString("USER_CONTACT_EMAIL"))
         .build();
-    var security = UserSecurity.getBuilder()
+    var security = PersonSecurity.Builder.create()
         .setId(resultSet.getLong("USER_SECURITY_ID"))
         .setLogin(resultSet.getString("USER_SECURITY_LOGIN"))
         .setPassword(resultSet.getString("USER_SECURITY_PASSWORD"))
         .setAccess(Access.valueOf(resultSet.getString("USER_SECURITY_ACCESS")))
         .build();
-    return User.getBuilder()
+    return User.Builder.create()
         .setId(resultSet.getLong("USER_ID"))
         .setSurname(resultSet.getString("USER_SURNAME"))
         .setName(resultSet.getString("USER_NAME"))

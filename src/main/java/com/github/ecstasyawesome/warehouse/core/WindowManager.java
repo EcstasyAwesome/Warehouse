@@ -1,7 +1,7 @@
 package com.github.ecstasyawesome.warehouse.core;
 
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.impl.User;
+import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.module.user.AuthorizationProvider;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import java.io.PrintWriter;
@@ -205,7 +205,7 @@ public final class WindowManager {
     if (user.isEmpty()) {
       return false;
     }
-    return user.get().getUserSecurity().getAccess().level <= access.level;
+    return user.get().getPersonSecurity().getAccess().level <= access.level;
   }
 
   private void checkAbilityToCache(CachedController controller) {
@@ -338,7 +338,7 @@ public final class WindowManager {
       viewSettings.save();
       applicationSettings.save();
       getUserFromContext().ifPresent(user -> {
-        LOGGER.info("Logged out '{}'", user.getUserSecurity().getLogin());
+        LOGGER.info("Logged out '{}'", user.getPersonSecurity().getLogin());
         LOGGER.trace("Application closed");
       });
     };

@@ -4,7 +4,7 @@ import com.github.ecstasyawesome.warehouse.controller.product.NewCategory;
 import com.github.ecstasyawesome.warehouse.core.FeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.FeedbackModuleProvider;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.impl.Category;
+import com.github.ecstasyawesome.warehouse.model.Category;
 import java.net.URL;
 
 public class NewCategoryProvider extends FeedbackModuleProvider<NewCategory, Category> {

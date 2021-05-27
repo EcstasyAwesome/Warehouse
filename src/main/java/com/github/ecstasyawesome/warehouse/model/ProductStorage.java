@@ -1,27 +1,22 @@
-package com.github.ecstasyawesome.warehouse.model.impl;
+package com.github.ecstasyawesome.warehouse.model;
 
-import com.github.ecstasyawesome.warehouse.model.StorageRecord;
 import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class ProductStorage extends StorageRecord {
+public class ProductStorage extends AbstractBusiness {
 
-  private final ObjectProperty<Company> company;
+  private final ObjectProperty<Company> company = new SimpleObjectProperty<>();
 
   public ProductStorage(ProductStorage instance) {
-    this(instance.getId(), instance.getName(), new CompanyContact(instance.getCompanyContact()),
-        new Address(instance.getAddress()), new Company(instance.getCompany()));
+    setId(instance.getId());
+    setName(instance.getName());
+    setAddress(new Address(instance.getAddress()));
+    setBusinessContact(new BusinessContact(instance.getBusinessContact()));
+    setCompany(new Company(instance.getCompany()));
   }
 
-  private ProductStorage(long id, String name, CompanyContact companyContact, Address address,
-      Company company) {
-    super(id, name, companyContact, address);
-    this.company = new SimpleObjectProperty<>(company);
-  }
-
-  public static Builder getBuilder() {
-    return new Builder();
+  private ProductStorage() {
   }
 
   public Company getCompany() {
@@ -61,11 +56,15 @@ public class ProductStorage extends StorageRecord {
 
     private long id = -1L;
     private String name;
-    private CompanyContact companyContact;
+    private BusinessContact businessContact;
     private Address address;
     private Company company;
 
     private Builder() {
+    }
+
+    public static Builder create() {
+      return new Builder();
     }
 
     public Builder setId(long id) {
@@ -78,8 +77,8 @@ public class ProductStorage extends StorageRecord {
       return this;
     }
 
-    public Builder setCompanyContact(CompanyContact companyContact) {
-      this.companyContact = companyContact;
+    public Builder setBusinessContact(BusinessContact businessContact) {
+      this.businessContact = businessContact;
       return this;
     }
 
@@ -94,11 +93,13 @@ public class ProductStorage extends StorageRecord {
     }
 
     public ProductStorage build() {
-      return new ProductStorage(id,
-          Objects.requireNonNull(name),
-          Objects.requireNonNull(companyContact),
-          Objects.requireNonNull(address),
-          Objects.requireNonNull(company));
+      var instance = new ProductStorage();
+      instance.setId(id);
+      instance.setName(Objects.requireNonNull(name));
+      instance.setAddress(Objects.requireNonNull(address));
+      instance.setBusinessContact(Objects.requireNonNull(businessContact));
+      instance.setCompany(Objects.requireNonNull(company));
+      return instance;
     }
   }
 }

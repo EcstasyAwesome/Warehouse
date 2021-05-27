@@ -1,29 +1,22 @@
-package com.github.ecstasyawesome.warehouse.model.impl;
+package com.github.ecstasyawesome.warehouse.model;
 
-import com.github.ecstasyawesome.warehouse.model.NamedRecord;
-import com.github.ecstasyawesome.warehouse.model.Unit;
 import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class Product extends NamedRecord {
+public class Product extends AbstractNamedRecord {
 
-  private final ObjectProperty<Category> category;
-  private final ObjectProperty<Unit> unit;
+  private final ObjectProperty<Category> category = new SimpleObjectProperty<>();
+  private final ObjectProperty<Unit> unit = new SimpleObjectProperty<>();
 
   public Product(Product instance) {
-    this(instance.getId(), instance.getName(), new Category(instance.getCategory()),
-        instance.getUnit());
+    setId(instance.getId());
+    setName(instance.getName());
+    setCategory(new Category(instance.getCategory()));
+    setUnit(instance.getUnit());
   }
 
-  private Product(long id, String name, Category category, Unit unit) {
-    super(id, name);
-    this.category = new SimpleObjectProperty<>(category);
-    this.unit = new SimpleObjectProperty<>(unit);
-  }
-
-  public static Builder getBuilder() {
-    return new Builder();
+  private Product() {
   }
 
   public Category getCategory() {
@@ -74,12 +67,16 @@ public class Product extends NamedRecord {
 
   public static class Builder {
 
-    private long id = -1L;
+    protected long id = -1L;
     private String name;
     private Category category;
     private Unit unit;
 
     private Builder() {
+    }
+
+    public static Builder create() {
+      return new Builder();
     }
 
     public Builder setId(long id) {
@@ -102,12 +99,14 @@ public class Product extends NamedRecord {
       return this;
     }
 
+
     public Product build() {
-      return new Product(
-          id,
-          Objects.requireNonNull(name),
-          Objects.requireNonNull(category),
-          Objects.requireNonNull(unit));
+      var instance = new Product();
+      instance.setId(id);
+      instance.setName(Objects.requireNonNull(name));
+      instance.setCategory(Objects.requireNonNull(category));
+      instance.setUnit(Objects.requireNonNull(unit));
+      return instance;
     }
   }
 }

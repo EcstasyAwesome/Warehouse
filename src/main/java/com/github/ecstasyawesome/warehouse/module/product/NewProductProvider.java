@@ -4,7 +4,7 @@ import com.github.ecstasyawesome.warehouse.controller.product.NewProduct;
 import com.github.ecstasyawesome.warehouse.core.FeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.FeedbackModuleProvider;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.impl.Product;
+import com.github.ecstasyawesome.warehouse.model.Product;
 import java.net.URL;
 
 public class NewProductProvider extends FeedbackModuleProvider<NewProduct, Product> {

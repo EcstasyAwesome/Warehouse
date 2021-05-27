@@ -8,11 +8,11 @@ import com.github.ecstasyawesome.warehouse.dao.ProductDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.CategoryDaoService;
 import com.github.ecstasyawesome.warehouse.dao.impl.ProductDaoService;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.Record;
+import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import com.github.ecstasyawesome.warehouse.model.Unit;
-import com.github.ecstasyawesome.warehouse.model.impl.Category;
-import com.github.ecstasyawesome.warehouse.model.impl.Product;
-import com.github.ecstasyawesome.warehouse.model.impl.User;
+import com.github.ecstasyawesome.warehouse.model.Category;
+import com.github.ecstasyawesome.warehouse.model.Product;
+import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.module.product.EditCategoryProvider;
 import com.github.ecstasyawesome.warehouse.module.product.EditProductProvider;
 import com.github.ecstasyawesome.warehouse.module.product.NewCategoryProvider;
@@ -88,7 +88,7 @@ public class ProductList extends Controller {
 
   @FXML
   private void initialize() {
-    final var accessLevel = sessionUser.getUserSecurity().getAccess().level;
+    final var accessLevel = sessionUser.getPersonSecurity().getAccess().level;
     addCategoryButton.setDisable(accessLevel > newCategoryProvider.getAccess().level);
     addProductButton.setDisable(accessLevel > newProductProvider.getAccess().level);
 
@@ -266,7 +266,7 @@ public class ProductList extends Controller {
     }
   }
 
-  private <T extends Record> void deleteRecord(String name, TableView<T> table,
+  private <T extends AbstractRecord> void deleteRecord(String name, TableView<T> table,
       GenericDao<T> dao) {
     var selectionModel = table.getSelectionModel();
     if (!selectionModel.isEmpty()) {

@@ -1,9 +1,9 @@
 package com.github.ecstasyawesome.warehouse.dao.impl;
 
 import com.github.ecstasyawesome.warehouse.dao.ProductDao;
+import com.github.ecstasyawesome.warehouse.model.Category;
+import com.github.ecstasyawesome.warehouse.model.Product;
 import com.github.ecstasyawesome.warehouse.model.Unit;
-import com.github.ecstasyawesome.warehouse.model.impl.Category;
-import com.github.ecstasyawesome.warehouse.model.impl.Product;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -163,7 +163,7 @@ public class ProductDaoService extends ProductDao {
 
   @Override
   protected Product transformToObj(final ResultSet resultSet) throws SQLException {
-    return Product.getBuilder()
+    return Product.Builder.create()
         .setId(resultSet.getLong("PRODUCT_ID"))
         .setCategory(categoryDaoService.transformToObj(resultSet))
         .setName(resultSet.getString("PRODUCT_NAME"))

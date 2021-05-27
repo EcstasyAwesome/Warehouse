@@ -4,7 +4,7 @@ import com.github.ecstasyawesome.warehouse.controller.user.EditUser;
 import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackModuleProvider;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.impl.User;
+import com.github.ecstasyawesome.warehouse.model.User;
 import java.net.URL;
 
 public class EditUserProvider extends ConfiguredFeedbackModuleProvider<EditUser, User> {

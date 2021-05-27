@@ -4,16 +4,10 @@ import java.util.Objects;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public abstract class ContactRecord extends Record {
+public abstract class AbstractContact extends AbstractRecord {
 
-  protected final StringProperty phone;
-  protected final StringProperty email;
-
-  protected ContactRecord(long id, String phone, String email) {
-    super(id);
-    this.phone = new SimpleStringProperty(phone);
-    this.email = new SimpleStringProperty(email);
-  }
+  private final StringProperty phone = new SimpleStringProperty();
+  private final StringProperty email = new SimpleStringProperty();
 
   public String getPhone() {
     return phone.get();
@@ -51,7 +45,7 @@ public abstract class ContactRecord extends Record {
       return false;
     }
 
-    var that = (ContactRecord) obj;
+    var that = (AbstractContact) obj;
     return Objects.equals(phone.get(), that.phone.get())
            && Objects.equals(email.get(), that.email.get());
   }

@@ -51,7 +51,7 @@ public class Authorization extends Controller {
     try {
       var user = userDao.get(login);
       loginField.setEffect(NO_ADJUST);
-      if (passwordField.getText().equals(user.getUserSecurity().getPassword())) {
+      if (passwordField.getText().equals(user.getPersonSecurity().getPassword())) {
         passwordField.setEffect(NO_ADJUST);
         SessionManager.store("currentUser", user);
         logger.info("Log in '{}'", login);

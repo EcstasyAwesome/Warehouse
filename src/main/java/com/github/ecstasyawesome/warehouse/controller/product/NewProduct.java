@@ -9,9 +9,9 @@ import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
 import com.github.ecstasyawesome.warehouse.dao.ProductDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.CategoryDaoService;
 import com.github.ecstasyawesome.warehouse.dao.impl.ProductDaoService;
+import com.github.ecstasyawesome.warehouse.model.Category;
+import com.github.ecstasyawesome.warehouse.model.Product;
 import com.github.ecstasyawesome.warehouse.model.Unit;
-import com.github.ecstasyawesome.warehouse.model.impl.Category;
-import com.github.ecstasyawesome.warehouse.model.impl.Product;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -51,7 +51,7 @@ public class NewProduct extends FeedbackController<Product> {
   private void add(ActionEvent event) {
     if (isFieldValid(nameField, null, NAME, productDao)
         & isFieldValid(unitChoiceBox) & isFieldValid(categoryChoiceBox)) {
-      var product = Product.getBuilder()
+      var product = Product.Builder.create()
           .setName(nameField.getText())
           .setUnit(unitChoiceBox.getValue())
           .setCategory(categoryChoiceBox.getValue())

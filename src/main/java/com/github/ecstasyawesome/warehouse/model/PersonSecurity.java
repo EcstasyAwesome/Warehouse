@@ -1,32 +1,25 @@
-package com.github.ecstasyawesome.warehouse.model.impl;
+package com.github.ecstasyawesome.warehouse.model;
 
-import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.Record;
 import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class UserSecurity extends Record {
+public class PersonSecurity extends AbstractRecord {
 
-  private final StringProperty login;
-  private final StringProperty password;
-  private final ObjectProperty<Access> access;
+  private final StringProperty login = new SimpleStringProperty();
+  private final StringProperty password = new SimpleStringProperty();
+  private final ObjectProperty<Access> access = new SimpleObjectProperty<>();
 
-  public UserSecurity(UserSecurity instance) {
-    this(instance.getId(), instance.getLogin(), instance.getPassword(), instance.getAccess());
+  public PersonSecurity(PersonSecurity instance) {
+    setId(instance.getId());
+    setLogin(instance.getLogin());
+    setPassword(instance.getPassword());
+    setAccess(instance.getAccess());
   }
 
-  private UserSecurity(long id, String login, String password, Access access) {
-    super(id);
-    this.login = new SimpleStringProperty(login);
-    this.password = new SimpleStringProperty(password);
-    this.access = new SimpleObjectProperty<>(access);
-  }
-
-  public static Builder getBuilder() {
-    return new Builder();
+  private PersonSecurity() {
   }
 
   public String getLogin() {
@@ -76,7 +69,7 @@ public class UserSecurity extends Record {
     if (!super.equals(obj)) {
       return false;
     }
-    var that = (UserSecurity) obj;
+    var that = (PersonSecurity) obj;
     return Objects.equals(login.get(), that.login.get())
            && Objects.equals(password.get(), that.password.get())
            && Objects.equals(access.get(), that.access.get());
@@ -95,6 +88,10 @@ public class UserSecurity extends Record {
     private Access access;
 
     private Builder() {
+    }
+
+    public static Builder create() {
+      return new Builder();
     }
 
     public Builder setId(long id) {
@@ -117,11 +114,13 @@ public class UserSecurity extends Record {
       return this;
     }
 
-    public UserSecurity build() {
-      return new UserSecurity(id,
-          Objects.requireNonNull(login),
-          Objects.requireNonNull(password),
-          Objects.requireNonNull(access));
+    public PersonSecurity build() {
+      var instance = new PersonSecurity();
+      instance.setId(id);
+      instance.setLogin(Objects.requireNonNull(login));
+      instance.setPassword(Objects.requireNonNull(password));
+      instance.setAccess(Objects.requireNonNull(access));
+      return instance;
     }
   }
 }

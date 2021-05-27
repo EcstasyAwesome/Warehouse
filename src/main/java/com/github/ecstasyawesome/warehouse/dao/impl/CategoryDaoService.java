@@ -1,7 +1,7 @@
 package com.github.ecstasyawesome.warehouse.dao.impl;
 
 import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
-import com.github.ecstasyawesome.warehouse.model.impl.Category;
+import com.github.ecstasyawesome.warehouse.model.Category;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -104,7 +104,7 @@ public class CategoryDaoService extends CategoryDao {
 
   @Override
   protected Category transformToObj(final ResultSet resultSet) throws SQLException {
-    return Category.getBuilder()
+    return Category.Builder.create()
         .setId(resultSet.getLong("CATEGORY_ID"))
         .setName(resultSet.getString("CATEGORY_NAME"))
         .setDescription(resultSet.getString("CATEGORY_DESCRIPTION"))

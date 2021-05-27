@@ -13,8 +13,8 @@ import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
-import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.model.impl.UserSecurity;
+import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.model.PersonSecurity;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import java.util.Objects;
 import javafx.fxml.FXML;
@@ -59,8 +59,8 @@ public class Profile extends Controller {
     surnameField.setText(currentUser.getSurname());
     nameField.setText(currentUser.getName());
     secondNameField.setText(currentUser.getSecondName());
-    phoneField.setText(currentUser.getUserContact().getPhone());
-    emailField.setText(Objects.requireNonNullElse(currentUser.getUserContact().getEmail(), ""));
+    phoneField.setText(currentUser.getPersonContact().getPhone());
+    emailField.setText(Objects.requireNonNullElse(currentUser.getPersonContact().getEmail(), ""));
   }
 
   @FXML
@@ -72,8 +72,8 @@ public class Profile extends Controller {
       currentUser.setSurname(surnameField.getText());
       currentUser.setName(nameField.getText());
       currentUser.setSecondName(secondNameField.getText());
-      currentUser.getUserContact().setPhone(phoneField.getText());
-      currentUser.getUserContact()
+      currentUser.getPersonContact().setPhone(phoneField.getText());
+      currentUser.getPersonContact()
           .setEmail(emailField.getText().isEmpty() ? null : emailField.getText());
       if (!currentUser.equals(userCopy)) {
         try {
@@ -83,7 +83,7 @@ public class Profile extends Controller {
           currentUser.setSurname(userCopy.getSurname());
           currentUser.setName(userCopy.getName());
           currentUser.setSecondName(userCopy.getSecondName());
-          currentUser.setUserContact(userCopy.getUserContact());
+          currentUser.setPersonContact(userCopy.getPersonContact());
           windowManager.showDialog(exception);
         }
       }
@@ -92,12 +92,12 @@ public class Profile extends Controller {
 
   @FXML
   private void changePassword() {
-    var userSecurity = currentUser.getUserSecurity();
+    var userSecurity = currentUser.getPersonSecurity();
     if (userSecurity.getPassword().equals(currentPasswordField.getText())) {
       currentPasswordField.setEffect(NO_ADJUST);
       if (isFieldValid(newPasswordField, PASSWORD, false)
           && arePasswordsEqual(newPasswordField, newRepeatedPasswordField)) {
-        var securityCopy = new UserSecurity(userSecurity);
+        var securityCopy = new PersonSecurity(userSecurity);
         userSecurity.setPassword(newPasswordField.getText());
         if (!securityCopy.equals(userSecurity)) {
           try {
@@ -107,7 +107,7 @@ public class Profile extends Controller {
             newRepeatedPasswordField.clear();
             logger.info("The user has changed his password");
           } catch (NullPointerException exception) {
-            currentUser.setUserSecurity(securityCopy);
+            currentUser.setPersonSecurity(securityCopy);
             windowManager.showDialog(exception);
           }
         }

@@ -13,9 +13,9 @@ import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.model.impl.UserContact;
-import com.github.ecstasyawesome.warehouse.model.impl.UserSecurity;
+import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.model.PersonContact;
+import com.github.ecstasyawesome.warehouse.model.PersonSecurity;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -71,16 +71,16 @@ public class NewUser extends FeedbackController<User> {
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(loginField, null, LOGIN, userDao)
         & isFieldValid(passwordField, PASSWORD, false) & isFieldValid(accessChoiceBox)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
-      var contact = UserContact.getBuilder()
+      var contact = PersonContact.Builder.create()
           .setPhone(phoneField.getText())
           .setEmail(emailField.getText().isEmpty() ? null : emailField.getText())
           .build();
-      var security = UserSecurity.getBuilder()
+      var security = PersonSecurity.Builder.create()
           .setLogin(loginField.getText())
           .setPassword(passwordField.getText())
           .setAccess(accessChoiceBox.getValue())
           .build();
-      var user = User.getBuilder()
+      var user = User.Builder.create()
           .setSurname(surnameField.getText())
           .setName(nameField.getText())
           .setSecondName(secondNameField.getText())

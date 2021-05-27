@@ -4,11 +4,11 @@ import com.github.ecstasyawesome.warehouse.controller.user.AdministratorRegistra
 import com.github.ecstasyawesome.warehouse.core.FeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.FeedbackModuleProvider;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.impl.UserSecurity;
+import com.github.ecstasyawesome.warehouse.model.PersonSecurity;
 import java.net.URL;
 
 public class AdministratorRegistrationProvider
-    extends FeedbackModuleProvider<AdministratorRegistration, UserSecurity> {
+    extends FeedbackModuleProvider<AdministratorRegistration, PersonSecurity> {
 
   private static final AdministratorRegistrationProvider INSTANCE =
       new AdministratorRegistrationProvider();
@@ -22,7 +22,7 @@ public class AdministratorRegistrationProvider
   }
 
   @Override
-  public FeedbackModule<AdministratorRegistration, UserSecurity> create() {
+  public FeedbackModule<AdministratorRegistration, PersonSecurity> create() {
     return new FeedbackModule<>(fxml) {
     };
   }

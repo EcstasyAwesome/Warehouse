@@ -1,25 +1,20 @@
-package com.github.ecstasyawesome.warehouse.model.impl;
+package com.github.ecstasyawesome.warehouse.model;
 
-import com.github.ecstasyawesome.warehouse.model.NamedRecord;
 import java.util.Objects;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Category extends NamedRecord {
+public class Category extends AbstractNamedRecord {
 
-  private final StringProperty description;
+  private final StringProperty description = new SimpleStringProperty();
 
   public Category(Category instance) {
-    this(instance.getId(), instance.getName(), instance.getDescription());
+    setId(instance.getId());
+    setName(instance.getName());
+    setDescription(instance.getDescription());
   }
 
-  private Category(long id, String name, String description) {
-    super(id, name);
-    this.description = new SimpleStringProperty(description);
-  }
-
-  public static Builder getBuilder() {
-    return new Builder();
+  private Category() {
   }
 
   public String getDescription() {
@@ -64,6 +59,10 @@ public class Category extends NamedRecord {
     private Builder() {
     }
 
+    public static Builder create() {
+      return new Builder();
+    }
+
     public Builder setId(long id) {
       this.id = id;
       return this;
@@ -80,7 +79,11 @@ public class Category extends NamedRecord {
     }
 
     public Category build() {
-      return new Category(id, Objects.requireNonNull(name), description);
+      var instance = new Category();
+      instance.setId(id);
+      instance.setName(Objects.requireNonNull(name));
+      instance.setDescription(description);
+      return instance;
     }
   }
 }
