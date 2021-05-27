@@ -3,15 +3,15 @@ package com.github.ecstasyawesome.warehouse.controller.product;
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
-import com.github.ecstasyawesome.warehouse.dao.GenericDao;
 import com.github.ecstasyawesome.warehouse.dao.ProductDao;
+import com.github.ecstasyawesome.warehouse.dao.RecordRepository;
 import com.github.ecstasyawesome.warehouse.dao.impl.CategoryDaoService;
 import com.github.ecstasyawesome.warehouse.dao.impl.ProductDaoService;
-import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
-import com.github.ecstasyawesome.warehouse.model.Unit;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.Category;
 import com.github.ecstasyawesome.warehouse.model.Product;
+import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.module.product.EditCategoryProvider;
 import com.github.ecstasyawesome.warehouse.module.product.EditProductProvider;
@@ -267,7 +267,7 @@ public class ProductList extends Controller {
   }
 
   private <T extends AbstractRecord> void deleteRecord(String name, TableView<T> table,
-      GenericDao<T> dao) {
+      RecordRepository<T> repository) {
     var selectionModel = table.getSelectionModel();
     if (!selectionModel.isEmpty()) {
       var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
@@ -275,7 +275,7 @@ public class ProductList extends Controller {
       if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
         try {
           var record = selectionModel.getSelectedItem();
-          dao.delete(record.getId());
+          repository.delete(record.getId());
           table.getItems().remove(record);
           logger.info("Deleted a {} with id={}", name, record.getId());
         } catch (NullPointerException exception) {

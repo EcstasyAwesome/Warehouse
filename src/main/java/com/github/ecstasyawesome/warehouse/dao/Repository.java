@@ -11,17 +11,7 @@ import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public abstract class GenericDao<T extends AbstractRecord> {
-
-  public abstract ObservableList<T> getAll();
-
-  public abstract void create(T instance);
-
-  public abstract T get(long id);
-
-  public abstract void update(T instance);
-
-  public abstract void delete(long id);
+public abstract class Repository<T extends AbstractRecord> {
 
   protected abstract T transformToObj(ResultSet resultSet) throws SQLException;
 

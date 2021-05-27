@@ -4,7 +4,7 @@ import com.github.ecstasyawesome.warehouse.model.Category;
 import com.github.ecstasyawesome.warehouse.model.Product;
 import javafx.collections.ObservableList;
 
-public abstract class ProductDao extends GenericDao<Product> implements UniqueField {
+public abstract class ProductDao extends RecordRepository<Product> implements UniqueField {
 
   public abstract ObservableList<Product> getAll(Category category);
 
