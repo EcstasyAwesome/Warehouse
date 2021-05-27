@@ -6,9 +6,9 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 
 import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
-import com.github.ecstasyawesome.warehouse.dao.impl.CategoryDaoService;
 import com.github.ecstasyawesome.warehouse.model.Category;
+import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
+import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
 import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 public class EditCategory extends ConfiguredFeedbackController<Category> {
 
-  private final CategoryDao categoryDao = CategoryDaoService.getInstance();
+  private final CategoryRepository categoryRepository = CategoryRepositoryService.getInstance();
   private final WindowManager windowManager = WindowManager.getInstance();
   private final Logger logger = LogManager.getLogger(EditCategory.class);
   private Category category;
@@ -32,14 +32,14 @@ public class EditCategory extends ConfiguredFeedbackController<Category> {
 
   @FXML
   private void save(ActionEvent event) {
-    if (isFieldValid(nameField, category.getName(), STRICT_NAME, categoryDao)
+    if (isFieldValid(nameField, category.getName(), STRICT_NAME, categoryRepository)
         & isFieldValid(descriptionArea, WILDCARD, true)) {
       var categoryCopy = new Category(category);
       category.setName(nameField.getText());
       category
           .setDescription(descriptionArea.getText().isEmpty() ? null : descriptionArea.getText());
       try {
-        categoryDao.update(category);
+        categoryRepository.update(category);
         logger.info("Edited a category with id={}", category.getId());
         closeCurrentStage(event);
       } catch (NullPointerException exception) {

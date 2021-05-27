@@ -1,4 +1,4 @@
-package com.github.ecstasyawesome.warehouse.dao;
+package com.github.ecstasyawesome.warehouse.repository;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import com.github.ecstasyawesome.warehouse.util.ConnectionPool;

@@ -5,10 +5,10 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.RED_ADJUST
 
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.dao.UserDao;
-import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
 import com.github.ecstasyawesome.warehouse.module.HomeProvider;
 import com.github.ecstasyawesome.warehouse.module.user.AdministratorRegistrationProvider;
+import com.github.ecstasyawesome.warehouse.repository.UserRepository;
+import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 public class Authorization extends Controller {
 
   private final WindowManager windowManager = WindowManager.getInstance();
-  private final UserDao userDao = UserDaoService.getInstance();
+  private final UserRepository userRepository = UserRepositoryService.getInstance();
   private final Logger logger = LogManager.getLogger(Authorization.class);
 
   @FXML
@@ -31,7 +31,7 @@ public class Authorization extends Controller {
   @FXML
   private void initialize() {
     try {
-      if (!userDao.hasTableRecords()) {
+      if (!userRepository.hasTableRecords()) {
         var result = windowManager.showAndGet(AdministratorRegistrationProvider.getInstance());
         if (result.isPresent()) {
           loginField.setText(result.get().getLogin());
@@ -49,7 +49,7 @@ public class Authorization extends Controller {
   private void login() {
     var login = loginField.getText();
     try {
-      var user = userDao.get(login);
+      var user = userRepository.get(login);
       loginField.setEffect(NO_ADJUST);
       if (passwordField.getText().equals(user.getPersonSecurity().getPassword())) {
         passwordField.setEffect(NO_ADJUST);

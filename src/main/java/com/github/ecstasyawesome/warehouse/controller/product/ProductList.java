@@ -2,11 +2,6 @@ package com.github.ecstasyawesome.warehouse.controller.product;
 
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
-import com.github.ecstasyawesome.warehouse.dao.ProductDao;
-import com.github.ecstasyawesome.warehouse.dao.RecordRepository;
-import com.github.ecstasyawesome.warehouse.dao.impl.CategoryDaoService;
-import com.github.ecstasyawesome.warehouse.dao.impl.ProductDaoService;
 import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.Category;
@@ -17,6 +12,11 @@ import com.github.ecstasyawesome.warehouse.module.product.EditCategoryProvider;
 import com.github.ecstasyawesome.warehouse.module.product.EditProductProvider;
 import com.github.ecstasyawesome.warehouse.module.product.NewCategoryProvider;
 import com.github.ecstasyawesome.warehouse.module.product.NewProductProvider;
+import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
+import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
+import com.github.ecstasyawesome.warehouse.repository.RecordRepository;
+import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
+import com.github.ecstasyawesome.warehouse.repository.impl.ProductRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
@@ -35,8 +35,8 @@ import org.apache.logging.log4j.Logger;
 public class ProductList extends Controller {
 
   private final WindowManager windowManager = WindowManager.getInstance();
-  private final CategoryDao categoryDao = CategoryDaoService.getInstance();
-  private final ProductDao productDao = ProductDaoService.getInstance();
+  private final CategoryRepository categoryRepository = CategoryRepositoryService.getInstance();
+  private final ProductRepository productRepository = ProductRepositoryService.getInstance();
   private final NewProductProvider newProductProvider = NewProductProvider.getInstance();
   private final NewCategoryProvider newCategoryProvider = NewCategoryProvider.getInstance();
   private final EditProductProvider editProductProvider = EditProductProvider.getInstance();
@@ -153,7 +153,7 @@ public class ProductList extends Controller {
 
   @FXML
   private void deleteCategory() {
-    deleteRecord("category", categoryTable, categoryDao);
+    deleteRecord("category", categoryTable, categoryRepository);
   }
 
   @FXML
@@ -185,7 +185,7 @@ public class ProductList extends Controller {
 
   @FXML
   private void deleteProduct() {
-    deleteRecord("product", productTable, productDao);
+    deleteRecord("product", productTable, productRepository);
   }
 
   @FXML
@@ -213,7 +213,7 @@ public class ProductList extends Controller {
   private void search() {
     categoryTable.getSelectionModel().clearSelection();
     try {
-      productTable.setItems(productDao.search(searchField.getText()));
+      productTable.setItems(productRepository.search(searchField.getText()));
     } catch (NullPointerException exception) {
       windowManager.showDialog(exception);
     }
@@ -295,7 +295,7 @@ public class ProductList extends Controller {
       selectedCategory = selectionModel.getSelectedItem();
     }
     try {
-      categoryTable.setItems(categoryDao.getAll());
+      categoryTable.setItems(categoryRepository.getAll());
       if (selectedCategory != null) {
         selectionModel.select(selectedCategory);
       }
@@ -306,7 +306,8 @@ public class ProductList extends Controller {
 
   private void getProductsFromDatabase(Category category) {
     try {
-      productTable.setItems(category == null ? productDao.getAll() : productDao.getAll(category));
+      productTable.setItems(
+          category == null ? productRepository.getAll() : productRepository.getAll(category));
     } catch (NullPointerException exception) {
       windowManager.showDialog(exception);
     }

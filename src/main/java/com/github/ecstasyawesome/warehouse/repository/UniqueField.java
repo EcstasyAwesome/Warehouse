@@ -1,4 +1,4 @@
-package com.github.ecstasyawesome.warehouse.dao;
+package com.github.ecstasyawesome.warehouse.repository;
 
 public interface UniqueField {
 

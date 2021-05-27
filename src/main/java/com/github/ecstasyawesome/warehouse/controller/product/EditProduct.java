@@ -5,13 +5,13 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 
 import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
-import com.github.ecstasyawesome.warehouse.dao.ProductDao;
-import com.github.ecstasyawesome.warehouse.dao.impl.CategoryDaoService;
-import com.github.ecstasyawesome.warehouse.dao.impl.ProductDaoService;
-import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.Category;
 import com.github.ecstasyawesome.warehouse.model.Product;
+import com.github.ecstasyawesome.warehouse.model.Unit;
+import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
+import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
+import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
+import com.github.ecstasyawesome.warehouse.repository.impl.ProductRepositoryService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -21,8 +21,8 @@ import org.apache.logging.log4j.Logger;
 
 public class EditProduct extends ConfiguredFeedbackController<Product> {
 
-  private final ProductDao productDao = ProductDaoService.getInstance();
-  private final CategoryDao categoryDao = CategoryDaoService.getInstance();
+  private final ProductRepository productRepository = ProductRepositoryService.getInstance();
+  private final CategoryRepository categoryRepository = CategoryRepositoryService.getInstance();
   private final WindowManager windowManager = WindowManager.getInstance();
   private final Logger logger = LogManager.getLogger(EditProduct.class);
   private Product product;
@@ -39,7 +39,7 @@ public class EditProduct extends ConfiguredFeedbackController<Product> {
   @FXML
   private void initialize() {
     try {
-      categoryChoiceBox.setItems(categoryDao.getAll());
+      categoryChoiceBox.setItems(categoryRepository.getAll());
     } catch (NullPointerException exception) {
       windowManager.showDialog(exception);
     }
@@ -47,13 +47,13 @@ public class EditProduct extends ConfiguredFeedbackController<Product> {
 
   @FXML
   private void save(ActionEvent event) {
-    if (isFieldValid(nameField, product.getName(), NAME, productDao)
+    if (isFieldValid(nameField, product.getName(), NAME, productRepository)
         & isFieldValid(categoryChoiceBox)) {
       var productCopy = new Product(product);
       product.setName(nameField.getText());
       product.setCategory(categoryChoiceBox.getValue());
       try {
-        productDao.update(product);
+        productRepository.update(product);
         logger.info("Edited a product with id={}", product.getId());
         closeCurrentStage(event);
       } catch (NullPointerException exception) {

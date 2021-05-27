@@ -9,12 +9,12 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 
 import com.github.ecstasyawesome.warehouse.core.FeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.dao.UserDao;
-import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.Access;
+import com.github.ecstasyawesome.warehouse.model.PersonContact;
 import com.github.ecstasyawesome.warehouse.model.PersonSecurity;
 import com.github.ecstasyawesome.warehouse.model.User;
-import com.github.ecstasyawesome.warehouse.model.PersonContact;
+import com.github.ecstasyawesome.warehouse.repository.UserRepository;
+import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 public class AdministratorRegistration extends FeedbackController<PersonSecurity> {
 
   private final WindowManager windowManager = WindowManager.getInstance();
-  private final UserDao userDao = UserDaoService.getInstance();
+  private final UserRepository userRepository = UserRepositoryService.getInstance();
   private final Logger logger = LogManager.getLogger(AdministratorRegistration.class);
   private PersonSecurity result;
 
@@ -81,7 +81,7 @@ public class AdministratorRegistration extends FeedbackController<PersonSecurity
           .setUserSecurity(security)
           .build();
       try {
-        userDao.create(user);
+        userRepository.create(user);
         result = user.getPersonSecurity();
         logger.info("Root user registered");
         closeCurrentStage(event);

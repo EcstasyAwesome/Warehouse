@@ -1,7 +1,7 @@
 package com.github.ecstasyawesome.warehouse.util;
 
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.dao.UniqueField;
+import com.github.ecstasyawesome.warehouse.repository.UniqueField;
 import java.util.regex.Pattern;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.PasswordField;

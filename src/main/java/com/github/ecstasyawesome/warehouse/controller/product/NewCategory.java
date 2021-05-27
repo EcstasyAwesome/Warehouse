@@ -6,9 +6,9 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 
 import com.github.ecstasyawesome.warehouse.core.FeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
-import com.github.ecstasyawesome.warehouse.dao.impl.CategoryDaoService;
 import com.github.ecstasyawesome.warehouse.model.Category;
+import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
+import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 public class NewCategory extends FeedbackController<Category> {
 
   private final WindowManager windowManager = WindowManager.getInstance();
-  private final CategoryDao categoryDao = CategoryDaoService.getInstance();
+  private final CategoryRepository categoryRepository = CategoryRepositoryService.getInstance();
   private final Logger logger = LogManager.getLogger(NewCategory.class);
   private Category result;
 
@@ -31,14 +31,14 @@ public class NewCategory extends FeedbackController<Category> {
 
   @FXML
   private void add(ActionEvent event) {
-    if (isFieldValid(nameField, null, STRICT_NAME, categoryDao)
+    if (isFieldValid(nameField, null, STRICT_NAME, categoryRepository)
         & isFieldValid(descriptionArea, WILDCARD, true)) {
       var category = Category.Builder.create()
           .setName(nameField.getText())
           .setDescription(descriptionArea.getText().isEmpty() ? null : descriptionArea.getText())
           .build();
       try {
-        categoryDao.create(category);
+        categoryRepository.create(category);
         logger.info("Added a category with id={}", category.getId());
         result = category;
         closeCurrentStage(event);

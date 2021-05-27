@@ -10,12 +10,12 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 
 import com.github.ecstasyawesome.warehouse.core.FeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.dao.UserDao;
-import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.model.PersonContact;
 import com.github.ecstasyawesome.warehouse.model.PersonSecurity;
+import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.repository.UserRepository;
+import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 
 public class NewUser extends FeedbackController<User> {
 
-  private final UserDao userDao = UserDaoService.getInstance();
+  private final UserRepository userRepository = UserRepositoryService.getInstance();
   private final WindowManager windowManager = WindowManager.getInstance();
   private final Logger logger = LogManager.getLogger(NewUser.class);
   private User result;
@@ -68,7 +68,8 @@ public class NewUser extends FeedbackController<User> {
   private void register(ActionEvent event) {
     if (isFieldValid(surnameField, STRICT_NAME, false) & isFieldValid(nameField, STRICT_NAME, false)
         & isFieldValid(secondNameField, STRICT_NAME, false) & isFieldValid(phoneField, PHONE, false)
-        & isFieldValid(emailField, EMAIL, true) & isFieldValid(loginField, null, LOGIN, userDao)
+        & isFieldValid(emailField, EMAIL, true) & isFieldValid(loginField, null, LOGIN,
+        userRepository)
         & isFieldValid(passwordField, PASSWORD, false) & isFieldValid(accessChoiceBox)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
       var contact = PersonContact.Builder.create()
@@ -88,7 +89,7 @@ public class NewUser extends FeedbackController<User> {
           .setUserSecurity(security)
           .build();
       try {
-        userDao.create(user);
+        userRepository.create(user);
         result = user;
         logger.info("Added a user with id={}", user.getId());
         closeCurrentStage(event);

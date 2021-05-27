@@ -7,10 +7,10 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 
 import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.dao.UserDao;
-import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.repository.UserRepository;
+import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
 import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public class EditUser extends ConfiguredFeedbackController<User> {
 
-  private final UserDao userDao = UserDaoService.getInstance();
+  private final UserRepository userRepository = UserRepositoryService.getInstance();
   private final WindowManager windowManager = WindowManager.getInstance();
   private final Logger logger = LogManager.getLogger(EditUser.class);
   private User user;
@@ -68,7 +68,7 @@ public class EditUser extends ConfiguredFeedbackController<User> {
       user.getPersonSecurity().setAccess(accessChoiceBox.getValue());
       if (!user.equals(userCopy)) {
         try {
-          userDao.update(user);
+          userRepository.update(user);
           logger.info("Edited user profile with id={}", user.getId());
           closeCurrentStage(event);
         } catch (NullPointerException exception) {

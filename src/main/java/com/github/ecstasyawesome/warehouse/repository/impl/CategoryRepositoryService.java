@@ -1,7 +1,7 @@
-package com.github.ecstasyawesome.warehouse.dao.impl;
+package com.github.ecstasyawesome.warehouse.repository.impl;
 
-import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
 import com.github.ecstasyawesome.warehouse.model.Category;
+import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -10,15 +10,15 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CategoryDaoService extends CategoryDao {
+public class CategoryRepositoryService extends CategoryRepository {
 
-  private static final CategoryDaoService INSTANCE = new CategoryDaoService();
-  private final Logger logger = LogManager.getLogger(CategoryDaoService.class);
+  private static final CategoryRepositoryService INSTANCE = new CategoryRepositoryService();
+  private final Logger logger = LogManager.getLogger(CategoryRepositoryService.class);
 
-  private CategoryDaoService() {
+  private CategoryRepositoryService() {
   }
 
-  public static CategoryDaoService getInstance() {
+  public static CategoryRepositoryService getInstance() {
     return INSTANCE;
   }
 

@@ -11,10 +11,10 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.dao.UserDao;
-import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
-import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.model.PersonSecurity;
+import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.repository.UserRepository;
+import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import java.util.Objects;
 import javafx.fxml.FXML;
@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class Profile extends Controller {
 
   private final WindowManager windowManager = WindowManager.getInstance();
-  private final UserDao userDao = UserDaoService.getInstance();
+  private final UserRepository userRepository = UserRepositoryService.getInstance();
   private final Logger logger = LogManager.getLogger(Profile.class);
   private final User currentUser = (User) SessionManager.get("currentUser").orElseThrow();
 
@@ -77,7 +77,7 @@ public class Profile extends Controller {
           .setEmail(emailField.getText().isEmpty() ? null : emailField.getText());
       if (!currentUser.equals(userCopy)) {
         try {
-          userDao.update(currentUser);
+          userRepository.update(currentUser);
           logger.info("The user has edited his own profile");
         } catch (NullPointerException exception) {
           currentUser.setSurname(userCopy.getSurname());
@@ -101,7 +101,7 @@ public class Profile extends Controller {
         userSecurity.setPassword(newPasswordField.getText());
         if (!securityCopy.equals(userSecurity)) {
           try {
-            userDao.update(currentUser);
+            userRepository.update(currentUser);
             currentPasswordField.clear();
             newPasswordField.clear();
             newRepeatedPasswordField.clear();

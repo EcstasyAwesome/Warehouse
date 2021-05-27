@@ -5,13 +5,13 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 
 import com.github.ecstasyawesome.warehouse.core.FeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.dao.CategoryDao;
-import com.github.ecstasyawesome.warehouse.dao.ProductDao;
-import com.github.ecstasyawesome.warehouse.dao.impl.CategoryDaoService;
-import com.github.ecstasyawesome.warehouse.dao.impl.ProductDaoService;
 import com.github.ecstasyawesome.warehouse.model.Category;
 import com.github.ecstasyawesome.warehouse.model.Product;
 import com.github.ecstasyawesome.warehouse.model.Unit;
+import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
+import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
+import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
+import com.github.ecstasyawesome.warehouse.repository.impl.ProductRepositoryService;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,8 +23,8 @@ import org.apache.logging.log4j.Logger;
 public class NewProduct extends FeedbackController<Product> {
 
   private final WindowManager windowManager = WindowManager.getInstance();
-  private final CategoryDao categoryDao = CategoryDaoService.getInstance();
-  private final ProductDao productDao = ProductDaoService.getInstance();
+  private final CategoryRepository categoryRepository = CategoryRepositoryService.getInstance();
+  private final ProductRepository productRepository = ProductRepositoryService.getInstance();
   private final Logger logger = LogManager.getLogger(NewProduct.class);
   private Product result;
 
@@ -41,7 +41,7 @@ public class NewProduct extends FeedbackController<Product> {
   private void initialize() {
     unitChoiceBox.setItems(FXCollections.observableArrayList(Unit.values()));
     try {
-      categoryChoiceBox.setItems(categoryDao.getAll());
+      categoryChoiceBox.setItems(categoryRepository.getAll());
     } catch (NullPointerException exception) {
       windowManager.showDialog(exception);
     }
@@ -49,7 +49,7 @@ public class NewProduct extends FeedbackController<Product> {
 
   @FXML
   private void add(ActionEvent event) {
-    if (isFieldValid(nameField, null, NAME, productDao)
+    if (isFieldValid(nameField, null, NAME, productRepository)
         & isFieldValid(unitChoiceBox) & isFieldValid(categoryChoiceBox)) {
       var product = Product.Builder.create()
           .setName(nameField.getText())
@@ -57,7 +57,7 @@ public class NewProduct extends FeedbackController<Product> {
           .setCategory(categoryChoiceBox.getValue())
           .build();
       try {
-        productDao.create(product);
+        productRepository.create(product);
         logger.info("Added a product with id={}", product.getId());
         result = product;
         closeCurrentStage(event);

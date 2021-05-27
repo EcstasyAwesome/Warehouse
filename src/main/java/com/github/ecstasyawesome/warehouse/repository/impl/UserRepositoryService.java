@@ -1,10 +1,10 @@
-package com.github.ecstasyawesome.warehouse.dao.impl;
+package com.github.ecstasyawesome.warehouse.repository.impl;
 
-import com.github.ecstasyawesome.warehouse.dao.UserDao;
 import com.github.ecstasyawesome.warehouse.model.Access;
+import com.github.ecstasyawesome.warehouse.model.PersonContact;
 import com.github.ecstasyawesome.warehouse.model.PersonSecurity;
 import com.github.ecstasyawesome.warehouse.model.User;
-import com.github.ecstasyawesome.warehouse.model.PersonContact;
+import com.github.ecstasyawesome.warehouse.repository.UserRepository;
 import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,15 +14,15 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UserDaoService extends UserDao {
+public class UserRepositoryService extends UserRepository {
 
-  private static final UserDaoService INSTANCE = new UserDaoService();
-  private final Logger logger = LogManager.getLogger(UserDaoService.class);
+  private static final UserRepositoryService INSTANCE = new UserRepositoryService();
+  private final Logger logger = LogManager.getLogger(UserRepositoryService.class);
 
-  private UserDaoService() {
+  private UserRepositoryService() {
   }
 
-  public static UserDaoService getInstance() {
+  public static UserRepositoryService getInstance() {
     return INSTANCE;
   }
 

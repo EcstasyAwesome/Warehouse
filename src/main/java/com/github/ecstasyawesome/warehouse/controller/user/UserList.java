@@ -2,12 +2,12 @@ package com.github.ecstasyawesome.warehouse.controller.user;
 
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.dao.UserDao;
-import com.github.ecstasyawesome.warehouse.dao.impl.UserDaoService;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.module.user.EditUserProvider;
 import com.github.ecstasyawesome.warehouse.module.user.NewUserProvider;
+import com.github.ecstasyawesome.warehouse.repository.UserRepository;
+import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 public class UserList extends Controller {
 
-  private final UserDao userDao = UserDaoService.getInstance();
+  private final UserRepository userRepository = UserRepositoryService.getInstance();
   private final WindowManager windowManager = WindowManager.getInstance();
   private final NewUserProvider newUserProvider = NewUserProvider.getInstance();
   private final EditUserProvider editUserProvider = EditUserProvider.getInstance();
@@ -75,7 +75,8 @@ public class UserList extends Controller {
     secondNameColumn.setCellValueFactory(entry -> entry.getValue().secondNameProperty());
     phoneColumn.setCellValueFactory(entry -> entry.getValue().getPersonContact().phoneProperty());
     emailColumn.setCellValueFactory(entry -> entry.getValue().getPersonContact().emailProperty());
-    accessColumn.setCellValueFactory(entry -> entry.getValue().getPersonSecurity().accessProperty());
+    accessColumn
+        .setCellValueFactory(entry -> entry.getValue().getPersonSecurity().accessProperty());
 
     userTable.getSelectionModel()
         .selectedItemProperty()
@@ -141,7 +142,7 @@ public class UserList extends Controller {
       if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
         var user = model.getSelectedItem();
         try {
-          userDao.delete(user.getId());
+          userRepository.delete(user.getId());
           userTable.getItems().remove(user);
           logger.info("Deleted a user with id={}", user.getId());
         } catch (NullPointerException exception) {
@@ -158,7 +159,7 @@ public class UserList extends Controller {
 
   private void getUsersFromDatabase() {
     try {
-      userTable.setItems(userDao.getAll());
+      userTable.setItems(userRepository.getAll());
     } catch (NullPointerException exception) {
       windowManager.showDialog(exception);
     }
