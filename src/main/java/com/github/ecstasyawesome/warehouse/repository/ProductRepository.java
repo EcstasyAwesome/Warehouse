@@ -4,7 +4,8 @@ import com.github.ecstasyawesome.warehouse.model.Category;
 import com.github.ecstasyawesome.warehouse.model.Product;
 import javafx.collections.ObservableList;
 
-public abstract class ProductRepository extends AbstractRecordRepository<Product> implements UniqueField {
+public abstract class ProductRepository extends AbstractRecordRepository<Product> implements
+    UniqueField {
 
   public abstract ObservableList<Product> getAll(Category category);
 

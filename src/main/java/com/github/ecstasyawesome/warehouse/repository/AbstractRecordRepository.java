@@ -3,7 +3,8 @@ package com.github.ecstasyawesome.warehouse.repository;
 import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import javafx.collections.ObservableList;
 
-public abstract class AbstractRecordRepository<T extends AbstractRecord> extends AbstractRepository<T> {
+public abstract class AbstractRecordRepository<T extends AbstractRecord> extends
+    AbstractRepository<T> {
 
   public abstract ObservableList<T> getAll();
 

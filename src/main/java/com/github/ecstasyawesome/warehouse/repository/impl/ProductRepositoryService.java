@@ -36,7 +36,7 @@ public class ProductRepositoryService extends ProductRepository {
         """;
     try {
       var result = selectRecords(query);
-      logger.debug("Selected all products [{} records]", result.size());
+      logger.debug("Selected all products [{} record(s)]", result.size());
       return result;
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
@@ -55,7 +55,7 @@ public class ProductRepositoryService extends ProductRepository {
         """;
     try {
       var result = selectRecords(query, category.getId());
-      logger.debug("Selected all products by category id={} [{} records]", category.getId(),
+      logger.debug("Selected all products by category id={} [{} record(s)]", category.getId(),
           result.size());
       return result;
     } catch (SQLException exception) {
@@ -75,7 +75,7 @@ public class ProductRepositoryService extends ProductRepository {
         """;
     try {
       var result = selectRecords(query, name);
-      logger.debug("Selected all products where name contains '{}' [{} records]", name,
+      logger.debug("Selected all products where name contains '{}' [{} record(s)]", name,
           result.size());
       return result;
     } catch (SQLException exception) {

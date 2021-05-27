@@ -22,8 +22,8 @@ public enum Access {
   }
 
   public static ObservableList<Access> getAccesses() {
-    return Stream.of(values()).
-        filter(access -> access != ROOT)
+    return Stream.of(values())
+        .filter(access -> access != ROOT)
         .collect(Collectors.toCollection(FXCollections::observableArrayList));
   }
 

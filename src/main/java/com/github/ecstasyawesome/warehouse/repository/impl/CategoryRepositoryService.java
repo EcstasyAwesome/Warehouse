@@ -38,7 +38,7 @@ public class CategoryRepositoryService extends CategoryRepository {
   public ObservableList<Category> getAll() {
     try {
       var result = selectRecords("SELECT * FROM CATEGORIES");
-      logger.debug("Selected all categories [{} records]", result.size());
+      logger.debug("Selected all categories [{} record(s)]", result.size());
       return result;
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
