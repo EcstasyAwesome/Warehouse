@@ -143,7 +143,7 @@ public class Address extends AbstractRecord {
       instance.setRegion(Objects.requireNonNull(region));
       instance.setTown(Objects.requireNonNull(town));
       instance.setStreet(street);
-      instance.setTown(number);
+      instance.setNumber(number);
       return instance;
     }
   }
