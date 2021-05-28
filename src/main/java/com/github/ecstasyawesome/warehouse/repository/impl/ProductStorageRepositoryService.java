@@ -137,7 +137,8 @@ public class ProductStorageRepositoryService extends ProductStorageRepository {
             ADDRESS_NUMBER=?
         WHERE ADDRESS_ID=?;
         UPDATE PRODUCT_STORAGES
-        SET STORAGE_NAME=?
+        SET STORAGE_NAME=?,
+            COMPANY_ID=?
         WHERE STORAGE_ID=?
         """;
     final var contact = instance.getBusinessContact();
@@ -146,7 +147,7 @@ public class ProductStorageRepositoryService extends ProductStorageRepository {
       execute(query, contact.getPhone(), contact.getExtraPhone(), contact.getEmail(),
           contact.getSite(), contact.getId(), address.getRegion(), address.getTown(),
           address.getStreet(), address.getNumber(), address.getId(), instance.getName(),
-          instance.getId());
+          instance.getCompany().getId(), instance.getId());
       logger.debug("Updated a product storage with id={}", instance.getId());
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
