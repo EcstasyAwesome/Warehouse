@@ -7,7 +7,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public abstract class AbstractCommodity extends AbstractProductItem {
+public abstract class AbstractCommodity extends AbstractReceiveOperationItem {
 
   private final ObjectProperty<ProductStorage> productStorage = new SimpleObjectProperty<>();
   private final DoubleProperty purchasePrice = new SimpleDoubleProperty();

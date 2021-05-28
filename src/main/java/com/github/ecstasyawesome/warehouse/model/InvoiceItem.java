@@ -6,12 +6,12 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class InvoiceProductItem extends AbstractProductItem {
+public class InvoiceItem extends AbstractReceiveOperationItem {
 
   private final ObjectProperty<Invoice> invoice = new SimpleObjectProperty<>();
   private final DoubleProperty purchasePrice = new SimpleDoubleProperty();
 
-  public InvoiceProductItem(InvoiceProductItem instance) {
+  public InvoiceItem(InvoiceItem instance) {
     setId(instance.getId());
     setProduct(new Product(instance.getProduct()));
     setAmount(instance.getAmount());
@@ -19,7 +19,7 @@ public class InvoiceProductItem extends AbstractProductItem {
     setPurchasePrice(instance.getPurchasePrice());
   }
 
-  private InvoiceProductItem() {
+  private InvoiceItem() {
   }
 
   public Invoice getInvoice() {
@@ -58,7 +58,7 @@ public class InvoiceProductItem extends AbstractProductItem {
       return false;
     }
 
-    var that = (InvoiceProductItem) obj;
+    var that = (InvoiceItem) obj;
     return Objects.equals(invoice.get(), that.invoice.get())
            && purchasePrice.get() == that.purchasePrice.get();
   }
@@ -108,11 +108,11 @@ public class InvoiceProductItem extends AbstractProductItem {
       return this;
     }
 
-    public InvoiceProductItem build() {
+    public InvoiceItem build() {
       if (amount <= 0D || purchasePrice <= 0D) {
         throw new NullPointerException("Amount or price cannot be negative or zero");
       }
-      var instance = new InvoiceProductItem();
+      var instance = new InvoiceItem();
       instance.setId(id);
       instance.setProduct(Objects.requireNonNull(product));
       instance.setAmount(amount);

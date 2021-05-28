@@ -4,18 +4,18 @@ import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class OrderProductItem extends AbstractProductItem {
+public class OrderItem extends AbstractReceiveOperationItem {
 
   private final ObjectProperty<Order> order = new SimpleObjectProperty<>();
 
-  public OrderProductItem(OrderProductItem instance) {
+  public OrderItem(OrderItem instance) {
     setId(instance.getId());
     setProduct(new Product(instance.getProduct()));
     setAmount(instance.getAmount());
     setOrder(new Order(instance.getOrder()));
   }
 
-  private OrderProductItem() {
+  private OrderItem() {
   }
 
   public Order getOrder() {
@@ -42,7 +42,7 @@ public class OrderProductItem extends AbstractProductItem {
       return false;
     }
 
-    var that = (OrderProductItem) obj;
+    var that = (OrderItem) obj;
     return Objects.equals(order.get(), that.order.get());
   }
 
@@ -85,11 +85,11 @@ public class OrderProductItem extends AbstractProductItem {
       return this;
     }
 
-    public OrderProductItem build() {
+    public OrderItem build() {
       if (amount <= 0D) {
         throw new NullPointerException("Amount cannot be negative or zero");
       }
-      var instance = new OrderProductItem();
+      var instance = new OrderItem();
       instance.setId(id);
       instance.setProduct(Objects.requireNonNull(product));
       instance.setAmount(amount);

@@ -3,13 +3,9 @@ package com.github.ecstasyawesome.warehouse.model;
 import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
-public class User extends AbstractNamedRecord {
+public class User extends AbstractPersonRecord {
 
-  private final StringProperty surname = new SimpleStringProperty();
-  private final StringProperty secondName = new SimpleStringProperty();
   private final ObjectProperty<PersonContact> personContact = new SimpleObjectProperty<>();
   private final ObjectProperty<PersonSecurity> personSecurity = new SimpleObjectProperty<>();
 
@@ -23,30 +19,6 @@ public class User extends AbstractNamedRecord {
   }
 
   private User() {
-  }
-
-  public String getSurname() {
-    return surname.get();
-  }
-
-  public void setSurname(String surname) {
-    this.surname.set(surname);
-  }
-
-  public StringProperty surnameProperty() {
-    return surname;
-  }
-
-  public String getSecondName() {
-    return secondName.get();
-  }
-
-  public void setSecondName(String secondName) {
-    this.secondName.set(secondName);
-  }
-
-  public StringProperty secondNameProperty() {
-    return secondName;
   }
 
   public PersonContact getPersonContact() {
@@ -86,15 +58,13 @@ public class User extends AbstractNamedRecord {
     }
 
     var that = (User) obj;
-    return Objects.equals(surname.get(), that.surname.get())
-           && Objects.equals(secondName.get(), that.secondName.get())
-           && Objects.equals(personContact.get(), that.personContact.get())
+    return Objects.equals(personContact.get(), that.personContact.get())
            && Objects.equals(personSecurity.get(), that.personSecurity.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), surname.get(), secondName.get(), personContact.get(),
+    return Objects.hash(super.hashCode(), personContact.get(),
         personSecurity.get());
   }
 

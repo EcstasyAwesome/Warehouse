@@ -2,8 +2,12 @@ package com.github.ecstasyawesome.warehouse.model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
-public class Order extends AbstractPaperOperation {
+public class Order extends AbstractReceiveOperation {
+
+  private final ObjectProperty<ProductProvider> productProvider = new SimpleObjectProperty<>();
 
   public Order(Order instance) {
     setId(instance.getId());
@@ -14,6 +18,18 @@ public class Order extends AbstractPaperOperation {
   }
 
   private Order() {
+  }
+
+  public ProductProvider getProductProvider() {
+    return productProvider.get();
+  }
+
+  public void setProductProvider(ProductProvider productProvider) {
+    this.productProvider.set(productProvider);
+  }
+
+  public ObjectProperty<ProductProvider> productProviderProperty() {
+    return productProvider;
   }
 
   public static class Builder {

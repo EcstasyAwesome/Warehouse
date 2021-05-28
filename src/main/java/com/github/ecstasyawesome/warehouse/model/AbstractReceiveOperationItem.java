@@ -6,7 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public abstract class AbstractProductItem extends AbstractRecord {
+public abstract class AbstractReceiveOperationItem extends AbstractRecord {
 
   private final ObjectProperty<Product> product = new SimpleObjectProperty<>();
   private final DoubleProperty amount = new SimpleDoubleProperty();
@@ -47,7 +47,7 @@ public abstract class AbstractProductItem extends AbstractRecord {
       return false;
     }
 
-    var that = (AbstractProductItem) obj;
+    var that = (AbstractReceiveOperationItem) obj;
     return Objects.equals(product.get(), that.product.get()) && amount.get() == that.amount.get();
   }
 

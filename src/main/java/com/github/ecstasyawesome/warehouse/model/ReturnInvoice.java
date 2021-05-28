@@ -5,37 +5,59 @@ import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class Invoice extends AbstractReceiveOperation {
+public class ReturnInvoice extends AbstractReceiveOperation {
 
-  private final ObjectProperty<ProductProvider> productProvider = new SimpleObjectProperty<>();
+  private final ObjectProperty<Customer> customer = new SimpleObjectProperty<>();
+  // TODO receipt
 
-  public Invoice(Invoice instance) {
+  public ReturnInvoice(ReturnInvoice instance) {
     setId(instance.getId());
-    setProductProvider(new ProductProvider(instance.getProductProvider()));
+    setCustomer(new Customer(instance.getCustomer()));
     setProductStorage(new ProductStorage(instance.getProductStorage()));
     setTime(LocalDateTime.of(instance.getTime().toLocalDate(), instance.getTime().toLocalTime()));
     setUser(new User(instance.getUser()));
   }
 
-  private Invoice() {
+  private ReturnInvoice() {
   }
 
-  public ProductProvider getProductProvider() {
-    return productProvider.get();
+  public Customer getCustomer() {
+    return customer.get();
   }
 
-  public void setProductProvider(ProductProvider productProvider) {
-    this.productProvider.set(productProvider);
+  public void setCustomer(Customer customer) {
+    this.customer.set(customer);
   }
 
-  public ObjectProperty<ProductProvider> productProviderProperty() {
-    return productProvider;
+  public ObjectProperty<Customer> customerProperty() {
+    return customer;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+
+    var that = (ReturnInvoice) obj;
+    return Objects.equals(customer.get(), that.customer.get());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), customer.get());
   }
 
   public static class Builder {
 
     private long id = -1L;
-    private ProductProvider productProvider;
+    private Customer customer;
     private ProductStorage productStorage;
     private LocalDateTime time;
     private User user;
@@ -52,8 +74,8 @@ public class Invoice extends AbstractReceiveOperation {
       return this;
     }
 
-    public Builder setProductProvider(ProductProvider productProvider) {
-      this.productProvider = productProvider;
+    public Builder setCustomer(Customer customer) {
+      this.customer = customer;
       return this;
     }
 
@@ -72,10 +94,10 @@ public class Invoice extends AbstractReceiveOperation {
       return this;
     }
 
-    public Invoice build() {
-      var instance = new Invoice();
+    public ReturnInvoice build() {
+      var instance = new ReturnInvoice();
       instance.setId(id);
-      instance.setProductProvider(Objects.requireNonNull(productProvider));
+      instance.setCustomer(Objects.requireNonNull(customer));
       instance.setProductStorage(Objects.requireNonNull(productStorage));
       instance.setTime(Objects.requireNonNull(time));
       instance.setUser(user);
