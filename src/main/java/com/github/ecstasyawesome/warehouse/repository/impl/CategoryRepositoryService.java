@@ -105,9 +105,9 @@ public class CategoryRepositoryService extends CategoryRepository {
   @Override
   protected Category transformToObj(final ResultSet resultSet) throws SQLException {
     return Category.Builder.create()
-        .setId(resultSet.getLong("CATEGORY_ID"))
-        .setName(resultSet.getString("CATEGORY_NAME"))
-        .setDescription(resultSet.getString("CATEGORY_DESCRIPTION"))
+        .setId(resultSet.getLong("CATEGORIES.CATEGORY_ID"))
+        .setName(resultSet.getString("CATEGORIES.CATEGORY_NAME"))
+        .setDescription(resultSet.getString("CATEGORIES.CATEGORY_DESCRIPTION"))
         .build();
   }
 }

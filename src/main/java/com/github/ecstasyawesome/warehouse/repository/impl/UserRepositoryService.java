@@ -29,7 +29,7 @@ public class UserRepositoryService extends UserRepository {
   @Override
   public boolean isFieldUnique(final String login) {
     checkStringParameter(login);
-    final var query = "SELECT EXISTS(SELECT 1 FROM SECURITY WHERE SECURITY_LOGIN=?)";
+    final var query = "SELECT EXISTS(SELECT 1 FROM USERS_SECURITY WHERE SECURITY_LOGIN=?)";
     try {
       var result = !check(query, login);
       logger.debug("Login '{}' is unique [{}]", login, result);
@@ -55,10 +55,10 @@ public class UserRepositoryService extends UserRepository {
     final var query = """
         SELECT *
         FROM USERS
-                 INNER JOIN PERSONS_CONTACTS
-                            ON USERS.USER_ID = PERSONS_CONTACTS.USER_ID
-                 INNER JOIN SECURITY
-                            ON USERS.USER_ID = SECURITY.USER_ID
+            INNER JOIN USERS_CONTACTS
+                ON USERS.USER_ID = USERS_CONTACTS.USER_ID
+            INNER JOIN USERS_SECURITY
+                ON USERS.USER_ID = USERS_SECURITY.USER_ID
         """;
     try {
       var result = selectRecords(query);
@@ -77,11 +77,11 @@ public class UserRepositoryService extends UserRepository {
         VALUES (?, ?, ?)
         """;
     final var userContactQuery = """
-        INSERT INTO PERSONS_CONTACTS (USER_ID, PERSON_CONTACT_PHONE, PERSON_CONTACT_EMAIL)
+        INSERT INTO USERS_CONTACTS (USER_ID, CONTACT_PHONE, CONTACT_EMAIL)
         VALUES (?, ?, ?)
         """;
-    final var securityQuery = """
-        INSERT INTO SECURITY (USER_ID, SECURITY_LOGIN, SECURITY_PASSWORD, SECURITY_ACCESS)
+    final var userSecurityQuery = """
+        INSERT INTO USERS_SECURITY (USER_ID, SECURITY_LOGIN, SECURITY_PASSWORD, SECURITY_ACCESS)
         VALUES (?, ?, ?, ?)
         """;
     try (var connection = ConnectionPool.getConnection()) {
@@ -93,7 +93,7 @@ public class UserRepositoryService extends UserRepository {
         final var contactId = insertRecord(connection, userContactQuery, userId, contact.getPhone(),
             contact.getEmail());
         final var security = instance.getPersonSecurity();
-        final var securityId = insertRecord(connection, securityQuery, userId,
+        final var securityId = insertRecord(connection, userSecurityQuery, userId,
             security.getLogin(), security.getPassword(), security.getAccess().name());
         connection.commit();
         contact.setId(contactId);
@@ -115,10 +115,10 @@ public class UserRepositoryService extends UserRepository {
     final var query = """
         SELECT *
         FROM USERS
-                 INNER JOIN PERSONS_CONTACTS
-                            ON USERS.USER_ID = PERSONS_CONTACTS.USER_ID
-                 INNER JOIN SECURITY
-                            ON USERS.USER_ID = SECURITY.USER_ID
+            INNER JOIN USERS_CONTACTS
+                ON USERS.USER_ID = USERS_CONTACTS.USER_ID
+            INNER JOIN USERS_SECURITY
+                ON USERS.USER_ID = USERS_SECURITY.USER_ID
         WHERE SECURITY_LOGIN=?
         """;
     try {
@@ -135,10 +135,10 @@ public class UserRepositoryService extends UserRepository {
     final var query = """
         SELECT *
         FROM USERS
-                 INNER JOIN PERSONS_CONTACTS
-                            ON USERS.USER_ID = PERSONS_CONTACTS.USER_ID
-                 INNER JOIN SECURITY
-                            ON USERS.USER_ID = SECURITY.USER_ID
+            INNER JOIN USERS_CONTACTS
+                ON USERS.USER_ID = USERS_CONTACTS.USER_ID
+            INNER JOIN USERS_SECURITY
+                ON USERS.USER_ID = USERS_SECURITY.USER_ID
         WHERE USERS.USER_ID=?
         """;
     try {
@@ -154,11 +154,11 @@ public class UserRepositoryService extends UserRepository {
   public void update(final User instance) {
     Objects.requireNonNull(instance);
     final var query = """
-        UPDATE PERSONS_CONTACTS
-        SET PERSON_CONTACT_PHONE=?,
-            PERSON_CONTACT_EMAIL=?
-        WHERE PERSON_CONTACT_ID=?;
-        UPDATE SECURITY
+        UPDATE USERS_CONTACTS
+        SET CONTACT_PHONE=?,
+            CONTACT_EMAIL=?
+        WHERE CONTACT_ID=?;
+        UPDATE USERS_SECURITY
         SET SECURITY_LOGIN=?,
             SECURITY_PASSWORD=?,
             SECURITY_ACCESS=?
@@ -197,21 +197,21 @@ public class UserRepositoryService extends UserRepository {
   @Override
   protected User transformToObj(final ResultSet resultSet) throws SQLException {
     var contact = PersonContact.Builder.create()
-        .setId(resultSet.getLong("PERSON_CONTACT_ID"))
-        .setPhone(resultSet.getString("PERSON_CONTACT_PHONE"))
-        .setEmail(resultSet.getString("PERSON_CONTACT_EMAIL"))
+        .setId(resultSet.getLong("USERS_CONTACTS.CONTACT_ID"))
+        .setPhone(resultSet.getString("USERS_CONTACTS.CONTACT_PHONE"))
+        .setEmail(resultSet.getString("USERS_CONTACTS.CONTACT_EMAIL"))
         .build();
     var security = PersonSecurity.Builder.create()
-        .setId(resultSet.getLong("SECURITY_ID"))
-        .setLogin(resultSet.getString("SECURITY_LOGIN"))
-        .setPassword(resultSet.getString("SECURITY_PASSWORD"))
-        .setAccess(Access.valueOf(resultSet.getString("SECURITY_ACCESS")))
+        .setId(resultSet.getLong("USERS_SECURITY.SECURITY_ID"))
+        .setLogin(resultSet.getString("USERS_SECURITY.SECURITY_LOGIN"))
+        .setPassword(resultSet.getString("USERS_SECURITY.SECURITY_PASSWORD"))
+        .setAccess(Access.valueOf(resultSet.getString("USERS_SECURITY.SECURITY_ACCESS")))
         .build();
     return User.Builder.create()
-        .setId(resultSet.getLong("USER_ID"))
-        .setSurname(resultSet.getString("USER_SURNAME"))
-        .setName(resultSet.getString("USER_NAME"))
-        .setSecondName(resultSet.getString("USER_SECOND_NAME"))
+        .setId(resultSet.getLong("USERS.USER_ID"))
+        .setSurname(resultSet.getString("USERS.USER_SURNAME"))
+        .setName(resultSet.getString("USERS.USER_NAME"))
+        .setSecondName(resultSet.getString("USERS.USER_SECOND_NAME"))
         .setUserContact(contact)
         .setUserSecurity(security)
         .build();

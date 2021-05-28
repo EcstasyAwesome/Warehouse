@@ -15,8 +15,8 @@ import org.apache.logging.log4j.Logger;
 public class ProductRepositoryService extends ProductRepository {
 
   private static final ProductRepositoryService INSTANCE = new ProductRepositoryService();
-  private final CategoryRepositoryService categoryDaoService = CategoryRepositoryService
-      .getInstance();
+  private final CategoryRepositoryService categoryRepositoryService =
+      CategoryRepositoryService.getInstance();
   private final Logger logger = LogManager.getLogger(ProductRepositoryService.class);
 
   private ProductRepositoryService() {
@@ -31,8 +31,8 @@ public class ProductRepositoryService extends ProductRepository {
     final var query = """
         SELECT *
         FROM PRODUCTS
-             INNER JOIN CATEGORIES
-                        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
+            INNER JOIN CATEGORIES
+                ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
         """;
     try {
       var result = selectRecords(query);
@@ -49,8 +49,8 @@ public class ProductRepositoryService extends ProductRepository {
     final var query = """
         SELECT *
         FROM PRODUCTS
-             INNER JOIN CATEGORIES
-                        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
+            INNER JOIN CATEGORIES
+                ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
         WHERE PRODUCTS.CATEGORY_ID=?
         """;
     try {
@@ -69,8 +69,8 @@ public class ProductRepositoryService extends ProductRepository {
     final var query = """
         SELECT *
         FROM PRODUCTS
-             INNER JOIN CATEGORIES
-                        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
+            INNER JOIN CATEGORIES
+                ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
         WHERE LOWER(PRODUCT_NAME) LIKE LOWER(?)
         """;
     try {
@@ -105,8 +105,8 @@ public class ProductRepositoryService extends ProductRepository {
     final var query = """
         SELECT *
         FROM PRODUCTS
-             INNER JOIN CATEGORIES
-                        ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
+            INNER JOIN CATEGORIES
+                ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
         WHERE PRODUCT_ID=?
         """;
     try {
@@ -165,10 +165,10 @@ public class ProductRepositoryService extends ProductRepository {
   @Override
   protected Product transformToObj(final ResultSet resultSet) throws SQLException {
     return Product.Builder.create()
-        .setId(resultSet.getLong("PRODUCT_ID"))
-        .setCategory(categoryDaoService.transformToObj(resultSet))
-        .setName(resultSet.getString("PRODUCT_NAME"))
-        .setUnit(Unit.valueOf(resultSet.getString("PRODUCT_UNIT")))
+        .setId(resultSet.getLong("PRODUCTS.PRODUCT_ID"))
+        .setCategory(categoryRepositoryService.transformToObj(resultSet))
+        .setName(resultSet.getString("PRODUCTS.PRODUCT_NAME"))
+        .setUnit(Unit.valueOf(resultSet.getString("PRODUCTS.PRODUCT_UNIT")))
         .build();
   }
 }

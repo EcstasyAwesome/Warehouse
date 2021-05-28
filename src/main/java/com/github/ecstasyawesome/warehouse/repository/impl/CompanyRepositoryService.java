@@ -3,7 +3,6 @@ package com.github.ecstasyawesome.warehouse.repository.impl;
 import com.github.ecstasyawesome.warehouse.model.Address;
 import com.github.ecstasyawesome.warehouse.model.BusinessContact;
 import com.github.ecstasyawesome.warehouse.model.Company;
-import com.github.ecstasyawesome.warehouse.model.Company.Builder;
 import com.github.ecstasyawesome.warehouse.model.PersonType;
 import com.github.ecstasyawesome.warehouse.repository.CompanyRepository;
 import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
@@ -32,10 +31,10 @@ public class CompanyRepositoryService extends CompanyRepository {
     final var query = """
         SELECT *
         FROM COMPANIES
-                 INNER JOIN BUSINESS_CONTACTS
-                            ON COMPANIES.COMPANY_ID = BUSINESS_CONTACTS.COMPANY_ID
-                 INNER JOIN ADDRESSES
-                            ON COMPANIES.COMPANY_ID = ADDRESSES.COMPANY_ID
+            INNER JOIN COMPANIES_CONTACTS
+                ON COMPANIES.COMPANY_ID = COMPANIES_CONTACTS.COMPANY_ID
+            INNER JOIN COMPANIES_ADDRESSES
+                ON COMPANIES.COMPANY_ID = COMPANIES_ADDRESSES.COMPANY_ID
         """;
     try {
       var result = selectRecords(query);
@@ -54,13 +53,13 @@ public class CompanyRepositoryService extends CompanyRepository {
         VALUES (?, ?, ?)
         """;
     final var companyContactQuery = """
-        INSERT INTO BUSINESS_CONTACTS (COMPANY_ID, BUSINESS_CONTACT_PHONE, BUSINESS_CONTACT_EMAIL,
-                                       BUSINESS_CONTACT_EXTRA_PHONE, BUSINESS_CONTACT_SITE)
+        INSERT INTO COMPANIES_CONTACTS (COMPANY_ID, CONTACT_PHONE, CONTACT_EXTRA_PHONE,
+                                        CONTACT_EMAIL, CONTACT_SITE)
         VALUES (?, ?, ?, ?, ?)
         """;
     final var companyAddressQuery = """
-        INSERT INTO ADDRESSES (COMPANY_ID, ADDRESS_REGION, ADDRESS_TOWN, ADDRESS_STREET,
-                               ADDRESS_NUMBER)
+        INSERT INTO COMPANIES_ADDRESSES (COMPANY_ID, ADDRESS_REGION, ADDRESS_TOWN, ADDRESS_STREET,
+                                         ADDRESS_NUMBER)
         VALUES (?, ?, ?, ?, ?)
         """;
     try (var connection = ConnectionPool.getConnection()) {
@@ -70,7 +69,7 @@ public class CompanyRepositoryService extends CompanyRepository {
             instance.getIdentifierCode(), instance.getPersonType().name());
         final var contact = instance.getBusinessContact();
         final var contactId = insertRecord(connection, companyContactQuery, companyId,
-            contact.getPhone(), contact.getEmail(), contact.getExtraPhone(), contact.getSite());
+            contact.getPhone(), contact.getExtraPhone(), contact.getEmail(), contact.getSite());
         final var address = instance.getAddress();
         final var addressId = insertRecord(connection, companyAddressQuery, companyId,
             address.getRegion(), address.getTown(), address.getStreet(), address.getNumber());
@@ -93,10 +92,10 @@ public class CompanyRepositoryService extends CompanyRepository {
     final var query = """
         SELECT *
         FROM COMPANIES
-                 INNER JOIN BUSINESS_CONTACTS
-                            ON COMPANIES.COMPANY_ID = BUSINESS_CONTACTS.COMPANY_ID
-                 INNER JOIN ADDRESSES
-                            ON COMPANIES.COMPANY_ID = ADDRESSES.COMPANY_ID
+            INNER JOIN COMPANIES_CONTACTS
+                ON COMPANIES.COMPANY_ID = COMPANIES_CONTACTS.COMPANY_ID
+            INNER JOIN COMPANIES_ADDRESSES
+                ON COMPANIES.COMPANY_ID = COMPANIES_ADDRESSES.COMPANY_ID
         WHERE COMPANIES.COMPANY_ID=?
         """;
     try {
@@ -112,13 +111,13 @@ public class CompanyRepositoryService extends CompanyRepository {
   public void update(Company instance) {
     Objects.requireNonNull(instance);
     final var query = """
-        UPDATE BUSINESS_CONTACTS
-        SET BUSINESS_CONTACT_PHONE=?,
-            BUSINESS_CONTACT_EXTRA_PHONE=?,
-            BUSINESS_CONTACT_EMAIL=?,
-            BUSINESS_CONTACT_SITE=?
-        WHERE BUSINESS_CONTACT_ID=?;
-        UPDATE ADDRESSES
+        UPDATE COMPANIES_CONTACTS
+        SET CONTACT_PHONE=?,
+            CONTACT_EXTRA_PHONE=?,
+            CONTACT_EMAIL=?,
+            CONTACT_SITE=?
+        WHERE CONTACT_ID=?;
+        UPDATE COMPANIES_ADDRESSES
         SET ADDRESS_REGION=?,
             ADDRESS_TOWN=?,
             ADDRESS_STREET=?,
@@ -159,24 +158,24 @@ public class CompanyRepositoryService extends CompanyRepository {
   @Override
   protected Company transformToObj(ResultSet resultSet) throws SQLException {
     var contact = BusinessContact.Builder.create()
-        .setId(resultSet.getLong("BUSINESS_CONTACT_ID"))
-        .setPhone(resultSet.getString("BUSINESS_CONTACT_PHONE"))
-        .setExtraPhone(resultSet.getString("BUSINESS_CONTACT_EXTRA_PHONE"))
-        .setEmail(resultSet.getString("BUSINESS_CONTACT_EMAIL"))
-        .setSite(resultSet.getString("BUSINESS_CONTACT_SITE"))
+        .setId(resultSet.getLong("COMPANIES_CONTACTS.CONTACT_ID"))
+        .setPhone(resultSet.getString("COMPANIES_CONTACTS.CONTACT_PHONE"))
+        .setExtraPhone(resultSet.getString("COMPANIES_CONTACTS.CONTACT_EXTRA_PHONE"))
+        .setEmail(resultSet.getString("COMPANIES_CONTACTS.CONTACT_EMAIL"))
+        .setSite(resultSet.getString("COMPANIES_CONTACTS.CONTACT_SITE"))
         .build();
     var address = Address.Builder.create()
-        .setId(resultSet.getLong("ADDRESS_ID"))
-        .setRegion(resultSet.getString("ADDRESS_REGION"))
-        .setTown(resultSet.getString("ADDRESS_TOWN"))
-        .setStreet(resultSet.getString("ADDRESS_STREET"))
-        .setNumber(resultSet.getString("ADDRESS_NUMBER"))
+        .setId(resultSet.getLong("COMPANIES_ADDRESSES.ADDRESS_ID"))
+        .setRegion(resultSet.getString("COMPANIES_ADDRESSES.ADDRESS_REGION"))
+        .setTown(resultSet.getString("COMPANIES_ADDRESSES.ADDRESS_TOWN"))
+        .setStreet(resultSet.getString("COMPANIES_ADDRESSES.ADDRESS_STREET"))
+        .setNumber(resultSet.getString("COMPANIES_ADDRESSES.ADDRESS_NUMBER"))
         .build();
-    return Builder.create()
-        .setId(resultSet.getLong("COMPANY_ID"))
-        .setName(resultSet.getString("COMPANY_NAME"))
-        .setIdentifierCode(resultSet.getString("COMPANY_IDENTIFIER_CODE"))
-        .setPersonType(PersonType.valueOf(resultSet.getString("COMPANY_PERSON_TYPE")))
+    return Company.Builder.create()
+        .setId(resultSet.getLong("COMPANIES.COMPANY_ID"))
+        .setName(resultSet.getString("COMPANIES.COMPANY_NAME"))
+        .setIdentifierCode(resultSet.getString("COMPANIES.COMPANY_IDENTIFIER_CODE"))
+        .setPersonType(PersonType.valueOf(resultSet.getString("COMPANIES.COMPANY_PERSON_TYPE")))
         .setBusinessContact(contact)
         .setAddress(address)
         .build();
