@@ -11,6 +11,7 @@ public class DecommissionedCommodity extends AbstractCommodity {
 
   private final ObjectProperty<LocalDateTime> decommissioningTime = new SimpleObjectProperty<>();
   private final StringProperty reason = new SimpleStringProperty();
+  private final ObjectProperty<User> user = new SimpleObjectProperty<>();
 
   public DecommissionedCommodity(DecommissionedCommodity instance) {
     setId(instance.getId());
@@ -24,6 +25,7 @@ public class DecommissionedCommodity extends AbstractCommodity {
     var timeTwo = instance.getDecommissioningTime();
     setDecommissioningTime(LocalDateTime.of(timeTwo.toLocalDate(), timeTwo.toLocalTime()));
     setReason(instance.getReason());
+    setUser(new User(instance.getUser()));
   }
 
   private DecommissionedCommodity() {
@@ -53,6 +55,18 @@ public class DecommissionedCommodity extends AbstractCommodity {
     return reason;
   }
 
+  public User getUser() {
+    return user.get();
+  }
+
+  public void setUser(User user) {
+    this.user.set(user);
+  }
+
+  public ObjectProperty<User> userProperty() {
+    return user;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -67,12 +81,13 @@ public class DecommissionedCommodity extends AbstractCommodity {
 
     var that = (DecommissionedCommodity) obj;
     return Objects.equals(decommissioningTime.get(), that.decommissioningTime.get())
-           && Objects.equals(reason.get(), that.reason.get());
+           && Objects.equals(reason.get(), that.reason.get())
+           && Objects.equals(user.get(), that.user.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), decommissioningTime.get(), reason.get());
+    return Objects.hash(super.hashCode(), decommissioningTime.get(), reason.get(), user.get());
   }
 
   public static class Builder {
@@ -86,6 +101,7 @@ public class DecommissionedCommodity extends AbstractCommodity {
     private LocalDateTime updateTime;
     private LocalDateTime decommissioningTime;
     private String reason;
+    private User user;
 
     private Builder() {
     }
@@ -139,6 +155,11 @@ public class DecommissionedCommodity extends AbstractCommodity {
       return this;
     }
 
+    public Builder setUser(User user) {
+      this.user = user;
+      return this;
+    }
+
     public DecommissionedCommodity build() {
       if (amount <= 0D || purchasePrice <= 0D || retailPrice <= 0D) {
         throw new NullPointerException("Amount or price cannot be negative or zero");
@@ -151,8 +172,9 @@ public class DecommissionedCommodity extends AbstractCommodity {
       instance.setRetailPrice(retailPrice);
       instance.setPurchasePrice(purchasePrice);
       instance.setUpdateTime(Objects.requireNonNull(updateTime));
-      instance.setDecommissioningTime(decommissioningTime);
-      instance.setReason(reason);
+      instance.setDecommissioningTime(Objects.requireNonNull(decommissioningTime));
+      instance.setReason(Objects.requireNonNull(reason));
+      instance.setUser(user);
       return instance;
     }
   }
