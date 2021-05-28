@@ -69,12 +69,12 @@ public final class InputValidator {
   }
 
   public static boolean isFieldValid(final TextInputControl field, final String previous,
-      final Pattern pattern, final UniqueField daoImpl) {
+      final Pattern pattern, final UniqueField repository) {
     var text = field.getText();
     var result = false;
     if (isFieldValid(field, pattern, false)) {
       try {
-        result = text.equals(previous) || daoImpl.isFieldUnique(text);
+        result = text.equals(previous) || repository.isFieldUnique(text);
       } catch (NullPointerException exception) {
         WINDOW_MANAGER.showDialog(exception);
       }
@@ -85,12 +85,12 @@ public final class InputValidator {
   }
 
   public static boolean isFieldValid(final String text, final String previous,
-      final Pattern pattern, final UniqueField daoImpl) {
+      final Pattern pattern, final UniqueField repository) {
     var result = false;
     if (text.matches(pattern.pattern())) {
       LOGGER.debug("Text '{}' matches pattern '{}' [{}]", text, pattern, true);
       try {
-        result = text.equals(previous) || daoImpl.isFieldUnique(text);
+        result = text.equals(previous) || repository.isFieldUnique(text);
       } catch (NullPointerException exception) {
         WINDOW_MANAGER.showDialog(exception);
       }
