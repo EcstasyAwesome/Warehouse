@@ -18,7 +18,7 @@ public final class InputValidator {
   public static final Pattern LOGIN = Pattern.compile("^[a-z_0-9]{5,20}$");
   public static final Pattern PASSWORD = Pattern.compile("^.{8,20}$");
   public static final Pattern EMAIL = Pattern.compile("^[a-z0-9._]+@[a-z0-9]+\\.[a-z]+$");
-  public static final Pattern WILDCARD = Pattern.compile("^.*$");
+  public static final Pattern WILDCARD = Pattern.compile("^.+$");
   public static final ColorAdjust RED_ADJUST = new ColorAdjust(0, 0.1, 0, 0);
   public static final ColorAdjust NO_ADJUST = new ColorAdjust(0, 0, 0, 0);
   private static final WindowManager WINDOW_MANAGER = WindowManager.getInstance();
@@ -63,8 +63,8 @@ public final class InputValidator {
     } else {
       field.setEffect(RED_ADJUST);
     }
-    LOGGER.debug("Field with the text '{}' is being empty or matches the pattern '{}' [{}]", text,
-        pattern, result);
+    LOGGER.debug("Field with the text '{}' is being empty [{}] or matches the pattern '{}' [{}]",
+        text, empty, pattern, result);
     return result;
   }
 
