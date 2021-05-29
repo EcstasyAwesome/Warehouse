@@ -7,9 +7,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public final class ConnectionPool {
+public final class DatabaseManager {
 
-  private static final Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
+  private static final Logger LOGGER = LogManager.getLogger(DatabaseManager.class);
   private static final String USERS_TABLE = """
       CREATE TABLE IF NOT EXISTS USERS
       (
@@ -201,11 +201,11 @@ public final class ConnectionPool {
       """;
 
   static {
-    createTablesIfAbsent(USERS_TABLE, USERS_CONTACTS_TABLE, USERS_SECURITY_TABLE, CATEGORIES_TABLE,
-        PRODUCTS_TABLE, COMPANIES_TABLE, COMPANIES_CONTACTS_TABLE, COMPANIES_ADDRESSES_TABLE,
-        PRODUCT_STORAGES_TABLE, PRODUCT_STORAGES_CONTACTS_TABLE, PRODUCT_STORAGES_ADDRESSES_TABLE,
-        PRODUCT_PROVIDERS_TABLE, PRODUCT_PROVIDERS_CONTACTS_TABLE,
-        PRODUCT_PROVIDERS_ADDRESSES_TABLE);
+    try (var connection = getConnection()) {
+      DatabaseManager.createTablesIfAbsent(connection);
+    } catch (SQLException exception) {
+      LOGGER.fatal(exception);
+    }
   }
 
   public static Connection getConnection() throws SQLException {
@@ -213,9 +213,16 @@ public final class ConnectionPool {
     return DriverManager.getConnection("jdbc:h2:./database/default", "root", "root");
   }
 
-  private static void createTablesIfAbsent(String... queries) {
-    try (var connection = getConnection();
-        var statement = connection.createStatement()) {
+  public static void createTablesIfAbsent(final Connection connection) {
+    executeQueriesBunch(connection, USERS_TABLE, USERS_CONTACTS_TABLE, USERS_SECURITY_TABLE,
+        CATEGORIES_TABLE, PRODUCTS_TABLE, COMPANIES_TABLE, COMPANIES_CONTACTS_TABLE,
+        COMPANIES_ADDRESSES_TABLE, PRODUCT_STORAGES_TABLE, PRODUCT_STORAGES_CONTACTS_TABLE,
+        PRODUCT_STORAGES_ADDRESSES_TABLE, PRODUCT_PROVIDERS_TABLE, PRODUCT_PROVIDERS_CONTACTS_TABLE,
+        PRODUCT_PROVIDERS_ADDRESSES_TABLE);
+  }
+
+  private static void executeQueriesBunch(final Connection connection, String... queries) {
+    try (var statement = connection.createStatement()) {
       connection.setAutoCommit(false);
       for (var query : queries) {
         statement.addBatch(query);

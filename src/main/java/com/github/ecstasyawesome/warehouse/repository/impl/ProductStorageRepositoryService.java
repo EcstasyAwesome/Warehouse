@@ -4,7 +4,7 @@ import com.github.ecstasyawesome.warehouse.model.Address;
 import com.github.ecstasyawesome.warehouse.model.BusinessContact;
 import com.github.ecstasyawesome.warehouse.model.ProductStorage;
 import com.github.ecstasyawesome.warehouse.repository.ProductStorageRepository;
-import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
+import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -69,7 +69,7 @@ public class ProductStorageRepositoryService extends ProductStorageRepository {
                                                 ADDRESS_STREET, ADDRESS_NUMBER)
         VALUES (?, ?, ?, ?, ?)
         """;
-    try (var connection = ConnectionPool.getConnection()) {
+    try (var connection = DatabaseManager.getConnection()) {
       connection.setAutoCommit(false);
       try {
         final var storageId = insertRecord(connection, productStorageQuery,

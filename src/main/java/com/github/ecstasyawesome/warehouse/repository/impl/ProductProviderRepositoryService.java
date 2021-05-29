@@ -4,7 +4,7 @@ import com.github.ecstasyawesome.warehouse.model.Address;
 import com.github.ecstasyawesome.warehouse.model.BusinessContact;
 import com.github.ecstasyawesome.warehouse.model.ProductProvider;
 import com.github.ecstasyawesome.warehouse.repository.ProductProviderRepository;
-import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
+import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -61,7 +61,7 @@ public class ProductProviderRepositoryService extends ProductProviderRepository 
                                                 CONTACT_EMAIL, CONTACT_SITE)
         VALUES (?, ?, ?, ?, ?)
         """;
-    try (var connection = ConnectionPool.getConnection()) {
+    try (var connection = DatabaseManager.getConnection()) {
       connection.setAutoCommit(false);
       try {
         final var providerId = insertRecord(connection, productProviderQuery, instance.getName());

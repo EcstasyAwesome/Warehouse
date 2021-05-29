@@ -1,7 +1,7 @@
 package com.github.ecstasyawesome.warehouse.repository;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
-import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
+import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,7 +29,7 @@ public abstract class AbstractRepository<T extends AbstractRecord> {
 
   protected final long insertRecord(final String query, final Object... values)
       throws SQLException {
-    try (var connection = ConnectionPool.getConnection()) {
+    try (var connection = DatabaseManager.getConnection()) {
       connection.setAutoCommit(false);
       try (var statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
         configureStatement(statement, values);
@@ -48,7 +48,7 @@ public abstract class AbstractRepository<T extends AbstractRecord> {
   }
 
   protected final T selectRecord(final String query, final Object... values) throws SQLException {
-    try (var connection = ConnectionPool.getConnection();
+    try (var connection = DatabaseManager.getConnection();
         var statement = connection.prepareStatement(query)) {
       configureStatement(statement, values);
       statement.execute();
@@ -62,7 +62,7 @@ public abstract class AbstractRepository<T extends AbstractRecord> {
   protected final ObservableList<T> selectRecords(final String query, final Object... values)
       throws SQLException {
     final var result = FXCollections.<T>observableArrayList();
-    try (var connection = ConnectionPool.getConnection();
+    try (var connection = DatabaseManager.getConnection();
         var statement = connection.prepareStatement(query)) {
       configureStatement(statement, values);
       statement.execute();
@@ -76,7 +76,7 @@ public abstract class AbstractRepository<T extends AbstractRecord> {
   }
 
   protected final int execute(final String query, final Object... values) throws SQLException {
-    try (var connection = ConnectionPool.getConnection()) {
+    try (var connection = DatabaseManager.getConnection()) {
       connection.setAutoCommit(false);
       try (var statement = connection.prepareStatement(query)) {
         configureStatement(statement, values);
@@ -91,7 +91,7 @@ public abstract class AbstractRepository<T extends AbstractRecord> {
   }
 
   protected final boolean check(final String query, final Object... values) throws SQLException {
-    try (var connection = ConnectionPool.getConnection();
+    try (var connection = DatabaseManager.getConnection();
         var statement = connection.prepareStatement(query)) {
       configureStatement(statement, values);
       statement.execute();

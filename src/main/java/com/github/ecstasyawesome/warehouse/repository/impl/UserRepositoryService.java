@@ -5,7 +5,7 @@ import com.github.ecstasyawesome.warehouse.model.PersonContact;
 import com.github.ecstasyawesome.warehouse.model.PersonSecurity;
 import com.github.ecstasyawesome.warehouse.model.User;
 import com.github.ecstasyawesome.warehouse.repository.UserRepository;
-import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
+import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -84,7 +84,7 @@ public class UserRepositoryService extends UserRepository {
         INSERT INTO USERS_SECURITY (USER_ID, SECURITY_LOGIN, SECURITY_PASSWORD, SECURITY_ACCESS)
         VALUES (?, ?, ?, ?)
         """;
-    try (var connection = ConnectionPool.getConnection()) {
+    try (var connection = DatabaseManager.getConnection()) {
       connection.setAutoCommit(false);
       try {
         final var userId = insertRecord(connection, userQuery, instance.getSurname(),

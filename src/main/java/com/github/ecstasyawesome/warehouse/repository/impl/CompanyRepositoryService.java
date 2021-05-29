@@ -5,7 +5,7 @@ import com.github.ecstasyawesome.warehouse.model.BusinessContact;
 import com.github.ecstasyawesome.warehouse.model.Company;
 import com.github.ecstasyawesome.warehouse.model.PersonType;
 import com.github.ecstasyawesome.warehouse.repository.CompanyRepository;
-import com.github.ecstasyawesome.warehouse.util.ConnectionPool;
+import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -62,7 +62,7 @@ public class CompanyRepositoryService extends CompanyRepository {
                                          ADDRESS_NUMBER)
         VALUES (?, ?, ?, ?, ?)
         """;
-    try (var connection = ConnectionPool.getConnection()) {
+    try (var connection = DatabaseManager.getConnection()) {
       connection.setAutoCommit(false);
       try {
         final var companyId = insertRecord(connection, companyQuery, instance.getName(),
