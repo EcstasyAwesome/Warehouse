@@ -11,7 +11,8 @@ public enum Access {
   ROOT(0, "Root"),
   ADMIN(1, "Administrator"),
   USER(2, "User"),
-  GUEST(3, "Guest");
+  GUEST(3, "Guest"),
+  BANNED(4, "Banned");
 
   public final int level;
   public final String name;
@@ -23,7 +24,7 @@ public enum Access {
 
   public static ObservableList<Access> getAccesses() {
     return Stream.of(values())
-        .filter(access -> access != ROOT)
+        .filter(access -> access != ROOT && access != GUEST)
         .collect(Collectors.toCollection(FXCollections::observableArrayList));
   }
 
