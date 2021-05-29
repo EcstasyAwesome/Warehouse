@@ -61,7 +61,7 @@ public class DatabaseManagerTest {
 
   @Test
   public void tablesSuccessfullyChecked() {
-    var tableNames = new String[]{"CATEGORIES", "COMPANIES", "COMPANIES_ADDRESSES",
+    var expected = new String[]{"CATEGORIES", "COMPANIES", "COMPANIES_ADDRESSES",
         "COMPANIES_CONTACTS", "PRODUCTS", "PRODUCT_PROVIDERS", "PRODUCT_PROVIDERS_ADDRESSES",
         "PRODUCT_PROVIDERS_CONTACTS", "PRODUCT_STORAGES", "PRODUCT_STORAGES_ADDRESSES",
         "PRODUCT_STORAGES_CONTACTS", "USERS", "USERS_CONTACTS", "USERS_SECURITY"};
@@ -72,10 +72,10 @@ public class DatabaseManagerTest {
         while (resultSet.next()) {
           joiner.add(resultSet.getString("TABLE_NAME"));
         }
-        var result = joiner.toString().split(";");
-        Arrays.sort(tableNames);
-        Arrays.sort(result);
-        assertArrayEquals(tableNames, result);
+        var actual = joiner.toString().split(";");
+        Arrays.sort(expected);
+        Arrays.sort(actual);
+        assertArrayEquals(expected, actual);
       }
     } catch (Throwable throwable) {
       fail(throwable);
