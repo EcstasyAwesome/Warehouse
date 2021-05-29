@@ -1,6 +1,7 @@
 package com.github.ecstasyawesome.warehouse.util;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -20,8 +21,8 @@ import org.junit.jupiter.api.Test;
 
 public class DatabaseManagerTest {
 
-  private final static Path DB_PATH = Path.of("database");
-  private final static Path DB_TEMP_PATH = Path.of("databaseTmp");
+  private static final Path DB_PATH = Path.of("database");
+  private static final Path DB_TEMP_PATH = Path.of("databaseTmp");
   private static boolean isCreatedDbFolder = false;
 
   @BeforeAll
@@ -53,6 +54,7 @@ public class DatabaseManagerTest {
   @Test
   public void databaseCreatedAndConnectionAvailable() {
     try (var connection = DatabaseManager.getConnection()) {
+      assertNotNull(connection);
     } catch (SQLException exception) {
       fail(exception);
     }

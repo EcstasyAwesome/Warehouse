@@ -15,7 +15,8 @@ import org.apache.logging.log4j.Logger;
 
 public class ProductProviderRepositoryService extends ProductProviderRepository {
 
-  private static final ProductProviderRepositoryService INSTANCE = new ProductProviderRepositoryService();
+  private static final ProductProviderRepositoryService INSTANCE =
+      new ProductProviderRepositoryService();
   private final Logger logger = LogManager.getLogger(ProductProviderRepositoryService.class);
 
   private ProductProviderRepositoryService() {

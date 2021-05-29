@@ -15,7 +15,8 @@ import org.apache.logging.log4j.Logger;
 
 public class ProductStorageRepositoryService extends ProductStorageRepository {
 
-  private static final ProductStorageRepositoryService INSTANCE = new ProductStorageRepositoryService();
+  private static final ProductStorageRepositoryService INSTANCE =
+      new ProductStorageRepositoryService();
   private final CompanyRepositoryService companyRepositoryService =
       CompanyRepositoryService.getInstance();
   private final Logger logger = LogManager.getLogger(ProductStorageRepositoryService.class);
