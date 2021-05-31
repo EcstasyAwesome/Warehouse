@@ -4,9 +4,9 @@ import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import com.github.ecstasyawesome.warehouse.model.Access;
+import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.model.impl.Product;
-import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.module.product.EditCategoryProvider;
 import com.github.ecstasyawesome.warehouse.module.product.EditProductProvider;
@@ -282,10 +282,7 @@ public class ProductList extends Controller {
           windowManager.showDialog(exception);
         }
       }
-    } else {
-      windowManager.showDialog(AlertType.INFORMATION, "First choose some item"); // TODO i18n
     }
-
   }
 
   private void getCategoriesFromDatabase() {
