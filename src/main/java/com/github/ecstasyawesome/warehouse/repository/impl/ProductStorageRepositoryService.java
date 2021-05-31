@@ -2,6 +2,7 @@ package com.github.ecstasyawesome.warehouse.repository.impl;
 
 import com.github.ecstasyawesome.warehouse.model.impl.Address;
 import com.github.ecstasyawesome.warehouse.model.impl.BusinessContact;
+import com.github.ecstasyawesome.warehouse.model.impl.Company;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductStorage;
 import com.github.ecstasyawesome.warehouse.repository.ProductStorageRepository;
 import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
@@ -42,6 +43,34 @@ public class ProductStorageRepositoryService extends ProductStorageRepository {
     try {
       var result = !check(query, name);
       logger.debug("Name '{}' is unique [{}]", name, result);
+      return result;
+    } catch (SQLException exception) {
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
+    }
+  }
+
+  @Override
+  public ObservableList<ProductStorage> getAll(Company criteria) {
+    Objects.requireNonNull(criteria);
+    final var query = """
+        SELECT *
+        FROM PRODUCT_STORAGES
+            INNER JOIN PRODUCT_STORAGES_CONTACTS
+                ON PRODUCT_STORAGES.STORAGE_ID = PRODUCT_STORAGES_CONTACTS.STORAGE_ID
+            INNER JOIN PRODUCT_STORAGES_ADDRESSES
+                ON PRODUCT_STORAGES.STORAGE_ID = PRODUCT_STORAGES_ADDRESSES.STORAGE_ID
+            INNER JOIN COMPANIES
+                ON PRODUCT_STORAGES.COMPANY_ID = COMPANIES.COMPANY_ID
+            INNER JOIN COMPANIES_CONTACTS
+                ON PRODUCT_STORAGES.COMPANY_ID = COMPANIES_CONTACTS.COMPANY_ID
+            INNER JOIN COMPANIES_ADDRESSES
+                ON PRODUCT_STORAGES.COMPANY_ID = COMPANIES_ADDRESSES.COMPANY_ID
+        WHERE PRODUCT_STORAGES.STORAGE_ID=?
+        """;
+    try {
+      var result = selectRecords(query, criteria.getId());
+      logger.debug("Selected all product storages by company id={} [{} record(s)]",
+          criteria.getId(), result.size());
       return result;
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
