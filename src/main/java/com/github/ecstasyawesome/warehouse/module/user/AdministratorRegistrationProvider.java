@@ -4,7 +4,7 @@ import com.github.ecstasyawesome.warehouse.controller.user.AdministratorRegistra
 import com.github.ecstasyawesome.warehouse.core.FeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.FeedbackModuleProvider;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.PersonSecurity;
+import com.github.ecstasyawesome.warehouse.model.impl.PersonSecurity;
 import java.net.URL;
 
 public class AdministratorRegistrationProvider

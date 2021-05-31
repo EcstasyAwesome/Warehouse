@@ -5,8 +5,8 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 
 import com.github.ecstasyawesome.warehouse.core.FeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.model.Category;
-import com.github.ecstasyawesome.warehouse.model.Product;
+import com.github.ecstasyawesome.warehouse.model.impl.Category;
+import com.github.ecstasyawesome.warehouse.model.impl.Product;
 import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
 import com.github.ecstasyawesome.warehouse.repository.ProductRepository;

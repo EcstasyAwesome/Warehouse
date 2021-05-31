@@ -4,7 +4,7 @@ import com.github.ecstasyawesome.warehouse.controller.user.NewUser;
 import com.github.ecstasyawesome.warehouse.core.FeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.FeedbackModuleProvider;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.model.impl.User;
 import java.net.URL;
 
 public class NewUserProvider extends FeedbackModuleProvider<NewUser, User> {

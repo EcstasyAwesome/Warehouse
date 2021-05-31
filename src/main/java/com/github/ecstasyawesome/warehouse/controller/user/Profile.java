@@ -11,8 +11,8 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.model.PersonSecurity;
-import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.model.impl.PersonSecurity;
+import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.repository.UserRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;

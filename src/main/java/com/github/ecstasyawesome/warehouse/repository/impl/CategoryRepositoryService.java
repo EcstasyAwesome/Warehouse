@@ -1,6 +1,6 @@
 package com.github.ecstasyawesome.warehouse.repository.impl;
 
-import com.github.ecstasyawesome.warehouse.model.Category;
+import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
 import java.sql.ResultSet;
 import java.sql.SQLException;

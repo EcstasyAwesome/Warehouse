@@ -1,8 +1,8 @@
 package com.github.ecstasyawesome.warehouse.repository.impl;
 
-import com.github.ecstasyawesome.warehouse.model.Address;
-import com.github.ecstasyawesome.warehouse.model.BusinessContact;
-import com.github.ecstasyawesome.warehouse.model.Company;
+import com.github.ecstasyawesome.warehouse.model.impl.Address;
+import com.github.ecstasyawesome.warehouse.model.impl.BusinessContact;
+import com.github.ecstasyawesome.warehouse.model.impl.Company;
 import com.github.ecstasyawesome.warehouse.model.PersonType;
 import com.github.ecstasyawesome.warehouse.repository.CompanyRepository;
 import com.github.ecstasyawesome.warehouse.util.DatabaseManager;

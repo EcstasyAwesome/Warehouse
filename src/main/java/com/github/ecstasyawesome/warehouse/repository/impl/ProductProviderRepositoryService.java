@@ -1,8 +1,8 @@
 package com.github.ecstasyawesome.warehouse.repository.impl;
 
-import com.github.ecstasyawesome.warehouse.model.Address;
-import com.github.ecstasyawesome.warehouse.model.BusinessContact;
-import com.github.ecstasyawesome.warehouse.model.ProductProvider;
+import com.github.ecstasyawesome.warehouse.model.impl.Address;
+import com.github.ecstasyawesome.warehouse.model.impl.BusinessContact;
+import com.github.ecstasyawesome.warehouse.model.impl.ProductProvider;
 import com.github.ecstasyawesome.warehouse.repository.ProductProviderRepository;
 import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import java.sql.ResultSet;

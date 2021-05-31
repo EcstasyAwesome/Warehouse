@@ -1,5 +1,6 @@
 package com.github.ecstasyawesome.warehouse.model;
 
+import com.github.ecstasyawesome.warehouse.model.impl.ProductStorage;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import javafx.beans.property.DoubleProperty;

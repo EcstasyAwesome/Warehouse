@@ -1,5 +1,6 @@
-package com.github.ecstasyawesome.warehouse.model;
+package com.github.ecstasyawesome.warehouse.model.impl;
 
+import com.github.ecstasyawesome.warehouse.model.AbstractReceiveOperationItem;
 import java.util.Objects;
 
 public class OrderItem extends AbstractReceiveOperationItem {

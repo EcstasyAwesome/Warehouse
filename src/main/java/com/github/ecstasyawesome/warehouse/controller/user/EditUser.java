@@ -8,7 +8,7 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldVal
 import com.github.ecstasyawesome.warehouse.core.ConfiguredFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.repository.UserRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
 import java.util.Objects;

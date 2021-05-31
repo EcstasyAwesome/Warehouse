@@ -1,5 +1,6 @@
-package com.github.ecstasyawesome.warehouse.model;
+package com.github.ecstasyawesome.warehouse.model.impl;
 
+import com.github.ecstasyawesome.warehouse.model.AbstractCommodity;
 import java.time.LocalDateTime;
 import java.util.Objects;
 

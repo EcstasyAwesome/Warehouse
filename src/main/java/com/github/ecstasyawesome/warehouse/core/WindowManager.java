@@ -1,7 +1,7 @@
 package com.github.ecstasyawesome.warehouse.core;
 
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.module.user.AuthorizationProvider;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import java.io.PrintWriter;

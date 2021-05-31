@@ -1,5 +1,6 @@
-package com.github.ecstasyawesome.warehouse.model;
+package com.github.ecstasyawesome.warehouse.model.impl;
 
+import com.github.ecstasyawesome.warehouse.model.AbstractReceiveOperationItem;
 import java.util.Objects;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

@@ -3,7 +3,7 @@ package com.github.ecstasyawesome.warehouse.controller.user;
 import com.github.ecstasyawesome.warehouse.core.Controller;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.model.User;
+import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.module.user.EditUserProvider;
 import com.github.ecstasyawesome.warehouse.module.user.NewUserProvider;
 import com.github.ecstasyawesome.warehouse.repository.UserRepository;

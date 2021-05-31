@@ -1,5 +1,6 @@
-package com.github.ecstasyawesome.warehouse.model;
+package com.github.ecstasyawesome.warehouse.model.impl;
 
+import com.github.ecstasyawesome.warehouse.model.AbstractReceiveOperation;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import javafx.beans.property.ObjectProperty;

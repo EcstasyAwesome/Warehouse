@@ -1,5 +1,6 @@
 package com.github.ecstasyawesome.warehouse.model;
 
+import com.github.ecstasyawesome.warehouse.model.impl.Product;
 import java.util.Objects;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;

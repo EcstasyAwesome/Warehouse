@@ -1,5 +1,6 @@
-package com.github.ecstasyawesome.warehouse.model;
+package com.github.ecstasyawesome.warehouse.model.impl;
 
+import com.github.ecstasyawesome.warehouse.model.AbstractContact;
 import java.util.Objects;
 
 public class PersonContact extends AbstractContact {
