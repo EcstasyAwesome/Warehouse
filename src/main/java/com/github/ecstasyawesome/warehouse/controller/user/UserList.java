@@ -142,7 +142,7 @@ public class UserList extends Controller {
       if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
         var user = model.getSelectedItem();
         try {
-          userRepository.delete(user.getId());
+          userRepository.delete(user);
           userTable.getItems().remove(user);
           logger.info("Deleted a user with id={}", user.getId());
         } catch (NullPointerException exception) {

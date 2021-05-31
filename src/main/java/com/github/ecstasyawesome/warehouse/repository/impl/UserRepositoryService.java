@@ -110,7 +110,7 @@ public class UserRepositoryService extends UserRepository {
   }
 
   @Override
-  public User get(final String login) {
+  public User select(final String login) {
     checkStringParameter(login);
     final var query = """
         SELECT *
@@ -131,7 +131,7 @@ public class UserRepositoryService extends UserRepository {
   }
 
   @Override
-  public User get(final long id) {
+  public User read(final long id) {
     final var query = """
         SELECT *
         FROM USERS
@@ -182,13 +182,13 @@ public class UserRepositoryService extends UserRepository {
   }
 
   @Override
-  public void delete(final long id) {
+  public void delete(final User instance) {
     try {
-      var result = execute("DELETE FROM USERS WHERE USER_ID=?", id);
+      var result = execute("DELETE FROM USERS WHERE USER_ID=?", instance.getId());
       if (result == 0) {
         throw new SQLException("Deleted nothing");
       }
-      logger.debug("Deleted a user with id={}", id);
+      logger.debug("Deleted a user with id={}", instance.getId());
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }

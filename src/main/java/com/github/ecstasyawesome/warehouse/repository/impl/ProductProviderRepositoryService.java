@@ -27,6 +27,26 @@ public class ProductProviderRepositoryService extends ProductProviderRepository 
   }
 
   @Override
+  public boolean isFieldUnique(final String name) {
+    checkStringParameter(name);
+    final var query = """
+        "SELECT EXISTS
+        (
+            SELECT 1
+            FROM PRODUCT_PROVIDERS
+            WHERE PROVIDER_NAME=?
+        )"
+        """;
+    try {
+      var result = !check(query, name);
+      logger.debug("Name '{}' is unique [{}]", name, result);
+      return result;
+    } catch (SQLException exception) {
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
+    }
+  }
+
+  @Override
   public ObservableList<ProductProvider> getAll() {
     final var query = """
         SELECT *
@@ -46,7 +66,7 @@ public class ProductProviderRepositoryService extends ProductProviderRepository 
   }
 
   @Override
-  public void create(ProductProvider instance) {
+  public void create(final ProductProvider instance) {
     Objects.requireNonNull(instance);
     final var productProviderQuery = """
         INSERT INTO PRODUCT_PROVIDERS (PROVIDER_NAME)
@@ -87,7 +107,7 @@ public class ProductProviderRepositoryService extends ProductProviderRepository 
   }
 
   @Override
-  public ProductProvider get(long id) {
+  public ProductProvider read(final long id) {
     final var query = """
         SELECT *
         FROM PRODUCT_PROVIDERS
@@ -107,7 +127,7 @@ public class ProductProviderRepositoryService extends ProductProviderRepository 
   }
 
   @Override
-  public void update(ProductProvider instance) {
+  public void update(final ProductProvider instance) {
     Objects.requireNonNull(instance);
     final var query = """
         UPDATE PRODUCT_PROVIDERS_CONTACTS
@@ -140,20 +160,20 @@ public class ProductProviderRepositoryService extends ProductProviderRepository 
   }
 
   @Override
-  public void delete(long id) {
+  public void delete(final ProductProvider instance) {
     try {
-      var result = execute("DELETE FROM PRODUCT_PROVIDERS WHERE PROVIDER_ID=?", id);
+      var result = execute("DELETE FROM PRODUCT_PROVIDERS WHERE PROVIDER_ID=?", instance.getId());
       if (result == 0) {
         throw new SQLException("Deleted nothing");
       }
-      logger.debug("Deleted a product provider with id={}", id);
+      logger.debug("Deleted a product provider with id={}", instance.getId());
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
   }
 
   @Override
-  protected ProductProvider transformToObj(ResultSet resultSet) throws SQLException {
+  protected ProductProvider transformToObj(final ResultSet resultSet) throws SQLException {
     var contact = BusinessContact.Builder.create()
         .setId(resultSet.getLong("PRODUCT_PROVIDERS_CONTACTS.CONTACT_ID"))
         .setPhone(resultSet.getString("PRODUCT_PROVIDERS_CONTACTS.CONTACT_PHONE"))

@@ -44,8 +44,8 @@ public class ProductRepositoryService extends ProductRepository {
   }
 
   @Override
-  public ObservableList<Product> getAll(final Category category) {
-    Objects.requireNonNull(category);
+  public ObservableList<Product> getAll(final Category criteria) {
+    Objects.requireNonNull(criteria);
     final var query = """
         SELECT *
         FROM PRODUCTS
@@ -54,8 +54,8 @@ public class ProductRepositoryService extends ProductRepository {
         WHERE PRODUCTS.CATEGORY_ID=?
         """;
     try {
-      var result = selectRecords(query, category.getId());
-      logger.debug("Selected all products by category id={} [{} record(s)]", category.getId(),
+      var result = selectRecords(query, criteria.getId());
+      logger.debug("Selected all products by category id={} [{} record(s)]", criteria.getId(),
           result.size());
       return result;
     } catch (SQLException exception) {
@@ -64,7 +64,7 @@ public class ProductRepositoryService extends ProductRepository {
   }
 
   @Override
-  public ObservableList<Product> search(String name) {
+  public ObservableList<Product> search(final String name) {
     Objects.requireNonNull(name);
     final var query = """
         SELECT *
@@ -101,7 +101,7 @@ public class ProductRepositoryService extends ProductRepository {
   }
 
   @Override
-  public Product get(final long id) {
+  public Product read(final long id) {
     final var query = """
         SELECT *
         FROM PRODUCTS
@@ -138,13 +138,13 @@ public class ProductRepositoryService extends ProductRepository {
   }
 
   @Override
-  public void delete(final long id) {
+  public void delete(final Product instance) {
     try {
-      var result = execute("DELETE FROM PRODUCTS WHERE PRODUCT_ID=?", id);
+      var result = execute("DELETE FROM PRODUCTS WHERE PRODUCT_ID=?", instance.getId());
       if (result == 0) {
         throw new SQLException("Deleted nothing");
       }
-      logger.debug("Deleted a product with id={}", id);
+      logger.debug("Deleted a product with id={}", instance.getId());
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }

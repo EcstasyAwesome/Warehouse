@@ -27,6 +27,18 @@ public class CompanyRepositoryService extends CompanyRepository {
   }
 
   @Override
+  public boolean isFieldUnique(final String name) {
+    checkStringParameter(name);
+    try {
+      var result = !check("SELECT EXISTS(SELECT 1 FROM COMPANIES WHERE COMPANY_NAME=?)", name);
+      logger.debug("Name '{}' is unique [{}]", name, result);
+      return result;
+    } catch (SQLException exception) {
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
+    }
+  }
+
+  @Override
   public ObservableList<Company> getAll() {
     final var query = """
         SELECT *
@@ -46,7 +58,7 @@ public class CompanyRepositoryService extends CompanyRepository {
   }
 
   @Override
-  public void create(Company instance) {
+  public void create(final Company instance) {
     Objects.requireNonNull(instance);
     final var companyQuery = """
         INSERT INTO COMPANIES (COMPANY_NAME, COMPANY_IDENTIFIER_CODE, COMPANY_PERSON_TYPE)
@@ -88,7 +100,7 @@ public class CompanyRepositoryService extends CompanyRepository {
   }
 
   @Override
-  public Company get(long id) {
+  public Company read(final long id) {
     final var query = """
         SELECT *
         FROM COMPANIES
@@ -108,7 +120,7 @@ public class CompanyRepositoryService extends CompanyRepository {
   }
 
   @Override
-  public void update(Company instance) {
+  public void update(final Company instance) {
     Objects.requireNonNull(instance);
     final var query = """
         UPDATE COMPANIES_CONTACTS
@@ -143,20 +155,20 @@ public class CompanyRepositoryService extends CompanyRepository {
   }
 
   @Override
-  public void delete(long id) {
+  public void delete(final Company instance) {
     try {
-      var result = execute("DELETE FROM COMPANIES WHERE COMPANY_ID=?", id);
+      var result = execute("DELETE FROM COMPANIES WHERE COMPANY_ID=?", instance.getId());
       if (result == 0) {
         throw new SQLException("Deleted nothing");
       }
-      logger.debug("Deleted a company with id={}", id);
+      logger.debug("Deleted a company with id={}", instance.getId());
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
   }
 
   @Override
-  protected Company transformToObj(ResultSet resultSet) throws SQLException {
+  protected Company transformToObj(final ResultSet resultSet) throws SQLException {
     var contact = BusinessContact.Builder.create()
         .setId(resultSet.getLong("COMPANIES_CONTACTS.CONTACT_ID"))
         .setPhone(resultSet.getString("COMPANIES_CONTACTS.CONTACT_PHONE"))

@@ -29,6 +29,26 @@ public class ProductStorageRepositoryService extends ProductStorageRepository {
   }
 
   @Override
+  public boolean isFieldUnique(final String name) {
+    checkStringParameter(name);
+    final var query = """
+        SELECT EXISTS
+        (
+            SELECT 1
+            FROM PRODUCT_STORAGES
+            WHERE STORAGE_NAME=?
+        )
+        """;
+    try {
+      var result = !check(query, name);
+      logger.debug("Name '{}' is unique [{}]", name, result);
+      return result;
+    } catch (SQLException exception) {
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
+    }
+  }
+
+  @Override
   public ObservableList<ProductStorage> getAll() {
     final var query = """
         SELECT *
@@ -54,7 +74,7 @@ public class ProductStorageRepositoryService extends ProductStorageRepository {
   }
 
   @Override
-  public void create(ProductStorage instance) {
+  public void create(final ProductStorage instance) {
     Objects.requireNonNull(instance);
     final var productStorageQuery = """
         INSERT INTO PRODUCT_STORAGES (COMPANY_ID, STORAGE_NAME)
@@ -96,7 +116,7 @@ public class ProductStorageRepositoryService extends ProductStorageRepository {
   }
 
   @Override
-  public ProductStorage get(long id) {
+  public ProductStorage read(final long id) {
     final var query = """
         SELECT *
         FROM PRODUCT_STORAGES
@@ -122,7 +142,7 @@ public class ProductStorageRepositoryService extends ProductStorageRepository {
   }
 
   @Override
-  public void update(ProductStorage instance) {
+  public void update(final ProductStorage instance) {
     Objects.requireNonNull(instance);
     final var query = """
         UPDATE PRODUCT_STORAGES_CONTACTS
@@ -156,20 +176,20 @@ public class ProductStorageRepositoryService extends ProductStorageRepository {
   }
 
   @Override
-  public void delete(long id) {
+  public void delete(final ProductStorage instance) {
     try {
-      var result = execute("DELETE FROM PRODUCT_STORAGES WHERE STORAGE_ID=?", id);
+      var result = execute("DELETE FROM PRODUCT_STORAGES WHERE STORAGE_ID=?", instance.getId());
       if (result == 0) {
         throw new SQLException("Deleted nothing");
       }
-      logger.debug("Deleted a product storage with id={}", id);
+      logger.debug("Deleted a product storage with id={}", instance.getId());
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
   }
 
   @Override
-  protected ProductStorage transformToObj(ResultSet resultSet) throws SQLException {
+  protected ProductStorage transformToObj(final ResultSet resultSet) throws SQLException {
     var company = companyRepositoryService.transformToObj(resultSet);
     var contact = BusinessContact.Builder.create()
         .setId(resultSet.getLong("PRODUCT_STORAGES_CONTACTS.CONTACT_ID"))

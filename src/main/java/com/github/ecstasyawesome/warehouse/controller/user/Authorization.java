@@ -49,7 +49,7 @@ public class Authorization extends Controller {
   private void login() {
     var login = loginField.getText();
     try {
-      var user = userRepository.get(login);
+      var user = userRepository.select(login);
       loginField.setEffect(NO_ADJUST);
       if (passwordField.getText().equals(user.getPersonSecurity().getPassword())) {
         passwordField.setEffect(NO_ADJUST);

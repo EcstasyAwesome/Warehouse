@@ -12,8 +12,8 @@ import com.github.ecstasyawesome.warehouse.module.product.EditCategoryProvider;
 import com.github.ecstasyawesome.warehouse.module.product.EditProductProvider;
 import com.github.ecstasyawesome.warehouse.module.product.NewCategoryProvider;
 import com.github.ecstasyawesome.warehouse.module.product.NewProductProvider;
-import com.github.ecstasyawesome.warehouse.repository.AbstractRecordRepository;
 import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
+import com.github.ecstasyawesome.warehouse.repository.Deletable;
 import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
 import com.github.ecstasyawesome.warehouse.repository.impl.ProductRepositoryService;
@@ -267,7 +267,7 @@ public class ProductList extends Controller {
   }
 
   private <T extends AbstractRecord> void deleteRecord(String name, TableView<T> table,
-      AbstractRecordRepository<T> repository) {
+      Deletable<T> deletable) {
     var selectionModel = table.getSelectionModel();
     if (!selectionModel.isEmpty()) {
       var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
@@ -275,7 +275,7 @@ public class ProductList extends Controller {
       if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
         try {
           var record = selectionModel.getSelectedItem();
-          repository.delete(record.getId());
+          deletable.delete(record);
           table.getItems().remove(record);
           logger.info("Deleted a {} with id={}", name, record.getId());
         } catch (NullPointerException exception) {

@@ -2,9 +2,9 @@ package com.github.ecstasyawesome.warehouse.repository;
 
 import com.github.ecstasyawesome.warehouse.model.User;
 
-public abstract class UserRepository extends AbstractRecordRepository<User> implements UniqueField {
-
-  public abstract User get(String login);
+public abstract class UserRepository extends AbstractRepository<User> implements Producible<User>,
+    Readable<User>, Updatable<User>, Deletable<User>, Selectable<User, String>, Observable<User>,
+    UniqueField {
 
   public abstract boolean hasTableRecords();
 }

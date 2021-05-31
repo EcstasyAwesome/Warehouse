@@ -62,7 +62,7 @@ public class CategoryRepositoryService extends CategoryRepository {
   }
 
   @Override
-  public Category get(final long id) {
+  public Category read(final long id) {
     try {
       var result = selectRecord("SELECT * FROM CATEGORIES WHERE CATEGORY_ID=?", id);
       logger.debug("Selected a category with id={}", id);
@@ -90,13 +90,13 @@ public class CategoryRepositoryService extends CategoryRepository {
   }
 
   @Override
-  public void delete(final long id) {
+  public void delete(final Category instance) {
     try {
-      var result = execute("DELETE FROM CATEGORIES WHERE CATEGORY_ID=?", id);
+      var result = execute("DELETE FROM CATEGORIES WHERE CATEGORY_ID=?", instance.getId());
       if (result == 0) {
         throw new SQLException("Deleted nothing");
       }
-      logger.debug("Deleted a category with id={}", id);
+      logger.debug("Deleted a category with id={}", instance.getId());
     } catch (SQLException exception) {
       throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
     }
