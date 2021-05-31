@@ -2,36 +2,20 @@ package com.github.ecstasyawesome.warehouse.model;
 
 import java.util.Objects;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
 
 public class ReturnInvoiceItem extends AbstractReceiveOperationItem {
 
-  private final ObjectProperty<ReturnInvoice> returnInvoice = new SimpleObjectProperty<>();
   private final DoubleProperty price = new SimpleDoubleProperty();
 
   public ReturnInvoiceItem(ReturnInvoiceItem instance) {
     setId(instance.getId());
     setProduct(new Product(instance.getProduct()));
     setAmount(instance.getAmount());
-    setReturnInvoice(new ReturnInvoice(instance.getReturnInvoice()));
     setPrice(instance.getPrice());
   }
 
   private ReturnInvoiceItem() {
-  }
-
-  public ReturnInvoice getReturnInvoice() {
-    return returnInvoice.get();
-  }
-
-  public void setReturnInvoice(ReturnInvoice returnInvoice) {
-    this.returnInvoice.set(returnInvoice);
-  }
-
-  public ObjectProperty<ReturnInvoice> returnInvoiceProperty() {
-    return returnInvoice;
   }
 
   public double getPrice() {
@@ -59,13 +43,12 @@ public class ReturnInvoiceItem extends AbstractReceiveOperationItem {
     }
 
     var that = (ReturnInvoiceItem) obj;
-    return Objects.equals(returnInvoice.get(), that.returnInvoice.get())
-           && Objects.equals(price.get(), that.price.get());
+    return price.get() == that.price.get();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), returnInvoice.get(), price.get());
+    return Objects.hash(super.hashCode(), price.get());
   }
 
   public static class Builder {
@@ -73,7 +56,6 @@ public class ReturnInvoiceItem extends AbstractReceiveOperationItem {
     private long id = -1L;
     private Product product;
     private double amount = 0D;
-    private ReturnInvoice returnInvoice;
     private double price = 0D;
 
     private Builder() {
@@ -98,11 +80,6 @@ public class ReturnInvoiceItem extends AbstractReceiveOperationItem {
       return this;
     }
 
-    public Builder setReturnInvoice(ReturnInvoice invoice) {
-      this.returnInvoice = invoice;
-      return this;
-    }
-
     public Builder setPrice(double price) {
       this.price = price;
       return this;
@@ -116,7 +93,6 @@ public class ReturnInvoiceItem extends AbstractReceiveOperationItem {
       instance.setId(id);
       instance.setProduct(Objects.requireNonNull(product));
       instance.setAmount(amount);
-      instance.setReturnInvoice(Objects.requireNonNull(returnInvoice));
       instance.setPrice(price);
       return instance;
     }

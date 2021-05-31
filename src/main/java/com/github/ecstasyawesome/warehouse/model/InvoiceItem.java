@@ -2,36 +2,20 @@ package com.github.ecstasyawesome.warehouse.model;
 
 import java.util.Objects;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
 
 public class InvoiceItem extends AbstractReceiveOperationItem {
 
-  private final ObjectProperty<Invoice> invoice = new SimpleObjectProperty<>();
   private final DoubleProperty purchasePrice = new SimpleDoubleProperty();
 
   public InvoiceItem(InvoiceItem instance) {
     setId(instance.getId());
     setProduct(new Product(instance.getProduct()));
     setAmount(instance.getAmount());
-    setInvoice(new Invoice(instance.getInvoice()));
     setPurchasePrice(instance.getPurchasePrice());
   }
 
   private InvoiceItem() {
-  }
-
-  public Invoice getInvoice() {
-    return invoice.get();
-  }
-
-  public void setInvoice(Invoice invoice) {
-    this.invoice.set(invoice);
-  }
-
-  public ObjectProperty<Invoice> invoiceProperty() {
-    return invoice;
   }
 
   public double getPurchasePrice() {
@@ -59,13 +43,12 @@ public class InvoiceItem extends AbstractReceiveOperationItem {
     }
 
     var that = (InvoiceItem) obj;
-    return Objects.equals(invoice.get(), that.invoice.get())
-           && purchasePrice.get() == that.purchasePrice.get();
+    return purchasePrice.get() == that.purchasePrice.get();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), invoice.get(), purchasePrice.get());
+    return Objects.hash(super.hashCode(), purchasePrice.get());
   }
 
   public static class Builder {
@@ -73,7 +56,6 @@ public class InvoiceItem extends AbstractReceiveOperationItem {
     private long id = -1L;
     private Product product;
     private double amount = 0D;
-    private Invoice invoice;
     private double purchasePrice = 0D;
 
     private Builder() {
@@ -98,11 +80,6 @@ public class InvoiceItem extends AbstractReceiveOperationItem {
       return this;
     }
 
-    public Builder setInvoice(Invoice invoice) {
-      this.invoice = invoice;
-      return this;
-    }
-
     public Builder setPurchasePrice(double purchasePrice) {
       this.purchasePrice = purchasePrice;
       return this;
@@ -116,7 +93,6 @@ public class InvoiceItem extends AbstractReceiveOperationItem {
       instance.setId(id);
       instance.setProduct(Objects.requireNonNull(product));
       instance.setAmount(amount);
-      instance.setInvoice(Objects.requireNonNull(invoice));
       instance.setPurchasePrice(purchasePrice);
       return instance;
     }

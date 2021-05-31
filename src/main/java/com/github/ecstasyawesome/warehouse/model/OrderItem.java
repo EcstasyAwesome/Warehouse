@@ -1,54 +1,16 @@
 package com.github.ecstasyawesome.warehouse.model;
 
 import java.util.Objects;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 
 public class OrderItem extends AbstractReceiveOperationItem {
-
-  private final ObjectProperty<Order> order = new SimpleObjectProperty<>();
 
   public OrderItem(OrderItem instance) {
     setId(instance.getId());
     setProduct(new Product(instance.getProduct()));
     setAmount(instance.getAmount());
-    setOrder(new Order(instance.getOrder()));
   }
 
   private OrderItem() {
-  }
-
-  public Order getOrder() {
-    return order.get();
-  }
-
-  public void setOrder(Order order) {
-    this.order.set(order);
-  }
-
-  public ObjectProperty<Order> orderProperty() {
-    return order;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-    if (!super.equals(obj)) {
-      return false;
-    }
-
-    var that = (OrderItem) obj;
-    return Objects.equals(order.get(), that.order.get());
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), order.get());
   }
 
   public static class Builder {
@@ -56,7 +18,6 @@ public class OrderItem extends AbstractReceiveOperationItem {
     private long id = -1L;
     private Product product;
     private double amount = 0D;
-    private Order order;
 
     private Builder() {
     }
@@ -80,11 +41,6 @@ public class OrderItem extends AbstractReceiveOperationItem {
       return this;
     }
 
-    public Builder setOrder(Order order) {
-      this.order = order;
-      return this;
-    }
-
     public OrderItem build() {
       if (amount <= 0D) {
         throw new NullPointerException("Amount cannot be negative or zero");
@@ -93,7 +49,6 @@ public class OrderItem extends AbstractReceiveOperationItem {
       instance.setId(id);
       instance.setProduct(Objects.requireNonNull(product));
       instance.setAmount(amount);
-      instance.setOrder(Objects.requireNonNull(order));
       return instance;
     }
   }
