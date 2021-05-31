@@ -67,7 +67,7 @@ public class Order extends AbstractReceiveOperation {
       return this;
     }
 
-    private Builder setUser(User user) {
+    public Builder setUser(User user) {
       this.user = user;
       return this;
     }
