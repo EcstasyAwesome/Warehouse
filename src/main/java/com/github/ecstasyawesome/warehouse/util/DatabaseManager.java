@@ -75,9 +75,9 @@ public final class DatabaseManager {
   private static final String COMPANIES_TABLE = """
       CREATE TABLE IF NOT EXISTS COMPANIES
       (
-          COMPANY_ID              BIGINT NOT NULL AUTO_INCREMENT,
-          COMPANY_NAME            VARCHAR(60) NOT NULL,
-          COMPANY_IDENTIFIER_CODE VARCHAR(20) NOT NULL,
+          COMPANY_ID              BIGINT      NOT NULL AUTO_INCREMENT,
+          COMPANY_NAME            VARCHAR(60) NOT NULL UNIQUE,
+          COMPANY_IDENTIFIER_CODE VARCHAR(20) NOT NULL UNIQUE,
           COMPANY_PERSON_TYPE     VARCHAR(20) NOT NULL,
           CONSTRAINT PK_COMPANY_ID PRIMARY KEY (COMPANY_ID)
       )
@@ -119,7 +119,7 @@ public final class DatabaseManager {
       (
           STORAGE_ID   BIGINT      NOT NULL AUTO_INCREMENT,
           COMPANY_ID   BIGINT      NOT NULL,
-          STORAGE_NAME VARCHAR(60) NOT NULL,
+          STORAGE_NAME VARCHAR(60) NOT NULL UNIQUE,
           CONSTRAINT PK_PRODUCT_STORAGE_ID PRIMARY KEY (STORAGE_ID),
           CONSTRAINT FK_PRODUCT_STORAGE_COMPANY_ID
               FOREIGN KEY (COMPANY_ID)
@@ -163,7 +163,7 @@ public final class DatabaseManager {
       CREATE TABLE IF NOT EXISTS PRODUCT_PROVIDERS
       (
           PROVIDER_ID   BIGINT      NOT NULL AUTO_INCREMENT,
-          PROVIDER_NAME VARCHAR(60) NOT NULL,
+          PROVIDER_NAME VARCHAR(60) NOT NULL UNIQUE,
           CONSTRAINT PK_PRODUCT_PROVIDER_ID PRIMARY KEY (PROVIDER_ID)
       )
       """;
@@ -199,6 +199,47 @@ public final class DatabaseManager {
                   ON DELETE CASCADE
       )
       """;
+  private static final String ORDERS_TABLE = """
+      CREATE TABLE IF NOT EXISTS ORDERS
+      (
+          ORDER_ID    BIGINT      NOT NULL AUTO_INCREMENT,
+          PROVIDER_ID BIGINT      NOT NULL,
+          STORAGE_ID  BIGINT      NOT NULL,
+          USER_ID     BIGINT      NOT NULL,
+          ORDER_TIME  TIMESTAMP   NOT NULL,
+          CONSTRAINT PK_ORDER_ORDER_ID PRIMARY KEY (ORDER_ID),
+          CONSTRAINT FK_ORDER_PROVIDER_ID
+              FOREIGN KEY (PROVIDER_ID)
+                  REFERENCES PRODUCT_PROVIDERS (PROVIDER_ID)
+                  ON DELETE CASCADE,
+          CONSTRAINT FK_ORDER_STORAGE_ID
+              FOREIGN KEY (STORAGE_ID)
+                  REFERENCES PRODUCT_STORAGES (STORAGE_ID)
+                  ON DELETE CASCADE,
+          CONSTRAINT FK_ORDER_USER_ID
+              FOREIGN KEY (USER_ID)
+                  REFERENCES USERS (USER_ID)
+                  ON DELETE RESTRICT
+      )
+      """;
+  private static final String ORDERS_ITEMS_TABLE = """
+      CREATE TABLE IF NOT EXISTS ORDERS_ITEMS
+      (
+          ITEM_ID     BIGINT NOT NULL AUTO_INCREMENT,
+          ORDER_ID    BIGINT NOT NULL,
+          PRODUCT_ID  BIGINT NOT NULL,
+          ITEM_AMOUNT DOUBLE NOT NULL,
+          CONSTRAINT PK_ORDER_ITEM_ID PRIMARY KEY (ITEM_ID),
+          CONSTRAINT FK_ORDER_ITEM_ORDER_ID
+              FOREIGN KEY (ORDER_ID)
+                  REFERENCES ORDERS (ORDER_ID)
+                  ON DELETE CASCADE,
+          CONSTRAINT FK_ORDER_ITEM_PRODUCT_ID
+              FOREIGN KEY (PRODUCT_ID)
+                  REFERENCES PRODUCTS (PRODUCT_ID)
+                  ON DELETE RESTRICT
+      )
+      """;
 
   static {
     try (var connection = getConnection()) {
@@ -218,7 +259,7 @@ public final class DatabaseManager {
         CATEGORIES_TABLE, PRODUCTS_TABLE, COMPANIES_TABLE, COMPANIES_CONTACTS_TABLE,
         COMPANIES_ADDRESSES_TABLE, PRODUCT_STORAGES_TABLE, PRODUCT_STORAGES_CONTACTS_TABLE,
         PRODUCT_STORAGES_ADDRESSES_TABLE, PRODUCT_PROVIDERS_TABLE, PRODUCT_PROVIDERS_CONTACTS_TABLE,
-        PRODUCT_PROVIDERS_ADDRESSES_TABLE);
+        PRODUCT_PROVIDERS_ADDRESSES_TABLE, ORDERS_TABLE, ORDERS_ITEMS_TABLE);
   }
 
   private static void executeQueriesBunch(final Connection connection, String... queries) {
