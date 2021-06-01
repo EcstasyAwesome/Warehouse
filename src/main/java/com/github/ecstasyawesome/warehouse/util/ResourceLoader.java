@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import org.apache.logging.log4j.Level;
@@ -60,6 +62,15 @@ public final class ResourceLoader {
     Language(Locale locale, String originalName) {
       this.locale = locale;
       this.originalName = originalName;
+    }
+
+    public static ObservableList<Language> getLanguages() {
+      return FXCollections.observableArrayList(Language.values());
+    }
+
+    @Override
+    public String toString() {
+      return originalName;
     }
   }
 }
