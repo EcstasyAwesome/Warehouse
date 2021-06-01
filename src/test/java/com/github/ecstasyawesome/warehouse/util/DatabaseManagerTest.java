@@ -63,9 +63,9 @@ public class DatabaseManagerTest {
 
   @Test
   public void tablesSuccessfullyChecked() {
-    var expected = new String[]{"CATEGORIES", "COMPANIES", "COMPANIES_ADDRESSES",
+    var expected = new String[]{"CATEGORIES", "COMPANIES", "COMPANIES_ADDRESSES", "ORDERS_ITEMS",
         "COMPANIES_CONTACTS", "PRODUCTS", "PRODUCT_PROVIDERS", "PRODUCT_PROVIDERS_ADDRESSES",
-        "PRODUCT_PROVIDERS_CONTACTS", "PRODUCT_STORAGES", "PRODUCT_STORAGES_ADDRESSES",
+        "PRODUCT_PROVIDERS_CONTACTS", "PRODUCT_STORAGES", "PRODUCT_STORAGES_ADDRESSES", "ORDERS",
         "PRODUCT_STORAGES_CONTACTS", "USERS", "USERS_CONTACTS", "USERS_SECURITY"};
     try (var connection = TestConnectionPool.getConnection()) {
       var metaData = connection.getMetaData();
