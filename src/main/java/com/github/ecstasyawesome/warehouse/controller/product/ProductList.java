@@ -142,7 +142,7 @@ public class ProductList extends Controller {
       var categoryCopy = new Category(model.getSelectedItem());
       var result = windowManager.showAndGet(editCategoryProvider, model.getSelectedItem());
       result.ifPresent(category -> {
-        if (!category.getName().equals(categoryCopy.getName())) {
+        if (!category.equals(categoryCopy)) {
           for (var product : productTable.getItems()) {
             product.setCategory(category);
           }
@@ -172,11 +172,11 @@ public class ProductList extends Controller {
   private void editProduct() {
     var model = productTable.getSelectionModel();
     if (!model.isEmpty()) {
-      var categoryCopy = new Category(model.getSelectedItem().getCategory());
+      var categoryId = model.getSelectedItem().getCategory().getId();
       var result = windowManager.showAndGet(editProductProvider, model.getSelectedItem());
       result.ifPresent(product -> {
         var categoryModel = categoryTable.getSelectionModel();
-        if (!categoryModel.isEmpty() && !product.getCategory().equals(categoryCopy)) {
+        if (!categoryModel.isEmpty() && product.getCategory().getId() != categoryId) {
           productTable.getItems().remove(product);
         }
       });
@@ -273,8 +273,8 @@ public class ProductList extends Controller {
       var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
           "All related data will be removed too, are you sure?"); // TODO i18n
       if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
+        var record = selectionModel.getSelectedItem();
         try {
-          var record = selectionModel.getSelectedItem();
           deletable.delete(record);
           table.getItems().remove(record);
           logger.info("Deleted a {} with id={}", name, record.getId());

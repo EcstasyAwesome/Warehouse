@@ -61,7 +61,7 @@
                  <items>
                      <ScrollPane fitToHeight="true" fitToWidth="true" minViewportWidth="150.0" prefViewportWidth="150.0" SplitPane.resizableWithParent="false">
                         <content>
-                           <TableView fx:id="categoryTable" editable="true" onKeyReleased="#onKeyReleasedOnCategoryTable" onMouseClicked="#onMouseClickOnCategoryTable" onSort="#onSortCategoryTable">
+                           <TableView fx:id="categoryTable" editable="true" onKeyReleased="#onKeyReleasedOnCategoryTable" onMouseClicked="#onMouseClickOnCategoryTable" onSort="#onSortCategoryTable" style="-fx-padding: 0;">
                               <columns>
                                  <TableColumn fx:id="categoryNameColumn" minWidth="150.0" prefWidth="150.0" text="category" />
                               </columns>
