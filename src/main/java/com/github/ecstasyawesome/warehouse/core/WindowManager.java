@@ -1,8 +1,17 @@
 package com.github.ecstasyawesome.warehouse.core;
 
+import com.github.ecstasyawesome.warehouse.controller.AbstractConfiguredController;
+import com.github.ecstasyawesome.warehouse.controller.AbstractConfiguredFeedbackController;
+import com.github.ecstasyawesome.warehouse.controller.AbstractController;
+import com.github.ecstasyawesome.warehouse.controller.AbstractFeedbackController;
+import com.github.ecstasyawesome.warehouse.controller.Cacheable;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.module.user.AuthorizationProvider;
+import com.github.ecstasyawesome.warehouse.provider.AbstractConfiguredFeedbackModuleProvider;
+import com.github.ecstasyawesome.warehouse.provider.AbstractConfiguredModuleProvider;
+import com.github.ecstasyawesome.warehouse.provider.AbstractFeedbackModuleProvider;
+import com.github.ecstasyawesome.warehouse.provider.AbstractModuleProvider;
+import com.github.ecstasyawesome.warehouse.provider.impl.user.AuthorizationProvider;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -39,7 +48,7 @@ public final class WindowManager {
   private final Stage mainStage = new Stage();
   private final List<Stage> stages = new ArrayList<>();
   private final Set<Class<? extends Cacheable>> cachedControllers = new HashSet<>();
-  private ModuleProvider<? extends Controller> currentModuleProvider;
+  private AbstractModuleProvider<? extends AbstractController> currentModuleProvider;
   private Cacheable currentCachedController;
 
   private WindowManager(final Stage root) {
@@ -77,25 +86,8 @@ public final class WindowManager {
     }
   }
 
-  public <T> void show(final ModuleProvider<? super T> provider) {
+  public <T extends AbstractController> void show(final AbstractModuleProvider<T> provider) {
     LOGGER.debug("Request to show the module provider '{}' at the main stage",
-        provider.getClass().getName());
-    if (isAccessGranted(provider.getAccess())) {
-      configureMainStage(provider);
-      var module = provider.create();
-      checkAbilityToCache(null);
-      var title = prepareStageName(provider.getTitle());
-      mainStage.setTitle(title);
-      mainStage.setScene(module.getScene());
-      LOGGER.trace("Showed the stage '{}'", title);
-      mainStage.show();
-    } else {
-      showAccessWarning();
-    }
-  }
-
-  public <T> void show(final CachedModuleProvider<? super T> provider) {
-    LOGGER.debug("Request to show the cached module provider '{}' at the main stage",
         provider.getClass().getName());
     if (isAccessGranted(provider.getAccess())) {
       configureMainStage(provider);
@@ -111,11 +103,32 @@ public final class WindowManager {
     }
   }
 
-  public <T> void showAndWait(final ModuleProvider<? super T> provider) {
+  public <T extends AbstractConfiguredController<E>, E> void show(
+      final AbstractConfiguredModuleProvider<T, E> provider, E instance) {
+    LOGGER.debug("Request to show the configured module provider '{}' at the main stage",
+        provider.getClass().getName());
+    if (isAccessGranted(provider.getAccess())) {
+      configureMainStage(provider);
+      var module = provider.create();
+      var controller = module.getController();
+      checkAbilityToCache(controller);
+      controller.apply(instance);
+      var title = prepareStageName(provider.getTitle());
+      mainStage.setTitle(title);
+      mainStage.setScene(module.getScene());
+      LOGGER.trace("Showed the stage '{}'", title);
+      mainStage.show();
+    } else {
+      showAccessWarning();
+    }
+  }
+
+  public <T extends AbstractController> void showAndWait(final AbstractModuleProvider<T> provider) {
     LOGGER.debug("Request to show the module provider '{}'",
         provider.getClass().getName());
     if (isAccessGranted(provider.getAccess())) {
       var module = provider.create();
+      checkAbilityToCache(module.getController());
       var stage = createNewExtraStage(provider.getTitle(), module.getScene());
       stages.add(stage);
       LOGGER.trace("Showed the extra stage '{}'", stage.getTitle());
@@ -125,11 +138,31 @@ public final class WindowManager {
     }
   }
 
-  public <T, E> Optional<E> showAndGet(final FeedbackModuleProvider<? super T, E> provider) {
+  public <T extends AbstractConfiguredController<E>, E> void showAndWait(
+      final AbstractConfiguredModuleProvider<T, E> provider, E instance) {
+    LOGGER.debug("Request to show the configured module provider '{}'",
+        provider.getClass().getName());
+    if (isAccessGranted(provider.getAccess())) {
+      var module = provider.create();
+      var controller = module.getController();
+      checkAbilityToCache(controller);
+      controller.apply(instance);
+      var stage = createNewExtraStage(provider.getTitle(), module.getScene());
+      stages.add(stage);
+      LOGGER.trace("Showed the extra stage '{}'", stage.getTitle());
+      stage.showAndWait();
+    } else {
+      showAccessWarning();
+    }
+  }
+
+  public <T extends AbstractFeedbackController<E>, E> Optional<E> showAndGet(
+      final AbstractFeedbackModuleProvider<T, E> provider) {
     LOGGER.debug("Request to show the feedback module provider '{}'",
         provider.getClass().getName());
     if (isAccessGranted(provider.getAccess())) {
       var module = provider.create();
+      checkAbilityToCache(module.getController());
       var stage = createNewExtraStage(provider.getTitle(), module.getScene());
       stages.add(stage);
       LOGGER.trace("Showed the extra stage '{}'", stage.getTitle());
@@ -141,14 +174,15 @@ public final class WindowManager {
     return Optional.empty();
   }
 
-  public <T, E> Optional<E> showAndGet(
-      final ConfiguredFeedbackModuleProvider<? super T, E> provider, final E data) {
+  public <T extends AbstractConfiguredFeedbackController<E, R>, E, R> Optional<R> showAndGet(
+      final AbstractConfiguredFeedbackModuleProvider<T, E, R> provider, final E instance) {
     LOGGER.debug("Request to show the configured feedback module provider '{}'",
         provider.getClass().getName());
     if (isAccessGranted(provider.getAccess())) {
       var module = provider.create();
       var controller = module.getController();
-      controller.accept(data);
+      checkAbilityToCache(controller);
+      controller.apply(instance);
       var stage = createNewExtraStage(provider.getTitle(), module.getScene());
       stages.add(stage);
       LOGGER.trace("Showed the extra stage '{}'", stage.getTitle());
@@ -160,7 +194,7 @@ public final class WindowManager {
     return Optional.empty();
   }
 
-  public ModuleProvider<?> getCurrentModuleProvider() {
+  public AbstractModuleProvider<?> getCurrentModuleProvider() {
     return Objects.requireNonNull(currentModuleProvider, "Any module was not shown");
   }
 
@@ -208,20 +242,20 @@ public final class WindowManager {
     return user.get().getPersonSecurity().getAccess().level <= access.level;
   }
 
-  private void checkAbilityToCache(CachedController controller) {
-    if (currentCachedController != null && currentCachedController.isReady()) {
-      var clazz = currentCachedController.getClass();
-      cachedControllers.add(clazz);
-      currentCachedController.backup();
-      LOGGER.debug("Backup the controller '{}'", clazz.getName());
-    }
-    if (controller != null) {
-      currentCachedController = controller;
-      var clazz = controller.getClass();
+  private void checkAbilityToCache(AbstractController controller) {
+    if (controller instanceof Cacheable cacheable) {
+      if (currentCachedController != null && currentCachedController.isReady()) {
+        var clazz = currentCachedController.getClass();
+        cachedControllers.add(clazz);
+        currentCachedController.backup();
+        LOGGER.debug("Backup the controller '{}'", clazz.getName());
+      }
+      currentCachedController = cacheable;
+      var clazz = cacheable.getClass();
       LOGGER.debug("Set the controller '{}' like a current cached controller", clazz.getName());
       if (cachedControllers.contains(clazz)) {
         cachedControllers.remove(clazz);
-        controller.recover();
+        cacheable.recover();
         LOGGER.debug("Recovered the controller '{}'", clazz.getName());
       }
     } else {
@@ -279,7 +313,7 @@ public final class WindowManager {
     return stage;
   }
 
-  private void configureMainStage(ModuleProvider<? extends Controller> provider) {
+  private void configureMainStage(AbstractModuleProvider<? extends AbstractController> provider) {
     if (mainStage.getOwner() == null) {
       var viewSettings = ViewSettings.getInstance();
       mainStage.initOwner(root);

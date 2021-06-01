@@ -5,7 +5,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 
-<MenuBar maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.ecstasyawesome.warehouse.controller.TopBar">
+<MenuBar maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.ecstasyawesome.warehouse.controller.impl.TopBarController">
    <menus>
       <Menu mnemonicParsing="false" text="Main">
          <items>
