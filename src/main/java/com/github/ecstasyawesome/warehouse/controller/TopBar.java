@@ -4,6 +4,7 @@ import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.module.HomeProvider;
 import com.github.ecstasyawesome.warehouse.module.product.ProductListProvider;
+import com.github.ecstasyawesome.warehouse.module.storage.ProductStorageListProvider;
 import com.github.ecstasyawesome.warehouse.module.user.ProfileProvider;
 import com.github.ecstasyawesome.warehouse.module.user.UserListProvider;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
@@ -19,6 +20,8 @@ public class TopBar {
   private final HomeProvider homeProvider = HomeProvider.getInstance();
   private final UserListProvider userListProvider = UserListProvider.getInstance();
   private final ProductListProvider productListProvider = ProductListProvider.getInstance();
+  private final ProductStorageListProvider productStorageListProvider =
+      ProductStorageListProvider.getInstance();
 
   @FXML
   private MenuItem homeItem;
@@ -30,10 +33,14 @@ public class TopBar {
   private MenuItem productListItem;
 
   @FXML
+  private MenuItem productStorageListItem;
+
+  @FXML
   private void initialize() {
     checkModule(homeProvider, homeItem);
     checkModule(userListProvider, userListItem);
     checkModule(productListProvider, productListItem);
+    checkModule(productStorageListProvider, productStorageListItem);
   }
 
   @FXML
@@ -79,6 +86,11 @@ public class TopBar {
   @FXML
   private void showProductList() {
     windowManager.show(productListProvider);
+  }
+
+  @FXML
+  private void showProductStorageList() {
+    windowManager.show(productStorageListProvider);
   }
 
   private void checkModule(ModuleProvider<?> expected, MenuItem menuItem) {
