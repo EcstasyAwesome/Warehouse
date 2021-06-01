@@ -2,6 +2,7 @@ package com.github.ecstasyawesome.warehouse.controller;
 
 import com.github.ecstasyawesome.warehouse.core.ModuleProvider;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
+import com.github.ecstasyawesome.warehouse.module.GuiSettingsProvider;
 import com.github.ecstasyawesome.warehouse.module.HomeProvider;
 import com.github.ecstasyawesome.warehouse.module.product.ProductListProvider;
 import com.github.ecstasyawesome.warehouse.module.storage.ProductStorageListProvider;
@@ -17,6 +18,7 @@ public class TopBar {
 
   private final WindowManager windowManager = WindowManager.getInstance();
   private final ProfileProvider profileProvider = ProfileProvider.getInstance();
+  private final GuiSettingsProvider guiSettingsProvider = GuiSettingsProvider.getInstance();
   private final HomeProvider homeProvider = HomeProvider.getInstance();
   private final UserListProvider userListProvider = UserListProvider.getInstance();
   private final ProductListProvider productListProvider = ProductListProvider.getInstance();
@@ -74,7 +76,7 @@ public class TopBar {
 
   @FXML
   private void showSettings() {
-    // TODO
+    windowManager.showAndWait(guiSettingsProvider);
   }
 
   @FXML
