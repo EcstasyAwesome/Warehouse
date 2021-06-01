@@ -83,7 +83,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>8.42</version>
+            <version>8.43</version>
           </dependency>
         </dependencies>
         <executions>
@@ -112,7 +112,7 @@
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
-      <version>17-ea+9</version>
+      <version>17-ea+11</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -133,7 +133,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.9.0</version>
+      <version>3.10.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
