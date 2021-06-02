@@ -2,6 +2,7 @@ package com.github.ecstasyawesome.warehouse.controller.impl.user;
 
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.NO_ADJUST;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.RED_ADJUST;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
@@ -34,7 +35,7 @@ public class AuthorizationController extends AbstractController {
       if (!userRepository.hasTableRecords()) {
         var result = windowManager.showAndGet(AdministratorRegistrationProvider.getInstance());
         if (result.isPresent()) {
-          loginField.setText(result.get().getLogin());
+          setFieldText(loginField, result.get().getLogin());
         } else {
           windowManager.shutdown();
         }

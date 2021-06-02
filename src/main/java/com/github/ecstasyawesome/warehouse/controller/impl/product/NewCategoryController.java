@@ -2,11 +2,13 @@ package com.github.ecstasyawesome.warehouse.controller.impl.product;
 
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.WILDCARD;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
+import com.github.ecstasyawesome.warehouse.model.impl.Category.Builder;
 import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
 import javafx.event.ActionEvent;
@@ -33,9 +35,9 @@ public class NewCategoryController extends AbstractFeedbackController<Category> 
   private void add(ActionEvent event) {
     if (isFieldValid(nameField, null, STRICT_NAME, categoryRepository)
         & isFieldValid(descriptionArea, WILDCARD, true)) {
-      var category = Category.Builder.create()
-          .setName(nameField.getText())
-          .setDescription(descriptionArea.getText().isEmpty() ? null : descriptionArea.getText())
+      var category = Builder.create()
+          .setName(getFieldText(nameField))
+          .setDescription(getFieldText(descriptionArea))
           .build();
       try {
         categoryRepository.create(category);

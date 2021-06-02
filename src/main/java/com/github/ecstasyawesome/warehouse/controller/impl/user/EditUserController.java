@@ -3,7 +3,9 @@ package com.github.ecstasyawesome.warehouse.controller.impl.user;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.EMAIL;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractConfiguredController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
@@ -11,7 +13,6 @@ import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.repository.UserRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
-import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -60,11 +61,11 @@ public class EditUserController extends AbstractConfiguredController<User> {
         & isFieldValid(secondNameField, STRICT_NAME, false) & isFieldValid(phoneField, PHONE, false)
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(accessChoiceBox)) {
       var userCopy = new User(user);
-      user.setSurname(surnameField.getText());
-      user.setName(nameField.getText());
-      user.setSecondName(secondNameField.getText());
-      user.getPersonContact().setPhone(phoneField.getText());
-      user.getPersonContact().setEmail(emailField.getText());
+      user.setSurname(getFieldText(surnameField));
+      user.setName(getFieldText(nameField));
+      user.setSecondName(getFieldText(secondNameField));
+      user.getPersonContact().setPhone(getFieldText(phoneField));
+      user.getPersonContact().setEmail(getFieldText(emailField));
       user.getPersonSecurity().setAccess(accessChoiceBox.getValue());
       if (!user.equals(userCopy)) {
         try {
@@ -86,13 +87,13 @@ public class EditUserController extends AbstractConfiguredController<User> {
   @Override
   public void apply(User user) {
     this.user = user;
-    surnameField.setText(user.getSurname());
-    nameField.setText(user.getName());
-    secondNameField.setText(user.getSecondName());
-    phoneField.setText(user.getPersonContact().getPhone());
-    emailField.setText(Objects.requireNonNullElse(user.getPersonContact().getEmail(), ""));
+    setFieldText(surnameField, user.getSurname());
+    setFieldText(nameField, user.getName());
+    setFieldText(secondNameField, user.getSecondName());
+    setFieldText(phoneField, user.getPersonContact().getPhone());
+    setFieldText(emailField, user.getPersonContact().getEmail());
+    setFieldText(loginField, user.getPersonSecurity().getLogin());
+    setFieldText(passwordField, user.getPersonSecurity().getPassword());
     accessChoiceBox.setValue(user.getPersonSecurity().getAccess());
-    loginField.setText(user.getPersonSecurity().getLogin());
-    passwordField.setText(user.getPersonSecurity().getPassword());
   }
 }

@@ -2,14 +2,15 @@ package com.github.ecstasyawesome.warehouse.controller.impl.product;
 
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.WILDCARD;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractConfiguredController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
-import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -35,9 +36,8 @@ public class EditCategoryController extends AbstractConfiguredController<Categor
     if (isFieldValid(nameField, category.getName(), STRICT_NAME, categoryRepository)
         & isFieldValid(descriptionArea, WILDCARD, true)) {
       var categoryCopy = new Category(category);
-      category.setName(nameField.getText());
-      category
-          .setDescription(descriptionArea.getText().isEmpty() ? null : descriptionArea.getText());
+      category.setName(getFieldText(nameField));
+      category.setDescription(getFieldText(descriptionArea));
       try {
         categoryRepository.update(category);
         logger.info("Edited a category with id={}", category.getId());
@@ -53,7 +53,7 @@ public class EditCategoryController extends AbstractConfiguredController<Categor
   @Override
   public void apply(Category category) {
     this.category = category;
-    nameField.setText(category.getName());
-    descriptionArea.setText(Objects.requireNonNullElse(category.getDescription(), ""));
+    setFieldText(nameField, category.getName());
+    setFieldText(descriptionArea, category.getDescription());
   }
 }

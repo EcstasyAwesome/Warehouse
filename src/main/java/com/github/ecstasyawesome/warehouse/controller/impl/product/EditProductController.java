@@ -1,7 +1,9 @@
 package com.github.ecstasyawesome.warehouse.controller.impl.product;
 
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.NAME;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractConfiguredController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
@@ -50,7 +52,7 @@ public class EditProductController extends AbstractConfiguredController<Product>
     if (isFieldValid(nameField, product.getName(), NAME, productRepository)
         & isFieldValid(categoryChoiceBox)) {
       var productCopy = new Product(product);
-      product.setName(nameField.getText());
+      product.setName(getFieldText(nameField));
       product.setCategory(categoryChoiceBox.getValue());
       try {
         productRepository.update(product);
@@ -67,7 +69,7 @@ public class EditProductController extends AbstractConfiguredController<Product>
   @Override
   public void apply(Product product) {
     this.product = product;
-    nameField.setText(product.getName());
+    setFieldText(nameField, product.getName());
     unitChoiceBox.setValue(product.getUnit());
     categoryChoiceBox.setValue(product.getCategory());
   }

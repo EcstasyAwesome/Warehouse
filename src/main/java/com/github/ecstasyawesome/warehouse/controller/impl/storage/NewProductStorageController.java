@@ -5,12 +5,13 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.NAME;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.URL;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.WILDCARD;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.impl.Address;
-import com.github.ecstasyawesome.warehouse.model.impl.BusinessContact;
+import com.github.ecstasyawesome.warehouse.model.impl.BusinessContact.Builder;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductStorage;
 import com.github.ecstasyawesome.warehouse.repository.CompanyRepository;
@@ -80,20 +81,20 @@ public class NewProductStorageController extends AbstractFeedbackController<Prod
         & isFieldValid(numberField, WILDCARD, true) & isFieldValid(phoneField, PHONE, false)
         & isFieldValid(extraPhoneField, PHONE, true) & isFieldValid(emailField, EMAIL, true)
         & isFieldValid(siteField, URL, true)) {
-      var contact = BusinessContact.Builder.create()
-          .setPhone(phoneField.getText())
-          .setExtraPhone(extraPhoneField.getText().isEmpty() ? null : extraPhoneField.getText())
-          .setEmail(emailField.getText().isEmpty() ? null : emailField.getText())
-          .setSite(siteField.getText().isEmpty() ? null : siteField.getText())
+      var contact = Builder.create()
+          .setPhone(getFieldText(phoneField))
+          .setExtraPhone(getFieldText(extraPhoneField))
+          .setEmail(getFieldText(emailField))
+          .setSite(getFieldText(siteField))
           .build();
       var address = Address.Builder.create()
-          .setRegion(regionField.getText())
-          .setTown(townField.getText())
-          .setStreet(streetField.getText().isEmpty() ? null : streetField.getText())
-          .setNumber(numberField.getText().isEmpty() ? null : numberField.getText())
+          .setRegion(getFieldText(regionField))
+          .setTown(getFieldText(townField))
+          .setStreet(getFieldText(streetField))
+          .setNumber(getFieldText(numberField))
           .build();
       var productStorage = ProductStorage.Builder.create()
-          .setName(nameField.getText())
+          .setName(getFieldText(nameField))
           .setCompany(companyChoiceBox.getValue())
           .setAddress(address)
           .setBusinessContact(contact)

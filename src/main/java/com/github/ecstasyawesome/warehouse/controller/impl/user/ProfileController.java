@@ -7,7 +7,9 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.RED_ADJUST;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.arePasswordsEqual;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
@@ -16,7 +18,6 @@ import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.repository.UserRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
-import java.util.Objects;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -56,11 +57,11 @@ public class ProfileController extends AbstractController {
 
   @FXML
   private void initialize() {
-    surnameField.setText(currentUser.getSurname());
-    nameField.setText(currentUser.getName());
-    secondNameField.setText(currentUser.getSecondName());
-    phoneField.setText(currentUser.getPersonContact().getPhone());
-    emailField.setText(Objects.requireNonNullElse(currentUser.getPersonContact().getEmail(), ""));
+    setFieldText(surnameField, currentUser.getSurname());
+    setFieldText(nameField, currentUser.getName());
+    setFieldText(secondNameField, currentUser.getSecondName());
+    setFieldText(phoneField, currentUser.getPersonContact().getPhone());
+    setFieldText(emailField, currentUser.getPersonContact().getEmail());
   }
 
   @FXML
@@ -69,12 +70,11 @@ public class ProfileController extends AbstractController {
         & isFieldValid(secondNameField, STRICT_NAME, false) & isFieldValid(phoneField, PHONE, false)
         & isFieldValid(emailField, EMAIL, true)) {
       var userCopy = new User(currentUser);
-      currentUser.setSurname(surnameField.getText());
-      currentUser.setName(nameField.getText());
-      currentUser.setSecondName(secondNameField.getText());
-      currentUser.getPersonContact().setPhone(phoneField.getText());
-      currentUser.getPersonContact()
-          .setEmail(emailField.getText().isEmpty() ? null : emailField.getText());
+      currentUser.setSurname(getFieldText(surnameField));
+      currentUser.setName(getFieldText(nameField));
+      currentUser.setSecondName(getFieldText(secondNameField));
+      currentUser.getPersonContact().setPhone(getFieldText(phoneField));
+      currentUser.getPersonContact().setEmail(getFieldText(emailField));
       if (!currentUser.equals(userCopy)) {
         try {
           userRepository.update(currentUser);
@@ -98,7 +98,7 @@ public class ProfileController extends AbstractController {
       if (isFieldValid(newPasswordField, PASSWORD, false)
           && arePasswordsEqual(newPasswordField, newRepeatedPasswordField)) {
         var securityCopy = new PersonSecurity(userSecurity);
-        userSecurity.setPassword(newPasswordField.getText());
+        userSecurity.setPassword(getFieldText(newPasswordField));
         if (!securityCopy.equals(userSecurity)) {
           try {
             userRepository.update(currentUser);
@@ -107,13 +107,17 @@ public class ProfileController extends AbstractController {
             newRepeatedPasswordField.clear();
             logger.info("The user has changed his password");
           } catch (NullPointerException exception) {
-            currentUser.setPersonSecurity(securityCopy);
+            userSecurity.setPassword(securityCopy.getPassword());
             windowManager.showDialog(exception);
           }
         }
+      } else {
+        newPasswordField.clear();
+        newRepeatedPasswordField.clear();
       }
     } else {
       currentPasswordField.setEffect(RED_ADJUST);
+      currentPasswordField.clear();
     }
   }
 }

@@ -75,8 +75,8 @@ public class UserListController extends AbstractController {
     secondNameColumn.setCellValueFactory(entry -> entry.getValue().secondNameProperty());
     phoneColumn.setCellValueFactory(entry -> entry.getValue().getPersonContact().phoneProperty());
     emailColumn.setCellValueFactory(entry -> entry.getValue().getPersonContact().emailProperty());
-    accessColumn
-        .setCellValueFactory(entry -> entry.getValue().getPersonSecurity().accessProperty());
+    accessColumn.setCellValueFactory(entry ->
+        entry.getValue().getPersonSecurity().accessProperty());
 
     userTable.getSelectionModel()
         .selectedItemProperty()

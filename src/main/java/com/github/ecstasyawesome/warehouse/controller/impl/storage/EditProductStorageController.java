@@ -5,7 +5,9 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.NAME;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.URL;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.WILDCARD;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractConfiguredController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
@@ -15,7 +17,6 @@ import com.github.ecstasyawesome.warehouse.repository.CompanyRepository;
 import com.github.ecstasyawesome.warehouse.repository.ProductStorageRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CompanyRepositoryService;
 import com.github.ecstasyawesome.warehouse.repository.impl.ProductStorageRepositoryService;
-import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -81,15 +82,15 @@ public class EditProductStorageController extends AbstractConfiguredController<P
       var storageCopy = new ProductStorage(productStorage);
       var contact = productStorage.getBusinessContact();
       var address = productStorage.getAddress();
-      productStorage.setName(nameField.getText());
-      contact.setPhone(phoneField.getText());
-      contact.setExtraPhone(extraPhoneField.getText().isEmpty() ? null : extraPhoneField.getText());
-      contact.setEmail(emailField.getText().isEmpty() ? null : emailField.getText());
-      contact.setSite(siteField.getText().isEmpty() ? null : siteField.getText());
-      address.setRegion(regionField.getText());
-      address.setTown(townField.getText());
-      address.setStreet(streetField.getText().isEmpty() ? null : streetField.getText());
-      address.setNumber(numberField.getText().isEmpty() ? null : numberField.getText());
+      productStorage.setName(getFieldText(nameField));
+      contact.setPhone(getFieldText(phoneField));
+      contact.setExtraPhone(getFieldText(extraPhoneField));
+      contact.setEmail(getFieldText(emailField));
+      contact.setSite(getFieldText(siteField));
+      address.setRegion(getFieldText(regionField));
+      address.setTown(getFieldText(townField));
+      address.setStreet(getFieldText(streetField));
+      address.setNumber(getFieldText(numberField));
       try {
         productStorageRepository.update(productStorage);
         logger.info("Edited a product storage with id={}", productStorage.getId());
@@ -112,18 +113,15 @@ public class EditProductStorageController extends AbstractConfiguredController<P
   @Override
   public void apply(ProductStorage productStorage) {
     this.productStorage = productStorage;
-    nameField.setText(productStorage.getName());
     companyChoiceBox.setValue(productStorage.getCompany());
-    regionField.setText(productStorage.getAddress().getRegion());
-    townField.setText(productStorage.getAddress().getTown());
-    streetField.setText(Objects.requireNonNullElse(productStorage.getAddress().getStreet(), ""));
-    numberField.setText(Objects.requireNonNullElse(productStorage.getAddress().getNumber(), ""));
-    phoneField.setText(productStorage.getBusinessContact().getPhone());
-    extraPhoneField.setText(Objects.requireNonNullElse(
-        productStorage.getBusinessContact().getExtraPhone(), ""));
-    emailField.setText(Objects.requireNonNullElse(
-        productStorage.getBusinessContact().getEmail(), ""));
-    siteField.setText(Objects.requireNonNullElse(
-        productStorage.getBusinessContact().getSite(), ""));
+    setFieldText(nameField, productStorage.getName());
+    setFieldText(regionField, productStorage.getAddress().getRegion());
+    setFieldText(townField, productStorage.getAddress().getTown());
+    setFieldText(streetField, productStorage.getAddress().getStreet());
+    setFieldText(numberField, productStorage.getAddress().getNumber());
+    setFieldText(phoneField, productStorage.getBusinessContact().getPhone());
+    setFieldText(extraPhoneField, productStorage.getBusinessContact().getExtraPhone());
+    setFieldText(emailField, productStorage.getBusinessContact().getEmail());
+    setFieldText(siteField, productStorage.getBusinessContact().getSite());
   }
 }

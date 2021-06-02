@@ -1,6 +1,7 @@
 package com.github.ecstasyawesome.warehouse.controller.impl.product;
 
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.NAME;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractFeedbackController;
@@ -8,6 +9,7 @@ import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.model.impl.Product;
+import com.github.ecstasyawesome.warehouse.model.impl.Product.Builder;
 import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
 import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
@@ -51,8 +53,8 @@ public class NewProductController extends AbstractFeedbackController<Product> {
   private void add(ActionEvent event) {
     if (isFieldValid(nameField, null, NAME, productRepository)
         & isFieldValid(unitChoiceBox) & isFieldValid(categoryChoiceBox)) {
-      var product = Product.Builder.create()
-          .setName(nameField.getText())
+      var product = Builder.create()
+          .setName(getFieldText(nameField))
           .setUnit(unitChoiceBox.getValue())
           .setCategory(categoryChoiceBox.getValue())
           .build();

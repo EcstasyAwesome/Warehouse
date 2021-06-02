@@ -5,7 +5,9 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.PASSWORD;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.arePasswordsEqual;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
@@ -55,7 +57,7 @@ public class AdministratorController extends AbstractFeedbackController<PersonSe
 
   @FXML
   private void initialize() {
-    loginField.setText("admin");
+    setFieldText(loginField, "login");
   }
 
   @FXML
@@ -65,18 +67,18 @@ public class AdministratorController extends AbstractFeedbackController<PersonSe
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(passwordField, PASSWORD, false)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
       var contact = PersonContact.Builder.create()
-          .setPhone(phoneField.getText())
-          .setEmail(emailField.getText().isEmpty() ? null : emailField.getText())
+          .setPhone(getFieldText(phoneField))
+          .setEmail(getFieldText(emailField))
           .build();
       var security = PersonSecurity.Builder.create()
-          .setLogin(loginField.getText())
-          .setPassword(passwordField.getText())
+          .setLogin(getFieldText(loginField))
+          .setPassword(getFieldText(passwordField))
           .setAccess(Access.ROOT)
           .build();
       var user = User.Builder.create()
-          .setSurname(surnameField.getText())
-          .setName(nameField.getText())
-          .setSecondName(secondNameField.getText())
+          .setSurname(getFieldText(surnameField))
+          .setName(getFieldText(nameField))
+          .setSecondName(getFieldText(secondNameField))
           .setUserContact(contact)
           .setUserSecurity(security)
           .build();

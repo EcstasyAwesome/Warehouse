@@ -6,7 +6,9 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.NUMBERS;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.URL;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.WILDCARD;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractConfiguredController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
@@ -14,7 +16,6 @@ import com.github.ecstasyawesome.warehouse.model.PersonType;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;
 import com.github.ecstasyawesome.warehouse.repository.CompanyRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CompanyRepositoryService;
-import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -78,17 +79,16 @@ public class EditCompanyController extends AbstractConfiguredController<Company>
       var companyCopy = new Company(company);
       var contact = company.getBusinessContact();
       var address = company.getAddress();
-      company.setName(nameField.getText());
-      company.setIdentifierCode(identifierCodeField.getText());
-      contact.setPhone(phoneField.getText());
-      contact
-          .setExtraPhone(extraPhoneField.getText().isEmpty() ? null : extraPhoneField.getText());
-      contact.setEmail(emailField.getText().isEmpty() ? null : emailField.getText());
-      contact.setSite(siteField.getText().isEmpty() ? null : siteField.getText());
-      address.setRegion(regionField.getText());
-      address.setTown(townField.getText());
-      address.setStreet(streetField.getText().isEmpty() ? null : streetField.getText());
-      address.setNumber(numberField.getText().isEmpty() ? null : numberField.getText());
+      company.setName(getFieldText(nameField));
+      company.setIdentifierCode(getFieldText(identifierCodeField));
+      contact.setPhone(getFieldText(phoneField));
+      contact.setExtraPhone(getFieldText(extraPhoneField));
+      contact.setEmail(getFieldText(emailField));
+      contact.setSite(getFieldText(siteField));
+      address.setRegion(getFieldText(regionField));
+      address.setTown(getFieldText(townField));
+      address.setStreet(getFieldText(streetField));
+      address.setNumber(getFieldText(numberField));
       try {
         companyRepository.update(company);
         logger.info("Edited a company with id={}", company.getId());
@@ -112,18 +112,16 @@ public class EditCompanyController extends AbstractConfiguredController<Company>
   @Override
   public void apply(Company company) {
     this.company = company;
-    nameField.setText(company.getName());
     personTypeChoiceBox.setValue(company.getPersonType());
-    identifierCodeField.setText(company.getIdentifierCode());
-    var address = company.getAddress();
-    regionField.setText(address.getRegion());
-    townField.setText(address.getTown());
-    streetField.setText(Objects.requireNonNullElse(address.getStreet(), ""));
-    numberField.setText(Objects.requireNonNullElse(address.getNumber(), ""));
-    var contact = company.getBusinessContact();
-    phoneField.setText(contact.getPhone());
-    extraPhoneField.setText(Objects.requireNonNullElse(contact.getExtraPhone(), ""));
-    emailField.setText(Objects.requireNonNullElse(contact.getEmail(), ""));
-    siteField.setText(Objects.requireNonNullElse(contact.getSite(), ""));
+    setFieldText(nameField, company.getName());
+    setFieldText(identifierCodeField, company.getIdentifierCode());
+    setFieldText(regionField, company.getAddress().getRegion());
+    setFieldText(townField, company.getAddress().getTown());
+    setFieldText(streetField, company.getAddress().getStreet());
+    setFieldText(numberField, company.getAddress().getNumber());
+    setFieldText(phoneField, company.getBusinessContact().getPhone());
+    setFieldText(extraPhoneField, company.getBusinessContact().getExtraPhone());
+    setFieldText(emailField, company.getBusinessContact().getEmail());
+    setFieldText(siteField, company.getBusinessContact().getSite());
   }
 }
