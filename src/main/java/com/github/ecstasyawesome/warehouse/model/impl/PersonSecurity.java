@@ -2,13 +2,14 @@ package com.github.ecstasyawesome.warehouse.model.impl;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import com.github.ecstasyawesome.warehouse.model.Access;
+import com.github.ecstasyawesome.warehouse.model.Recoverable;
 import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class PersonSecurity extends AbstractRecord {
+public class PersonSecurity extends AbstractRecord implements Recoverable<PersonSecurity> {
 
   private final StringProperty login = new SimpleStringProperty();
   private final StringProperty password = new SimpleStringProperty();
@@ -58,6 +59,14 @@ public class PersonSecurity extends AbstractRecord {
 
   public ObjectProperty<Access> accessProperty() {
     return access;
+  }
+
+  @Override
+  public void recover(PersonSecurity instance) {
+    setId(instance.getId());
+    setLogin(instance.getLogin());
+    setPassword(instance.getPassword());
+    setAccess(instance.getAccess());
   }
 
   @Override

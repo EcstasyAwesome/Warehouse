@@ -1,9 +1,10 @@
 package com.github.ecstasyawesome.warehouse.model.impl;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractContact;
+import com.github.ecstasyawesome.warehouse.model.Recoverable;
 import java.util.Objects;
 
-public class PersonContact extends AbstractContact {
+public class PersonContact extends AbstractContact implements Recoverable<PersonContact> {
 
   public PersonContact(PersonContact instance) {
     setId(instance.getId());
@@ -12,6 +13,13 @@ public class PersonContact extends AbstractContact {
   }
 
   private PersonContact() {
+  }
+
+  @Override
+  public void recover(PersonContact instance) {
+    setId(instance.getId());
+    setPhone(instance.getPhone());
+    setEmail(instance.getEmail());
   }
 
   public static class Builder {

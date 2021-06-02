@@ -1,11 +1,12 @@
 package com.github.ecstasyawesome.warehouse.model.impl;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractNamedRecord;
+import com.github.ecstasyawesome.warehouse.model.Recoverable;
 import java.util.Objects;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Category extends AbstractNamedRecord {
+public class Category extends AbstractNamedRecord implements Recoverable<Category> {
 
   private final StringProperty description = new SimpleStringProperty();
 
@@ -28,6 +29,13 @@ public class Category extends AbstractNamedRecord {
 
   public StringProperty descriptionProperty() {
     return description;
+  }
+
+  @Override
+  public void recover(Category instance) {
+    setId(instance.getId());
+    setName(instance.getName());
+    setDescription(instance.getDescription());
   }
 
   @Override

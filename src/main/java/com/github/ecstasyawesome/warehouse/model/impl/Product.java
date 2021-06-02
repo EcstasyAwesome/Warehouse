@@ -1,12 +1,13 @@
 package com.github.ecstasyawesome.warehouse.model.impl;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractNamedRecord;
+import com.github.ecstasyawesome.warehouse.model.Recoverable;
 import com.github.ecstasyawesome.warehouse.model.Unit;
 import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class Product extends AbstractNamedRecord {
+public class Product extends AbstractNamedRecord implements Recoverable<Product> {
 
   private final ObjectProperty<Category> category = new SimpleObjectProperty<>();
   private final ObjectProperty<Unit> unit = new SimpleObjectProperty<>();
@@ -43,6 +44,14 @@ public class Product extends AbstractNamedRecord {
 
   public ObjectProperty<Unit> unitProperty() {
     return unit;
+  }
+
+  @Override
+  public void recover(Product instance) {
+    setId(instance.getId());
+    setName(instance.getName());
+    setUnit(instance.getUnit());
+    getCategory().recover(instance.getCategory());
   }
 
   @Override

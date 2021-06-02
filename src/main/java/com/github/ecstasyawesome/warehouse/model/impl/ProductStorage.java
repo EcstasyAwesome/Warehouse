@@ -1,11 +1,12 @@
 package com.github.ecstasyawesome.warehouse.model.impl;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractBusiness;
+import com.github.ecstasyawesome.warehouse.model.Recoverable;
 import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class ProductStorage extends AbstractBusiness {
+public class ProductStorage extends AbstractBusiness implements Recoverable<ProductStorage> {
 
   private final ObjectProperty<Company> company = new SimpleObjectProperty<>();
 
@@ -30,6 +31,15 @@ public class ProductStorage extends AbstractBusiness {
 
   public ObjectProperty<Company> companyProperty() {
     return company;
+  }
+
+  @Override
+  public void recover(ProductStorage instance) {
+    setId(instance.getId());
+    setName(instance.getName());
+    getAddress().recover(instance.getAddress());
+    getBusinessContact().recover(instance.getBusinessContact());
+    getCompany().recover(instance.getCompany());
   }
 
   @Override

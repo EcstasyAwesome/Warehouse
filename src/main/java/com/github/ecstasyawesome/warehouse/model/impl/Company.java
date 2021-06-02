@@ -2,13 +2,14 @@ package com.github.ecstasyawesome.warehouse.model.impl;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractBusiness;
 import com.github.ecstasyawesome.warehouse.model.PersonType;
+import com.github.ecstasyawesome.warehouse.model.Recoverable;
 import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Company extends AbstractBusiness {
+public class Company extends AbstractBusiness implements Recoverable<Company> {
 
   private final StringProperty identifierCode = new SimpleStringProperty();
   private final ObjectProperty<PersonType> personType = new SimpleObjectProperty<>();
@@ -47,6 +48,16 @@ public class Company extends AbstractBusiness {
 
   public ObjectProperty<PersonType> personTypeProperty() {
     return personType;
+  }
+
+  @Override
+  public void recover(Company instance) {
+    setId(instance.getId());
+    setName(instance.getName());
+    setIdentifierCode(instance.getIdentifierCode());
+    setPersonType(instance.getPersonType());
+    getAddress().recover(instance.getAddress());
+    getBusinessContact().recover(instance.getBusinessContact());
   }
 
   @Override

@@ -1,11 +1,12 @@
 package com.github.ecstasyawesome.warehouse.model.impl;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
+import com.github.ecstasyawesome.warehouse.model.Recoverable;
 import java.util.Objects;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Address extends AbstractRecord {
+public class Address extends AbstractRecord implements Recoverable<Address> {
 
   private final StringProperty region = new SimpleStringProperty();
   private final StringProperty town = new SimpleStringProperty();
@@ -69,6 +70,15 @@ public class Address extends AbstractRecord {
 
   public StringProperty numberProperty() {
     return number;
+  }
+
+  @Override
+  public void recover(Address instance) {
+    setId(instance.getId());
+    setRegion(instance.getRegion());
+    setTown(instance.getTown());
+    setStreet(instance.getStreet());
+    setNumber(instance.getNumber());
   }
 
   @Override

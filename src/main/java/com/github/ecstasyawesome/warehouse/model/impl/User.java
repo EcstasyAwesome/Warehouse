@@ -1,11 +1,12 @@
 package com.github.ecstasyawesome.warehouse.model.impl;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractPersonRecord;
+import com.github.ecstasyawesome.warehouse.model.Recoverable;
 import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class User extends AbstractPersonRecord {
+public class User extends AbstractPersonRecord implements Recoverable<User> {
 
   private final ObjectProperty<PersonContact> personContact = new SimpleObjectProperty<>();
   private final ObjectProperty<PersonSecurity> personSecurity = new SimpleObjectProperty<>();
@@ -44,6 +45,16 @@ public class User extends AbstractPersonRecord {
 
   public ObjectProperty<PersonSecurity> personSecurityProperty() {
     return personSecurity;
+  }
+
+  @Override
+  public void recover(User instance) {
+    setId(instance.getId());
+    setSurname(instance.getSurname());
+    setName(instance.getName());
+    setSecondName(instance.getSecondName());
+    getPersonContact().recover(instance.getPersonContact());
+    getPersonSecurity().recover(instance.getPersonSecurity());
   }
 
   @Override

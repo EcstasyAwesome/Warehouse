@@ -1,10 +1,11 @@
 package com.github.ecstasyawesome.warehouse.model.impl;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractCommodity;
+import com.github.ecstasyawesome.warehouse.model.Recoverable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Commodity extends AbstractCommodity {
+public class Commodity extends AbstractCommodity implements Recoverable<Commodity> {
 
   public Commodity(Commodity instance) {
     setId(instance.getId());
@@ -18,6 +19,17 @@ public class Commodity extends AbstractCommodity {
   }
 
   private Commodity() {
+  }
+
+  @Override
+  public void recover(Commodity instance) {
+    setId(instance.getId());
+    setAmount(instance.getAmount());
+    setPurchasePrice(instance.getPurchasePrice());
+    setRetailPrice(instance.getRetailPrice());
+    setUpdateTime(instance.getUpdateTime());
+    getProduct().recover(instance.getProduct());
+    getProductStorage().recover(instance.getProductStorage());
   }
 
   public static class Builder {

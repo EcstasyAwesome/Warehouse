@@ -1,9 +1,10 @@
 package com.github.ecstasyawesome.warehouse.model.impl;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractBusiness;
+import com.github.ecstasyawesome.warehouse.model.Recoverable;
 import java.util.Objects;
 
-public class ProductProvider extends AbstractBusiness {
+public class ProductProvider extends AbstractBusiness implements Recoverable<ProductProvider> {
 
   public ProductProvider(ProductProvider instance) {
     setId(instance.getId());
@@ -13,6 +14,14 @@ public class ProductProvider extends AbstractBusiness {
   }
 
   private ProductProvider() {
+  }
+
+  @Override
+  public void recover(ProductProvider instance) {
+    setId(instance.getId());
+    setName(instance.getName());
+    getAddress().recover(instance.getAddress());
+    getBusinessContact().recover(instance.getBusinessContact());
   }
 
   public static class Builder {

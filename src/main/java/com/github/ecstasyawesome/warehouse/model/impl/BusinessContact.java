@@ -1,11 +1,12 @@
 package com.github.ecstasyawesome.warehouse.model.impl;
 
 import com.github.ecstasyawesome.warehouse.model.AbstractContact;
+import com.github.ecstasyawesome.warehouse.model.Recoverable;
 import java.util.Objects;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class BusinessContact extends AbstractContact {
+public class BusinessContact extends AbstractContact implements Recoverable<BusinessContact> {
 
   private final StringProperty extraPhone = new SimpleStringProperty();
   private final StringProperty site = new SimpleStringProperty();
@@ -43,6 +44,15 @@ public class BusinessContact extends AbstractContact {
 
   public StringProperty siteProperty() {
     return site;
+  }
+
+  @Override
+  public void recover(BusinessContact instance) {
+    setId(instance.getId());
+    setPhone(instance.getPhone());
+    setEmail(instance.getEmail());
+    setExtraPhone(instance.getExtraPhone());
+    setSite(instance.getSite());
   }
 
   @Override
