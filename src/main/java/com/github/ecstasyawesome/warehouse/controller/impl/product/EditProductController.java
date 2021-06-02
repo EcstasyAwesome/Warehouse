@@ -54,13 +54,15 @@ public class EditProductController extends AbstractConfiguredController<Product>
       var productCopy = new Product(product);
       product.setName(getFieldText(nameField));
       product.setCategory(categoryChoiceBox.getValue());
-      try {
-        productRepository.update(product);
-        logger.info("Edited a product with id={}", product.getId());
-        closeCurrentStage(event);
-      } catch (NullPointerException exception) {
-        product.recover(productCopy);
-        windowManager.showDialog(exception);
+      if (!product.equals(productCopy)) {
+        try {
+          productRepository.update(product);
+          logger.info("Edited a product with id={}", product.getId());
+          closeCurrentStage(event);
+        } catch (NullPointerException exception) {
+          product.recover(productCopy);
+          windowManager.showDialog(exception);
+        }
       }
     }
   }

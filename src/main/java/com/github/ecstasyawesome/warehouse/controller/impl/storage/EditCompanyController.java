@@ -87,13 +87,15 @@ public class EditCompanyController extends AbstractConfiguredController<Company>
       company.getAddress().setTown(getFieldText(townField));
       company.getAddress().setStreet(getFieldText(streetField));
       company.getAddress().setNumber(getFieldText(numberField));
-      try {
-        companyRepository.update(company);
-        logger.info("Edited a company with id={}", company.getId());
-        closeCurrentStage(event);
-      } catch (NullPointerException exception) {
-        company.recover(companyCopy);
-        windowManager.showDialog(exception);
+      if (!company.equals(companyCopy)) {
+        try {
+          companyRepository.update(company);
+          logger.info("Edited a company with id={}", company.getId());
+          closeCurrentStage(event);
+        } catch (NullPointerException exception) {
+          company.recover(companyCopy);
+          windowManager.showDialog(exception);
+        }
       }
     }
   }

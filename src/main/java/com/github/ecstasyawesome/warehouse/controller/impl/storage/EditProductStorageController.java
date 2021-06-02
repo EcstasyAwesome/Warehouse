@@ -89,13 +89,15 @@ public class EditProductStorageController extends AbstractConfiguredController<P
       productStorage.getAddress().setRegion(getFieldText(regionField));
       productStorage.getAddress().setStreet(getFieldText(streetField));
       productStorage.getAddress().setNumber(getFieldText(numberField));
-      try {
-        productStorageRepository.update(productStorage);
-        logger.info("Edited a product storage with id={}", productStorage.getId());
-        closeCurrentStage(event);
-      } catch (NullPointerException exception) {
-        productStorage.recover(storageCopy);
-        windowManager.showDialog(exception);
+      if (!productStorage.equals(storageCopy)) {
+        try {
+          productStorageRepository.update(productStorage);
+          logger.info("Edited a product storage with id={}", productStorage.getId());
+          closeCurrentStage(event);
+        } catch (NullPointerException exception) {
+          productStorage.recover(storageCopy);
+          windowManager.showDialog(exception);
+        }
       }
     }
   }

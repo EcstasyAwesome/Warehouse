@@ -38,13 +38,15 @@ public class EditCategoryController extends AbstractConfiguredController<Categor
       var categoryCopy = new Category(category);
       category.setName(getFieldText(nameField));
       category.setDescription(getFieldText(descriptionArea));
-      try {
-        categoryRepository.update(category);
-        logger.info("Edited a category with id={}", category.getId());
-        closeCurrentStage(event);
-      } catch (NullPointerException exception) {
-        category.recover(categoryCopy);
-        windowManager.showDialog(exception);
+      if (!category.equals(categoryCopy)) {
+        try {
+          categoryRepository.update(category);
+          logger.info("Edited a category with id={}", category.getId());
+          closeCurrentStage(event);
+        } catch (NullPointerException exception) {
+          category.recover(categoryCopy);
+          windowManager.showDialog(exception);
+        }
       }
     }
   }
