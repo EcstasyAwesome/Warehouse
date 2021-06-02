@@ -80,10 +80,7 @@ public class ProfileController extends AbstractController {
           userRepository.update(currentUser);
           logger.info("The user has edited his own profile");
         } catch (NullPointerException exception) {
-          currentUser.setSurname(userCopy.getSurname());
-          currentUser.setName(userCopy.getName());
-          currentUser.setSecondName(userCopy.getSecondName());
-          currentUser.setPersonContact(userCopy.getPersonContact());
+          currentUser.recover(userCopy);
           windowManager.showDialog(exception);
         }
       }
@@ -107,7 +104,7 @@ public class ProfileController extends AbstractController {
             newRepeatedPasswordField.clear();
             logger.info("The user has changed his password");
           } catch (NullPointerException exception) {
-            userSecurity.setPassword(securityCopy.getPassword());
+            userSecurity.recover(securityCopy);
             windowManager.showDialog(exception);
           }
         }

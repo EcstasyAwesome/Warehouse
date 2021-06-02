@@ -35,11 +35,11 @@ public class NewCategoryController extends AbstractFeedbackController<Category> 
   private void add(ActionEvent event) {
     if (isFieldValid(nameField, null, STRICT_NAME, categoryRepository)
         & isFieldValid(descriptionArea, WILDCARD, true)) {
-      var category = Builder.create()
-          .setName(getFieldText(nameField))
-          .setDescription(getFieldText(descriptionArea))
-          .build();
       try {
+        var category = Builder.create()
+            .setName(getFieldText(nameField))
+            .setDescription(getFieldText(descriptionArea))
+            .build();
         categoryRepository.create(category);
         logger.info("Added a category with id={}", category.getId());
         result = category;

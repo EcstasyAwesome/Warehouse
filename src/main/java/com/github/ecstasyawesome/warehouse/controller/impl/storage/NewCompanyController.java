@@ -77,26 +77,26 @@ public class NewCompanyController extends AbstractFeedbackController<Company> {
         & isFieldValid(streetField, NAME, true) & isFieldValid(numberField, WILDCARD, true)
         & isFieldValid(phoneField, PHONE, false) & isFieldValid(extraPhoneField, PHONE, true)
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(siteField, URL, true)) {
-      var address = Builder.create()
-          .setRegion(getFieldText(regionField))
-          .setTown(getFieldText(townField))
-          .setStreet(getFieldText(streetField))
-          .setNumber(getFieldText(numberField))
-          .build();
-      var contact = BusinessContact.Builder.create()
-          .setPhone(getFieldText(phoneField))
-          .setExtraPhone(getFieldText(extraPhoneField))
-          .setEmail(getFieldText(emailField))
-          .setSite(getFieldText(siteField))
-          .build();
-      var company = Company.Builder.create()
-          .setName(getFieldText(nameField))
-          .setPersonType(personTypeChoiceBox.getValue())
-          .setIdentifierCode(getFieldText(identifierCodeField))
-          .setAddress(address)
-          .setBusinessContact(contact)
-          .build();
       try {
+        var address = Builder.create()
+            .setRegion(getFieldText(regionField))
+            .setTown(getFieldText(townField))
+            .setStreet(getFieldText(streetField))
+            .setNumber(getFieldText(numberField))
+            .build();
+        var contact = BusinessContact.Builder.create()
+            .setPhone(getFieldText(phoneField))
+            .setExtraPhone(getFieldText(extraPhoneField))
+            .setEmail(getFieldText(emailField))
+            .setSite(getFieldText(siteField))
+            .build();
+        var company = Company.Builder.create()
+            .setName(getFieldText(nameField))
+            .setPersonType(personTypeChoiceBox.getValue())
+            .setIdentifierCode(getFieldText(identifierCodeField))
+            .setAddress(address)
+            .setBusinessContact(contact)
+            .build();
         companyRepository.create(company);
         logger.info("Added a company with id={}", company.getId());
         result = company;

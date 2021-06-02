@@ -77,33 +77,22 @@ public class EditCompanyController extends AbstractConfiguredController<Company>
         & isFieldValid(phoneField, PHONE, false) & isFieldValid(extraPhoneField, PHONE, true)
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(siteField, URL, true)) {
       var companyCopy = new Company(company);
-      var contact = company.getBusinessContact();
-      var address = company.getAddress();
       company.setName(getFieldText(nameField));
       company.setIdentifierCode(getFieldText(identifierCodeField));
-      contact.setPhone(getFieldText(phoneField));
-      contact.setExtraPhone(getFieldText(extraPhoneField));
-      contact.setEmail(getFieldText(emailField));
-      contact.setSite(getFieldText(siteField));
-      address.setRegion(getFieldText(regionField));
-      address.setTown(getFieldText(townField));
-      address.setStreet(getFieldText(streetField));
-      address.setNumber(getFieldText(numberField));
+      company.getBusinessContact().setPhone(getFieldText(phoneField));
+      company.getBusinessContact().setExtraPhone(getFieldText(extraPhoneField));
+      company.getBusinessContact().setEmail(getFieldText(emailField));
+      company.getBusinessContact().setSite(getFieldText(siteField));
+      company.getAddress().setRegion(getFieldText(regionField));
+      company.getAddress().setTown(getFieldText(townField));
+      company.getAddress().setStreet(getFieldText(streetField));
+      company.getAddress().setNumber(getFieldText(numberField));
       try {
         companyRepository.update(company);
         logger.info("Edited a company with id={}", company.getId());
         closeCurrentStage(event);
       } catch (NullPointerException exception) {
-        company.setName(companyCopy.getName());
-        company.setIdentifierCode(companyCopy.getIdentifierCode());
-        contact.setPhone(companyCopy.getBusinessContact().getPhone());
-        contact.setExtraPhone(companyCopy.getBusinessContact().getExtraPhone());
-        contact.setEmail(companyCopy.getBusinessContact().getEmail());
-        contact.setSite(companyCopy.getBusinessContact().getSite());
-        address.setRegion(companyCopy.getAddress().getRegion());
-        address.setTown(companyCopy.getAddress().getTown());
-        address.setStreet(companyCopy.getAddress().getStreet());
-        address.setNumber(companyCopy.getAddress().getNumber());
+        company.recover(companyCopy);
         windowManager.showDialog(exception);
       }
     }
@@ -115,11 +104,11 @@ public class EditCompanyController extends AbstractConfiguredController<Company>
     personTypeChoiceBox.setValue(company.getPersonType());
     setFieldText(nameField, company.getName());
     setFieldText(identifierCodeField, company.getIdentifierCode());
-    setFieldText(regionField, company.getAddress().getRegion());
     setFieldText(townField, company.getAddress().getTown());
+    setFieldText(regionField, company.getAddress().getRegion());
     setFieldText(streetField, company.getAddress().getStreet());
-    setFieldText(numberField, company.getAddress().getNumber());
     setFieldText(phoneField, company.getBusinessContact().getPhone());
+    setFieldText(numberField, company.getAddress().getNumber());
     setFieldText(extraPhoneField, company.getBusinessContact().getExtraPhone());
     setFieldText(emailField, company.getBusinessContact().getEmail());
     setFieldText(siteField, company.getBusinessContact().getSite());

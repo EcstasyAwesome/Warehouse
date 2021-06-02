@@ -59,8 +59,7 @@ public class EditProductController extends AbstractConfiguredController<Product>
         logger.info("Edited a product with id={}", product.getId());
         closeCurrentStage(event);
       } catch (NullPointerException exception) {
-        product.setName(productCopy.getName());
-        product.setCategory(productCopy.getCategory());
+        product.recover(productCopy);
         windowManager.showDialog(exception);
       }
     }

@@ -81,25 +81,25 @@ public class NewProductStorageController extends AbstractFeedbackController<Prod
         & isFieldValid(numberField, WILDCARD, true) & isFieldValid(phoneField, PHONE, false)
         & isFieldValid(extraPhoneField, PHONE, true) & isFieldValid(emailField, EMAIL, true)
         & isFieldValid(siteField, URL, true)) {
-      var contact = Builder.create()
-          .setPhone(getFieldText(phoneField))
-          .setExtraPhone(getFieldText(extraPhoneField))
-          .setEmail(getFieldText(emailField))
-          .setSite(getFieldText(siteField))
-          .build();
-      var address = Address.Builder.create()
-          .setRegion(getFieldText(regionField))
-          .setTown(getFieldText(townField))
-          .setStreet(getFieldText(streetField))
-          .setNumber(getFieldText(numberField))
-          .build();
-      var productStorage = ProductStorage.Builder.create()
-          .setName(getFieldText(nameField))
-          .setCompany(companyChoiceBox.getValue())
-          .setAddress(address)
-          .setBusinessContact(contact)
-          .build();
       try {
+        var contact = Builder.create()
+            .setPhone(getFieldText(phoneField))
+            .setExtraPhone(getFieldText(extraPhoneField))
+            .setEmail(getFieldText(emailField))
+            .setSite(getFieldText(siteField))
+            .build();
+        var address = Address.Builder.create()
+            .setRegion(getFieldText(regionField))
+            .setTown(getFieldText(townField))
+            .setStreet(getFieldText(streetField))
+            .setNumber(getFieldText(numberField))
+            .build();
+        var productStorage = ProductStorage.Builder.create()
+            .setName(getFieldText(nameField))
+            .setCompany(companyChoiceBox.getValue())
+            .setAddress(address)
+            .setBusinessContact(contact)
+            .build();
         productStorageRepository.create(productStorage);
         logger.info("Added a product storage with id={}", productStorage.getId());
         result = productStorage;

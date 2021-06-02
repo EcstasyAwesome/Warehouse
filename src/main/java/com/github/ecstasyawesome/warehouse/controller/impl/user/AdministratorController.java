@@ -66,23 +66,23 @@ public class AdministratorController extends AbstractFeedbackController<PersonSe
         & isFieldValid(secondNameField, STRICT_NAME, false) & isFieldValid(phoneField, PHONE, false)
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(passwordField, PASSWORD, false)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
-      var contact = PersonContact.Builder.create()
-          .setPhone(getFieldText(phoneField))
-          .setEmail(getFieldText(emailField))
-          .build();
-      var security = PersonSecurity.Builder.create()
-          .setLogin(getFieldText(loginField))
-          .setPassword(getFieldText(passwordField))
-          .setAccess(Access.ROOT)
-          .build();
-      var user = User.Builder.create()
-          .setSurname(getFieldText(surnameField))
-          .setName(getFieldText(nameField))
-          .setSecondName(getFieldText(secondNameField))
-          .setUserContact(contact)
-          .setUserSecurity(security)
-          .build();
       try {
+        var contact = PersonContact.Builder.create()
+            .setPhone(getFieldText(phoneField))
+            .setEmail(getFieldText(emailField))
+            .build();
+        var security = PersonSecurity.Builder.create()
+            .setLogin(getFieldText(loginField))
+            .setPassword(getFieldText(passwordField))
+            .setAccess(Access.ROOT)
+            .build();
+        var user = User.Builder.create()
+            .setSurname(getFieldText(surnameField))
+            .setName(getFieldText(nameField))
+            .setSecondName(getFieldText(secondNameField))
+            .setUserContact(contact)
+            .setUserSecurity(security)
+            .build();
         userRepository.create(user);
         result = user.getPersonSecurity();
         logger.info("Root user registered");

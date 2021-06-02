@@ -72,23 +72,23 @@ public class NewUserController extends AbstractFeedbackController<User> {
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(passwordField, PASSWORD, false)
         & isFieldValid(loginField, null, LOGIN, userRepository) & isFieldValid(accessChoiceBox)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
-      var contact = Builder.create()
-          .setPhone(getFieldText(phoneField))
-          .setEmail(getFieldText(emailField))
-          .build();
-      var security = PersonSecurity.Builder.create()
-          .setLogin(getFieldText(loginField))
-          .setPassword(getFieldText(passwordField))
-          .setAccess(accessChoiceBox.getValue())
-          .build();
-      var user = User.Builder.create()
-          .setSurname(getFieldText(surnameField))
-          .setName(getFieldText(nameField))
-          .setSecondName(getFieldText(secondNameField))
-          .setUserContact(contact)
-          .setUserSecurity(security)
-          .build();
       try {
+        var contact = Builder.create()
+            .setPhone(getFieldText(phoneField))
+            .setEmail(getFieldText(emailField))
+            .build();
+        var security = PersonSecurity.Builder.create()
+            .setLogin(getFieldText(loginField))
+            .setPassword(getFieldText(passwordField))
+            .setAccess(accessChoiceBox.getValue())
+            .build();
+        var user = User.Builder.create()
+            .setSurname(getFieldText(surnameField))
+            .setName(getFieldText(nameField))
+            .setSecondName(getFieldText(secondNameField))
+            .setUserContact(contact)
+            .setUserSecurity(security)
+            .build();
         userRepository.create(user);
         result = user;
         logger.info("Added a user with id={}", user.getId());

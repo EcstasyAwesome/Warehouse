@@ -43,8 +43,7 @@ public class EditCategoryController extends AbstractConfiguredController<Categor
         logger.info("Edited a category with id={}", category.getId());
         closeCurrentStage(event);
       } catch (NullPointerException exception) {
-        category.setName(categoryCopy.getName());
-        category.setDescription(categoryCopy.getDescription());
+        category.recover(categoryCopy);
         windowManager.showDialog(exception);
       }
     }

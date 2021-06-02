@@ -80,31 +80,21 @@ public class EditProductStorageController extends AbstractConfiguredController<P
         & isFieldValid(phoneField, PHONE, false) & isFieldValid(extraPhoneField, PHONE, true)
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(siteField, URL, true)) {
       var storageCopy = new ProductStorage(productStorage);
-      var contact = productStorage.getBusinessContact();
-      var address = productStorage.getAddress();
       productStorage.setName(getFieldText(nameField));
-      contact.setPhone(getFieldText(phoneField));
-      contact.setExtraPhone(getFieldText(extraPhoneField));
-      contact.setEmail(getFieldText(emailField));
-      contact.setSite(getFieldText(siteField));
-      address.setRegion(getFieldText(regionField));
-      address.setTown(getFieldText(townField));
-      address.setStreet(getFieldText(streetField));
-      address.setNumber(getFieldText(numberField));
+      productStorage.getBusinessContact().setPhone(getFieldText(phoneField));
+      productStorage.getBusinessContact().setExtraPhone(getFieldText(extraPhoneField));
+      productStorage.getBusinessContact().setEmail(getFieldText(emailField));
+      productStorage.getBusinessContact().setSite(getFieldText(siteField));
+      productStorage.getAddress().setTown(getFieldText(townField));
+      productStorage.getAddress().setRegion(getFieldText(regionField));
+      productStorage.getAddress().setStreet(getFieldText(streetField));
+      productStorage.getAddress().setNumber(getFieldText(numberField));
       try {
         productStorageRepository.update(productStorage);
         logger.info("Edited a product storage with id={}", productStorage.getId());
         closeCurrentStage(event);
       } catch (NullPointerException exception) {
-        productStorage.setName(storageCopy.getName());
-        contact.setPhone(storageCopy.getBusinessContact().getPhone());
-        contact.setExtraPhone(storageCopy.getBusinessContact().getExtraPhone());
-        contact.setEmail(storageCopy.getBusinessContact().getEmail());
-        contact.setSite(storageCopy.getBusinessContact().getSite());
-        address.setRegion(storageCopy.getAddress().getRegion());
-        address.setTown(storageCopy.getAddress().getTown());
-        address.setStreet(storageCopy.getAddress().getStreet());
-        address.setNumber(storageCopy.getAddress().getNumber());
+        productStorage.recover(storageCopy);
         windowManager.showDialog(exception);
       }
     }

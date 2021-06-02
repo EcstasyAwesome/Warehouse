@@ -61,8 +61,8 @@ public class EditUserController extends AbstractConfiguredController<User> {
         & isFieldValid(secondNameField, STRICT_NAME, false) & isFieldValid(phoneField, PHONE, false)
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(accessChoiceBox)) {
       var userCopy = new User(user);
-      user.setSurname(getFieldText(surnameField));
       user.setName(getFieldText(nameField));
+      user.setSurname(getFieldText(surnameField));
       user.setSecondName(getFieldText(secondNameField));
       user.getPersonContact().setPhone(getFieldText(phoneField));
       user.getPersonContact().setEmail(getFieldText(emailField));
@@ -73,11 +73,7 @@ public class EditUserController extends AbstractConfiguredController<User> {
           logger.info("Edited user profile with id={}", user.getId());
           closeCurrentStage(event);
         } catch (NullPointerException exception) {
-          user.setSurname(userCopy.getSurname());
-          user.setName(userCopy.getName());
-          user.setSecondName(userCopy.getSecondName());
-          user.setPersonContact(userCopy.getPersonContact());
-          user.setPersonSecurity(userCopy.getPersonSecurity());
+          user.recover(userCopy);
           windowManager.showDialog(exception);
         }
       }

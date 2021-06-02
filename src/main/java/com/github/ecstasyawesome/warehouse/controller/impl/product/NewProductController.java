@@ -53,12 +53,12 @@ public class NewProductController extends AbstractFeedbackController<Product> {
   private void add(ActionEvent event) {
     if (isFieldValid(nameField, null, NAME, productRepository)
         & isFieldValid(unitChoiceBox) & isFieldValid(categoryChoiceBox)) {
-      var product = Builder.create()
-          .setName(getFieldText(nameField))
-          .setUnit(unitChoiceBox.getValue())
-          .setCategory(categoryChoiceBox.getValue())
-          .build();
       try {
+        var product = Builder.create()
+            .setName(getFieldText(nameField))
+            .setUnit(unitChoiceBox.getValue())
+            .setCategory(categoryChoiceBox.getValue())
+            .build();
         productRepository.create(product);
         logger.info("Added a product with id={}", product.getId());
         result = product;
