@@ -1,5 +1,7 @@
 package com.github.ecstasyawesome.warehouse.controller.impl.product;
 
+import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
+
 import com.github.ecstasyawesome.warehouse.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
@@ -88,9 +90,8 @@ public class ProductListController extends AbstractController {
 
   @FXML
   private void initialize() {
-    final var accessLevel = sessionUser.getPersonSecurity().getAccess().level;
-    addCategoryButton.setDisable(accessLevel > newCategoryProvider.getAccess().level);
-    addProductButton.setDisable(accessLevel > newProductProvider.getAccess().level);
+    addCategoryButton.setDisable(!isAccessGranted(sessionUser, newCategoryProvider.getAccess()));
+    addProductButton.setDisable(!isAccessGranted(sessionUser, newProductProvider.getAccess()));
 
     categoryNameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
 
@@ -104,8 +105,9 @@ public class ProductListController extends AbstractController {
         .addListener((observable, prevCategory, currentCategory) -> {
           if (currentCategory != null) {
             getProductsFromDatabase(currentCategory);
-            editCategoryButton.setDisable(accessLevel > editCategoryProvider.getAccess().level);
-            deleteCategoryButton.setDisable(accessLevel > Access.ADMIN.level);
+            editCategoryButton
+                .setDisable(!isAccessGranted(sessionUser, editCategoryProvider.getAccess()));
+            deleteCategoryButton.setDisable(!isAccessGranted(sessionUser, Access.ADMIN));
           } else {
             editCategoryButton.setDisable(true);
             deleteCategoryButton.setDisable(true);
@@ -117,8 +119,9 @@ public class ProductListController extends AbstractController {
         .selectedItemProperty()
         .addListener((observable, prevProduct, currentProduct) -> {
           if (currentProduct != null) {
-            editProductButton.setDisable(accessLevel > editProductProvider.getAccess().level);
-            deleteProductButton.setDisable(accessLevel > Access.ADMIN.level);
+            editProductButton
+                .setDisable(!isAccessGranted(sessionUser, editProductProvider.getAccess()));
+            deleteProductButton.setDisable(!isAccessGranted(sessionUser, Access.ADMIN));
           } else {
             editProductButton.setDisable(true);
             deleteProductButton.setDisable(true);

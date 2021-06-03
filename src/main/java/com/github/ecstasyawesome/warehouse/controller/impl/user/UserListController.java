@@ -1,5 +1,7 @@
 package com.github.ecstasyawesome.warehouse.controller.impl.user;
 
+import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
+
 import com.github.ecstasyawesome.warehouse.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.Access;
@@ -66,8 +68,7 @@ public class UserListController extends AbstractController {
 
   @FXML
   private void initialize() {
-    final var accessLevel = sessionUser.getPersonSecurity().getAccess().level;
-    addButton.setDisable(accessLevel > newUserProvider.getAccess().level);
+    addButton.setDisable(!isAccessGranted(sessionUser, newUserProvider.getAccess()));
 
     idColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
     surnameColumn.setCellValueFactory(entry -> entry.getValue().surnameProperty());
@@ -82,10 +83,11 @@ public class UserListController extends AbstractController {
         .selectedItemProperty()
         .addListener((observable, prevUser, currentUser) -> {
           if (currentUser != null) {
-            var currentUserAccessLevel = currentUser.getPersonSecurity().getAccess().level;
-            var condition = accessLevel >= currentUserAccessLevel;
-            editButton.setDisable(condition || accessLevel > editUserProvider.getAccess().level);
-            deleteButton.setDisable(condition || accessLevel > Access.ADMIN.level);
+            var currentUserAccessLevel = currentUser.getPersonSecurity().getAccess();
+            var condition = isAccessGranted(sessionUser, currentUserAccessLevel);
+            editButton.setDisable(condition
+                                  || !isAccessGranted(sessionUser, editUserProvider.getAccess()));
+            deleteButton.setDisable(condition || !isAccessGranted(sessionUser, Access.ADMIN));
           } else {
             editButton.setDisable(true);
             deleteButton.setDisable(true);

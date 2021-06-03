@@ -1,5 +1,7 @@
 package com.github.ecstasyawesome.warehouse.controller.impl.storage;
 
+import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
+
 import com.github.ecstasyawesome.warehouse.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
@@ -80,9 +82,8 @@ public class ProductStorageListController extends AbstractController {
 
   @FXML
   private void initialize() {
-    final var accessLevel = sessionUser.getPersonSecurity().getAccess().level;
-    addCompanyButton.setDisable(accessLevel > newCompanyProvider.getAccess().level);
-    addStorageButton.setDisable(accessLevel > newStorageProvider.getAccess().level);
+    addCompanyButton.setDisable(!isAccessGranted(sessionUser, newCompanyProvider.getAccess()));
+    addStorageButton.setDisable(!isAccessGranted(sessionUser, newStorageProvider.getAccess()));
 
     companyNameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
     storageIdColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
@@ -93,8 +94,9 @@ public class ProductStorageListController extends AbstractController {
         .addListener((observable, prevCategory, currentCategory) -> {
           if (currentCategory != null) {
             getStoragesFromDatabase(currentCategory);
-            deleteCompanyButton.setDisable(accessLevel > Access.ADMIN.level);
-            editCompanyButton.setDisable(accessLevel > editCompanyProvider.getAccess().level);
+            editCompanyButton
+                .setDisable(!isAccessGranted(sessionUser, editCompanyProvider.getAccess()));
+            deleteCompanyButton.setDisable(!isAccessGranted(sessionUser, Access.ADMIN));
           } else {
             editCompanyButton.setDisable(true);
             deleteCompanyButton.setDisable(true);
@@ -105,8 +107,9 @@ public class ProductStorageListController extends AbstractController {
         .selectedItemProperty()
         .addListener((observable, prevProduct, currentProduct) -> {
           if (currentProduct != null) {
-            deleteStorageButton.setDisable(accessLevel > Access.ADMIN.level);
-            editStorageButton.setDisable(accessLevel > editStorageProvider.getAccess().level);
+            editStorageButton
+                .setDisable(!isAccessGranted(sessionUser, editStorageProvider.getAccess()));
+            deleteStorageButton.setDisable(!isAccessGranted(sessionUser, Access.ADMIN));
           } else {
             editStorageButton.setDisable(true);
             deleteStorageButton.setDisable(true);
