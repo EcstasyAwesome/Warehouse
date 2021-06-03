@@ -14,6 +14,8 @@ import com.github.ecstasyawesome.warehouse.provider.impl.product.EditCategoryPro
 import com.github.ecstasyawesome.warehouse.provider.impl.product.EditProductProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.product.NewCategoryProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.product.NewProductProvider;
+import com.github.ecstasyawesome.warehouse.provider.impl.product.ShowCategoryProvider;
+import com.github.ecstasyawesome.warehouse.provider.impl.product.ShowProductProvider;
 import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
 import com.github.ecstasyawesome.warehouse.repository.Deletable;
 import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
@@ -39,6 +41,8 @@ public class ProductListController extends AbstractController {
   private final WindowManager windowManager = WindowManager.getInstance();
   private final CategoryRepository categoryRepository = CategoryRepositoryService.getInstance();
   private final ProductRepository productRepository = ProductRepositoryService.getInstance();
+  private final ShowCategoryProvider showCategoryProvider = ShowCategoryProvider.getInstance();
+  private final ShowProductProvider showProductProvider = ShowProductProvider.getInstance();
   private final NewProductProvider newProductProvider = NewProductProvider.getInstance();
   private final NewCategoryProvider newCategoryProvider = NewCategoryProvider.getInstance();
   private final EditProductProvider editProductProvider = EditProductProvider.getInstance();
@@ -228,16 +232,15 @@ public class ProductListController extends AbstractController {
 
   @FXML
   private void onKeyReleasedOnCategoryTable(KeyEvent event) {
-    if (event.getCode() == KeyCode.ENTER && !editCategoryButton.isDisable()) {
-      editCategory();
+    if (event.getCode() == KeyCode.ENTER) {
+      showCategory();
     }
   }
 
   @FXML
   private void onMouseClickOnCategoryTable(MouseEvent event) {
-    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2
-        && !editCategoryButton.isDisable()) {
-      editCategory();
+    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+      showCategory();
     }
   }
 
@@ -248,16 +251,29 @@ public class ProductListController extends AbstractController {
 
   @FXML
   private void onKeyReleasedOnProductTable(KeyEvent event) {
-    if (event.getCode() == KeyCode.ENTER && !editProductButton.isDisable()) {
-      editProduct();
+    if (event.getCode() == KeyCode.ENTER) {
+      showProduct();
     }
   }
 
   @FXML
   private void onMouseClickOnProductTable(MouseEvent event) {
-    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2
-        && !editProductButton.isDisable()) {
-      editProduct();
+    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+      showProduct();
+    }
+  }
+
+  private void showCategory() {
+    var selectionModel = categoryTable.getSelectionModel();
+    if (!selectionModel.isEmpty()) {
+      windowManager.showAndWait(showCategoryProvider, selectionModel.getSelectedItem());
+    }
+  }
+
+  private void showProduct() {
+    var selectionModel = productTable.getSelectionModel();
+    if (!selectionModel.isEmpty()) {
+      windowManager.showAndWait(showProductProvider, selectionModel.getSelectedItem());
     }
   }
 
