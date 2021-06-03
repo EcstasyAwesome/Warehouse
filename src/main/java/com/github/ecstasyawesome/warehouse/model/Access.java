@@ -1,5 +1,6 @@
 package com.github.ecstasyawesome.warehouse.model;
 
+import com.github.ecstasyawesome.warehouse.model.impl.User;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.collections.FXCollections;
@@ -20,6 +21,16 @@ public enum Access {
   Access(int level, String name) {
     this.level = level;
     this.name = name;
+  }
+
+  public static boolean isAccessGranted(final User user, Access access) {
+    if (access == GUEST) {
+      return true;
+    }
+    if (user == null) {
+      return false;
+    }
+    return user.getPersonSecurity().getAccess().level <= access.level;
   }
 
   public static ObservableList<Access> getAccesses() {
