@@ -102,7 +102,7 @@ public class TopBarController {
   private void checkModule(AbstractModuleProvider<?> provider, MenuItem menuItem) {
     var actual = windowManager.getCurrentModuleProviderClass();
     var expected = provider.getClass();
-    if (actual.equals(expected) || isAccessGranted(sessionUser, provider.getAccess())) {
+    if (actual.equals(expected) || !isAccessGranted(sessionUser, provider.getAccess())) {
       menuItem.setDisable(true);
     }
   }
