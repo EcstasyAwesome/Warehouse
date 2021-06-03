@@ -3,7 +3,9 @@ package com.github.ecstasyawesome.warehouse.module;
 import com.github.ecstasyawesome.warehouse.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.util.ResourceLoader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import org.apache.logging.log4j.Level;
@@ -20,13 +22,13 @@ public abstract class AbstractModule<T extends AbstractController> {
     var fxmlLoader = ResourceLoader.createFxmlLoader(url);
     try {
       parent = fxmlLoader.load();
-      logger.debug("The resource '{}' loaded", url);
-    } catch (IOException exception) {
+      logger.debug("The resource '{}' loaded", Path.of(url.toURI()).getFileName());
+    } catch (IOException | URISyntaxException exception) {
       throw new IllegalArgumentException(logger.throwing(Level.FATAL, exception));
     }
     try {
       controller = fxmlLoader.getController();
-      logger.debug("The controller '{}' created", controller.getClass().getName());
+      logger.debug("The controller '{}' created", controller.getClass().getSimpleName());
     } catch (ClassCastException exception) {
       throw logger.throwing(Level.FATAL, exception);
     }
