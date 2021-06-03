@@ -1,7 +1,10 @@
 package com.github.ecstasyawesome.warehouse.controller.impl.user;
 
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.LOGIN;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.NO_ADJUST;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.PASSWORD;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.RED_ADJUST;
+import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractController;
@@ -48,22 +51,24 @@ public class AuthorizationController extends AbstractController {
 
   @FXML
   private void login() {
-    var login = loginField.getText();
-    try {
-      var user = userRepository.select(login);
-      loginField.setEffect(NO_ADJUST);
-      if (passwordField.getText().equals(user.getPersonSecurity().getPassword())) {
-        passwordField.setEffect(NO_ADJUST);
-        SessionManager.store("currentUser", user);
-        logger.info("Log in '{}'", login);
-        windowManager.show(HomeProvider.getInstance());
-      } else {
-        passwordField.setEffect(RED_ADJUST);
-        logger.info("Try to log in with login '{}' and incorrect password", login);
+    if (isFieldValid(loginField, LOGIN, false) & isFieldValid(passwordField, PASSWORD, false)) {
+      var login = loginField.getText();
+      try {
+        var user = userRepository.select(login);
+        loginField.setEffect(NO_ADJUST);
+        if (passwordField.getText().equals(user.getPersonSecurity().getPassword())) {
+          passwordField.setEffect(NO_ADJUST);
+          SessionManager.store("currentUser", user);
+          logger.info("Log in '{}'", login);
+          windowManager.show(HomeProvider.getInstance());
+        } else {
+          passwordField.setEffect(RED_ADJUST);
+          logger.info("Try to log in with login '{}' and incorrect password", login);
+        }
+      } catch (NullPointerException exception) {
+        loginField.setEffect(RED_ADJUST);
+        logger.info("Try to log in with incorrect login '{}'", login);
       }
-    } catch (NullPointerException exception) {
-      loginField.setEffect(RED_ADJUST);
-      logger.info("Try to log in with incorrect login '{}'", login);
     }
   }
 }
