@@ -151,7 +151,7 @@ public class ProductListController extends AbstractController {
       windowManager.showAndWait(editCategoryProvider, category);
       if (!category.equals(categoryCopy)) {
         for (var product : productTable.getItems()) {
-          product.setCategory(category);
+          product.getCategory().recover(category);
         }
         productTable.refresh();
       }
