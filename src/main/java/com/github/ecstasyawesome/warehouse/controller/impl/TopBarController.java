@@ -1,6 +1,9 @@
 package com.github.ecstasyawesome.warehouse.controller.impl;
 
+import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
+
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
+import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.provider.AbstractModuleProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.HomeProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.SettingsProvider;
@@ -24,6 +27,7 @@ public class TopBarController {
   private final ProductListProvider productListProvider = ProductListProvider.getInstance();
   private final ProductStorageListProvider productStorageListProvider =
       ProductStorageListProvider.getInstance();
+  private final User sessionUser = (User) SessionManager.get("currentUser").orElseThrow();
 
   @FXML
   private MenuItem homeItem;
@@ -95,10 +99,10 @@ public class TopBarController {
     windowManager.show(productStorageListProvider);
   }
 
-  private void checkModule(AbstractModuleProvider<?> expected, MenuItem menuItem) {
-    var actual = windowManager.getCurrentModuleProvider();
-    if (actual.getClass().equals(expected.getClass())
-        || !windowManager.isAccessGranted(expected.getAccess())) {
+  private void checkModule(AbstractModuleProvider<?> provider, MenuItem menuItem) {
+    var actual = windowManager.getCurrentModuleProviderClass();
+    var expected = provider.getClass();
+    if (actual.equals(expected) || isAccessGranted(sessionUser, provider.getAccess())) {
       menuItem.setDisable(true);
     }
   }
