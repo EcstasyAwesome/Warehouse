@@ -13,6 +13,8 @@ import com.github.ecstasyawesome.warehouse.provider.impl.storage.EditCompanyProv
 import com.github.ecstasyawesome.warehouse.provider.impl.storage.EditProductStorageProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.storage.NewCompanyProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.storage.NewProductStorageProvider;
+import com.github.ecstasyawesome.warehouse.provider.impl.storage.ShowCompanyProvider;
+import com.github.ecstasyawesome.warehouse.provider.impl.storage.ShowProductStorageProvider;
 import com.github.ecstasyawesome.warehouse.repository.CompanyRepository;
 import com.github.ecstasyawesome.warehouse.repository.Deletable;
 import com.github.ecstasyawesome.warehouse.repository.ProductStorageRepository;
@@ -38,6 +40,9 @@ public class ProductStorageListController extends AbstractController {
   private final CompanyRepository companyRepository = CompanyRepositoryService.getInstance();
   private final ProductStorageRepository productStorageRepository =
       ProductStorageRepositoryService.getInstance();
+  private final ShowCompanyProvider showCompanyProvider = ShowCompanyProvider.getInstance();
+  private final ShowProductStorageProvider showProductStorageProvider =
+      ShowProductStorageProvider.getInstance();
   private final NewCompanyProvider newCompanyProvider = NewCompanyProvider.getInstance();
   private final NewProductStorageProvider newStorageProvider =
       NewProductStorageProvider.getInstance();
@@ -170,33 +175,45 @@ public class ProductStorageListController extends AbstractController {
     }
   }
 
+  private void showCompany() {
+    var model = companyTable.getSelectionModel();
+    if (!model.isEmpty()) {
+      windowManager.showAndWait(showCompanyProvider, model.getSelectedItem());
+    }
+  }
+
+  private void showStorage() {
+    var model = storageTable.getSelectionModel();
+    if (!model.isEmpty()) {
+      windowManager.showAndWait(showProductStorageProvider, model.getSelectedItem());
+    }
+  }
+
   @FXML
   private void onKeyReleasedOnCompanyTable(KeyEvent event) {
-    if (event.getCode() == KeyCode.ENTER && !editCompanyButton.isDisable()) {
-      editCompany();
+    if (event.getCode() == KeyCode.ENTER) {
+      showCompany();
     }
   }
 
   @FXML
   private void onKeyReleasedOnStorageTable(KeyEvent event) {
-    if (event.getCode() == KeyCode.ENTER && !editStorageButton.isDisable()) {
-      editStorage();
+    if (event.getCode() == KeyCode.ENTER) {
+      showStorage();
     }
   }
 
   @FXML
   private void onMouseClickOnCompanyTable(MouseEvent event) {
-    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2
-        && !editCompanyButton.isDisable()) {
-      editCompany();
+    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+      showCompany();
     }
   }
 
   @FXML
   private void onMouseClickOnStorageTable(MouseEvent event) {
-    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2
-        && !editStorageButton.isDisable()) {
-      editStorage();
+    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+      showStorage();
     }
   }
 
