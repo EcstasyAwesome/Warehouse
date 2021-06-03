@@ -57,7 +57,7 @@ public class AdministratorController extends AbstractFeedbackController<PersonSe
 
   @FXML
   private void initialize() {
-    setFieldText(loginField, "login");
+    setFieldText(loginField, "admin");
   }
 
   @FXML
