@@ -24,6 +24,7 @@ public final class SessionManager {
 
   public static Optional<Object> get(final String key) {
     var obj = STORAGE.get(key);
+    LOGGER.debug("Try to get a value with key '{}' [existing = {}]", key, obj != null);
     return Optional.ofNullable(obj);
   }
 
