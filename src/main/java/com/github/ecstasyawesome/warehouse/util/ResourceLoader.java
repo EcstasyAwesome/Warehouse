@@ -43,7 +43,7 @@ public final class ResourceLoader {
     var language = ApplicationSettings.getInstance().getLanguage();
     try {
       var bundle = ResourceBundle.getBundle("language/locale", language.locale);
-      LOGGER.debug("Resource bundle loaded. Language is {}", language);
+      LOGGER.debug("Resource bundle loaded. Language is '{}'", language);
       return bundle;
     } catch (MissingResourceException exception) {
       throw LOGGER.throwing(Level.FATAL, exception);
