@@ -146,6 +146,7 @@ public class ProductListController extends AbstractController {
         for (var product : productTable.getItems()) {
           product.setCategory(category);
         }
+        productTable.refresh();
       }
     }
   }
