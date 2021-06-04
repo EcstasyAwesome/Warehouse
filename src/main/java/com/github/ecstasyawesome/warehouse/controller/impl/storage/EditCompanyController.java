@@ -71,13 +71,14 @@ public class EditCompanyController extends AbstractConfiguredController<Company>
   @FXML
   private void save(ActionEvent event) {
     if (isFieldValid(nameField, company.getName(), NAME, companyRepository)
-        & isFieldValid(identifierCodeField, NUMBERS, false)
+        & isFieldValid(identifierCodeField, NUMBERS, false) & isFieldValid(personTypeChoiceBox)
         & isFieldValid(streetField, NAME, true) & isFieldValid(regionField, NAME, false)
         & isFieldValid(townField, NAME, false) & isFieldValid(numberField, WILDCARD, true)
         & isFieldValid(phoneField, PHONE, false) & isFieldValid(extraPhoneField, PHONE, true)
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(siteField, URL, true)) {
       var companyCopy = new Company(company);
       company.setName(getFieldText(nameField));
+      company.setPersonType(personTypeChoiceBox.getValue());
       company.setIdentifierCode(getFieldText(identifierCodeField));
       company.getBusinessContact().setPhone(getFieldText(phoneField));
       company.getBusinessContact().setExtraPhone(getFieldText(extraPhoneField));
