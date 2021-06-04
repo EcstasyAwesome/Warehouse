@@ -175,20 +175,6 @@ public class ProductStorageListController extends AbstractController {
     }
   }
 
-  private void showCompany() {
-    var model = companyTable.getSelectionModel();
-    if (!model.isEmpty()) {
-      windowManager.showAndWait(showCompanyProvider, model.getSelectedItem());
-    }
-  }
-
-  private void showStorage() {
-    var model = storageTable.getSelectionModel();
-    if (!model.isEmpty()) {
-      windowManager.showAndWait(showProductStorageProvider, model.getSelectedItem());
-    }
-  }
-
   @FXML
   private void onKeyReleasedOnCompanyTable(KeyEvent event) {
     if (event.getCode() == KeyCode.ENTER) {
@@ -230,6 +216,20 @@ public class ProductStorageListController extends AbstractController {
   @FXML
   private void refresh() {
     getCompaniesFromDatabase();
+  }
+
+  private void showCompany() {
+    var model = companyTable.getSelectionModel();
+    if (!model.isEmpty()) {
+      windowManager.showAndWait(showCompanyProvider, model.getSelectedItem());
+    }
+  }
+
+  private void showStorage() {
+    var model = storageTable.getSelectionModel();
+    if (!model.isEmpty()) {
+      windowManager.showAndWait(showProductStorageProvider, model.getSelectedItem());
+    }
   }
 
   private <T extends AbstractRecord> void deleteRecord(String name, TableView<T> table,
