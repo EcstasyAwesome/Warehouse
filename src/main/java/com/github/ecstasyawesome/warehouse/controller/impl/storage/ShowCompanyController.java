@@ -3,10 +3,8 @@ package com.github.ecstasyawesome.warehouse.controller.impl.storage;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractConfiguredController;
-import com.github.ecstasyawesome.warehouse.model.PersonType;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
 public class ShowCompanyController extends AbstractConfiguredController<Company> {
@@ -15,7 +13,7 @@ public class ShowCompanyController extends AbstractConfiguredController<Company>
   private TextField nameField;
 
   @FXML
-  private ChoiceBox<PersonType> personTypeChoiceBox;
+  private TextField personTypeField;
 
   @FXML
   private TextField identifierCodeField;
@@ -46,8 +44,8 @@ public class ShowCompanyController extends AbstractConfiguredController<Company>
 
   @Override
   public void apply(Company company) {
-    personTypeChoiceBox.setValue(company.getPersonType());
     setFieldText(nameField, company.getName());
+    setFieldText(personTypeField, company.getPersonType().toString());
     setFieldText(identifierCodeField, company.getIdentifierCode());
     setFieldText(townField, company.getAddress().getTown());
     setFieldText(regionField, company.getAddress().getRegion());

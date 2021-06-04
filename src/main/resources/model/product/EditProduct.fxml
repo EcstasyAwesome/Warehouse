@@ -13,7 +13,7 @@
 
 <ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.ecstasyawesome.warehouse.controller.impl.product.EditProductController">
    <content>
-      <VBox alignment="CENTER" prefHeight="140.0" prefWidth="350.0" spacing="10.0">
+      <VBox alignment="CENTER" spacing="10.0">
          <children>
             <GridPane alignment="CENTER" VBox.vgrow="NEVER">
                <columnConstraints>
@@ -48,6 +48,9 @@
             </GridPane>
             <Button mnemonicParsing="false" onAction="#save" text="Save" textAlignment="CENTER" />
          </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
       </VBox>
    </content>
 </ScrollPane>
