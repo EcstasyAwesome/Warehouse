@@ -33,6 +33,27 @@ public class Invoice extends AbstractReceiveOperation {
     return productProvider;
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+
+    var that = (Invoice) obj;
+    return Objects.equals(productProvider.get(), that.productProvider.get());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), productProvider.get());
+  }
+
   public static class Builder {
 
     private long id = -1L;
