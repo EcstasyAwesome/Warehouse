@@ -30,12 +30,12 @@ public class ProductProviderRepositoryService extends ProductProviderRepository 
   public boolean isFieldUnique(final String name) {
     checkStringParameter(name);
     final var query = """
-        "SELECT EXISTS
+        SELECT EXISTS
         (
             SELECT 1
             FROM PRODUCT_PROVIDERS
             WHERE PROVIDER_NAME=?
-        )"
+        )
         """;
     try {
       var result = !check(query, name);
