@@ -31,7 +31,7 @@ public class NewProductStorageController extends AbstractFeedbackController<Prod
   private final ProductStorageRepository productStorageRepository =
       ProductStorageRepositoryService.getInstance();
   private final CompanyRepository companyRepository = CompanyRepositoryService.getInstance();
-  private final Logger logger = LogManager.getLogger(NewCompanyController.class);
+  private final Logger logger = LogManager.getLogger(NewProductStorageController.class);
   private ProductStorage result;
 
   @FXML
