@@ -8,6 +8,7 @@ import com.github.ecstasyawesome.warehouse.provider.AbstractModuleProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.HomeProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.SettingsProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.product.ProductListProvider;
+import com.github.ecstasyawesome.warehouse.provider.impl.provider.ProductProviderListProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.storage.ProductStorageListProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.user.ProfileProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.user.UserListProvider;
@@ -27,6 +28,8 @@ public class TopBarController {
   private final ProductListProvider productListProvider = ProductListProvider.getInstance();
   private final ProductStorageListProvider productStorageListProvider =
       ProductStorageListProvider.getInstance();
+  private final ProductProviderListProvider productProviderListProvider =
+      ProductProviderListProvider.getInstance();
   private final User sessionUser = (User) SessionManager.get("currentUser").orElseThrow();
 
   @FXML
@@ -42,11 +45,15 @@ public class TopBarController {
   private MenuItem productStorageListItem;
 
   @FXML
+  private MenuItem productProviderListItem;
+
+  @FXML
   private void initialize() {
     checkModule(homeProvider, homeItem);
     checkModule(userListProvider, userListItem);
     checkModule(productListProvider, productListItem);
     checkModule(productStorageListProvider, productStorageListItem);
+    checkModule(productProviderListProvider, productProviderListItem);
   }
 
   @FXML
@@ -97,6 +104,11 @@ public class TopBarController {
   @FXML
   private void showProductStorageList() {
     windowManager.show(productStorageListProvider);
+  }
+
+  @FXML
+  private void showProductProviderList() {
+    windowManager.show(productProviderListProvider);
   }
 
   private void checkModule(AbstractModuleProvider<?> provider, MenuItem menuItem) {

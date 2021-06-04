@@ -26,6 +26,7 @@
           <MenuItem fx:id="homeItem" mnemonicParsing="false" onAction="#showHome" text="Home" />
             <MenuItem fx:id="userListItem" mnemonicParsing="false" onAction="#showUserList" text="User  list" />
             <MenuItem fx:id="productListItem" mnemonicParsing="false" onAction="#showProductList" text="Product list" />
+            <MenuItem fx:id="productProviderListItem" mnemonicParsing="false" onAction="#showProductProviderList" text="Product provider list" />
             <MenuItem fx:id="productStorageListItem" mnemonicParsing="false" onAction="#showProductStorageList" text="Product storage list" />
         </items>
       </Menu>
