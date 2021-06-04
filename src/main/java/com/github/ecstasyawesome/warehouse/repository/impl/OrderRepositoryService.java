@@ -75,8 +75,8 @@ public class OrderRepositoryService extends OrderRepository {
   public void create(final Order instance, final List<OrderItem> items) {
     Objects.requireNonNull(instance);
     final var orderQuery = """
-        INSERT INTO ORDERS (PROVIDER_ID, STORAGE_ID, USER_ID, ORDER_TIME)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO ORDERS (PROVIDER_ID, STORAGE_ID, USER_ID, ORDER_TIME, ORDER_COMMENT)
+        VALUES (?, ?, ?, ?, ?)
         """;
     final var orderItemQuery = """
         INSERT INTO ORDERS_ITEMS (ORDER_ID, PRODUCT_ID, ITEM_AMOUNT)
@@ -89,7 +89,8 @@ public class OrderRepositoryService extends OrderRepository {
             instance.getProductProvider().getId(),
             instance.getProductStorage().getId(),
             instance.getUser().getId(),
-            Timestamp.valueOf(instance.getTime()));
+            Timestamp.valueOf(instance.getTime()),
+            instance.getComment());
         final var ids = new ArrayList<Long>();
         for (var item : items) {
           var itemId = insertRecord(connection, orderItemQuery, orderId, item.getProduct().getId(),
@@ -118,8 +119,9 @@ public class OrderRepositoryService extends OrderRepository {
         .setId(resultSet.getLong("ORDERS.ORDER_ID"))
         .setProductProvider(productProviderRepositoryService.transformToObj(resultSet))
         .setProductStorage(productStorageRepositoryService.transformToObj(resultSet))
-        .setTime(resultSet.getTimestamp("ORDER.TIME").toLocalDateTime())
+        .setTime(resultSet.getTimestamp("ORDERS.ORDER_TIME").toLocalDateTime())
         .setUser(userRepositoryService.transformToObj(resultSet))
+        .setComment(resultSet.getString("ORDERS.ORDER_COMMENT"))
         .build();
   }
 }

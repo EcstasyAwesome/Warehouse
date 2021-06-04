@@ -202,11 +202,12 @@ public final class DatabaseManager {
   private static final String ORDERS_TABLE = """
       CREATE TABLE IF NOT EXISTS ORDERS
       (
-          ORDER_ID    BIGINT      NOT NULL AUTO_INCREMENT,
-          PROVIDER_ID BIGINT      NOT NULL,
-          STORAGE_ID  BIGINT      NOT NULL,
-          USER_ID     BIGINT      NOT NULL,
-          ORDER_TIME  TIMESTAMP   NOT NULL,
+          ORDER_ID      BIGINT      NOT NULL AUTO_INCREMENT,
+          PROVIDER_ID   BIGINT      NOT NULL,
+          STORAGE_ID    BIGINT      NOT NULL,
+          USER_ID       BIGINT      NOT NULL,
+          ORDER_TIME    TIMESTAMP   NOT NULL,
+          ORDER_COMMENT VARCHAR(150),
           CONSTRAINT PK_ORDER_ORDER_ID PRIMARY KEY (ORDER_ID),
           CONSTRAINT FK_ORDER_PROVIDER_ID
               FOREIGN KEY (PROVIDER_ID)
