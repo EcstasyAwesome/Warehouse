@@ -9,8 +9,10 @@ import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
 import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
 import com.github.ecstasyawesome.warehouse.repository.impl.ProductRepositoryService;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,14 +24,14 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ProductPickerController extends AbstractFeedbackController<HashSet<Product>> {
+public class ProductPickerController extends AbstractFeedbackController<List<Product>> {
 
   private final WindowManager windowManager = WindowManager.getInstance();
   private final CategoryRepository categoryRepository = CategoryRepositoryService.getInstance();
   private final ProductRepository productRepository = ProductRepositoryService.getInstance();
   private final Logger logger = LogManager.getLogger(ProductPickerController.class);
   private final HashSet<Product> pickedProducts = new LinkedHashSet<>();
-  private HashSet<Product> result;
+  private final List<Product> result = new ArrayList<>();
 
   @FXML
   private TextField searchField;
@@ -107,7 +109,7 @@ public class ProductPickerController extends AbstractFeedbackController<HashSet<
 
   @FXML
   private void pick(ActionEvent event) {
-    result = pickedProducts;
+    result.addAll(pickedProducts);
     logger.debug("Total picked {} product(s)", pickedProducts.size());
     closeCurrentStage(event);
   }
@@ -123,7 +125,7 @@ public class ProductPickerController extends AbstractFeedbackController<HashSet<
   }
 
   @Override
-  public HashSet<Product> get() {
+  public List<Product> get() {
     return result;
   }
 
