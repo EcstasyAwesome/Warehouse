@@ -19,7 +19,7 @@
   </columnConstraints>
   <rowConstraints>
     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="SOMETIMES" />
+    <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
   </rowConstraints>
   <fx:include source="../TopBar.fxml" GridPane.rowIndex="0" />
    <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.rowIndex="1">
@@ -40,10 +40,12 @@
                <ToolBar prefHeight="40.0" prefWidth="200.0">
                  <items>
                      <Button fx:id="addCategoryButton" mnemonicParsing="false" onAction="#addCategory" text="Add category" />
+                     <Button fx:id="showCategoryButton" disable="true" mnemonicParsing="false" onAction="#showCategory" text="Show category" />
                      <Button fx:id="editCategoryButton" disable="true" layoutX="10.0" layoutY="13.0" mnemonicParsing="false" onAction="#editCategory" text="Edit category" />
                      <Button fx:id="deleteCategoryButton" disable="true" mnemonicParsing="false" onAction="#deleteCategory" text="Delete category" />
                      <Separator orientation="VERTICAL" />
                      <Button fx:id="addProductButton" mnemonicParsing="false" onAction="#addProduct" text="Add product" />
+                     <Button fx:id="showProductButton" disable="true" mnemonicParsing="false" onAction="#showProduct" text="Show product" />
                      <Button fx:id="editProductButton" disable="true" layoutX="393.0" layoutY="13.0" mnemonicParsing="false" onAction="#editProduct" text="Edit product" />
                      <Button fx:id="deleteProductButton" disable="true" mnemonicParsing="false" onAction="#deleteProduct" text="Delete product" />
                      <Separator orientation="VERTICAL" />
@@ -60,7 +62,7 @@
                  <items>
                      <ScrollPane fitToHeight="true" fitToWidth="true" minViewportWidth="150.0" prefViewportWidth="150.0" SplitPane.resizableWithParent="false">
                         <content>
-                           <TableView fx:id="categoryTable" editable="true" onKeyReleased="#onKeyReleasedOnCategoryTable" onMouseClicked="#onMouseClickOnCategoryTable" onSort="#onSortCategoryTable" style="-fx-padding: 0;">
+                           <TableView fx:id="categoryTable" editable="true" onKeyReleased="#doOnKeyReleasedOnCategoryTable" onMouseClicked="#doOnMouseClickOnCategoryTable" onSort="#doOnSortCategoryTable" style="-fx-padding: 0;">
                               <columns>
                                  <TableColumn fx:id="categoryNameColumn" minWidth="150.0" prefWidth="150.0" text="category" />
                               </columns>
@@ -73,7 +75,7 @@
                            </TableView>
                         </content>
                      </ScrollPane>
-                     <TableView fx:id="productTable" editable="true" onKeyReleased="#onKeyReleasedOnProductTable" onMouseClicked="#onMouseClickOnProductTable" onSort="#onSortProductTable">
+                     <TableView fx:id="productTable" editable="true" onKeyReleased="#doOnKeyReleasedOnProductTable" onMouseClicked="#doOnMouseClickOnProductTable" onSort="#doOnSortProductTable">
                         <columns>
                            <TableColumn fx:id="productIdColumn" maxWidth="50.0" minWidth="30.0" prefWidth="30.0" text="id" />
                            <TableColumn fx:id="productNameColumn" minWidth="200.0" prefWidth="200.0" text="name" />

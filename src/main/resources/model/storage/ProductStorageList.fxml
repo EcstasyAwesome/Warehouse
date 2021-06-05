@@ -18,7 +18,7 @@
   </columnConstraints>
   <rowConstraints>
     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="SOMETIMES" />
+    <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
   </rowConstraints>
   <fx:include source="../TopBar.fxml" GridPane.rowIndex="0" />
    <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.rowIndex="1">
@@ -38,10 +38,12 @@
                <ToolBar prefHeight="40.0" prefWidth="200.0">
                  <items>
                      <Button fx:id="addCompanyButton" mnemonicParsing="false" onAction="#addCompany" text="Add company" />
+                     <Button fx:id="showCompanyButton" disable="true" mnemonicParsing="false" onAction="#showCompany" text="Show company" />
                      <Button fx:id="editCompanyButton" disable="true" layoutX="10.0" layoutY="13.0" mnemonicParsing="false" onAction="#editCompany" text="Edit company" />
                      <Button fx:id="deleteCompanyButton" disable="true" mnemonicParsing="false" onAction="#deleteCompany" text="Delete company" />
                      <Separator orientation="VERTICAL" />
                      <Button fx:id="addStorageButton" mnemonicParsing="false" onAction="#addStorage" text="Add storage" />
+                     <Button fx:id="showStorageButton" disable="true" mnemonicParsing="false" onAction="#showStorage" text="Show storage" />
                      <Button fx:id="editStorageButton" disable="true" layoutX="393.0" layoutY="13.0" mnemonicParsing="false" onAction="#editStorage" text="Edit storage" />
                      <Button fx:id="deleteStorageButton" disable="true" mnemonicParsing="false" onAction="#deleteStorage" text="Delete storage" />
                      <Separator orientation="VERTICAL" />
@@ -52,7 +54,7 @@
                  <items>
                      <ScrollPane fitToHeight="true" fitToWidth="true" minViewportWidth="150.0" prefViewportWidth="150.0" SplitPane.resizableWithParent="false">
                         <content>
-                           <TableView fx:id="companyTable" editable="true" onKeyReleased="#onKeyReleasedOnCompanyTable" onMouseClicked="#onMouseClickOnCompanyTable" onSort="#onSortCompanyTable" style="-fx-padding: 0;">
+                           <TableView fx:id="companyTable" editable="true" onKeyReleased="#doOnKeyReleasedOnCompanyTable" onMouseClicked="#doOnMouseClickOnCompanyTable" onSort="#doOnSortCompanyTable" style="-fx-padding: 0;">
                               <columns>
                                  <TableColumn fx:id="companyNameColumn" minWidth="150.0" prefWidth="150.0" text="company" />
                               </columns>
@@ -68,7 +70,7 @@
                            <Insets />
                         </opaqueInsets>
                      </ScrollPane>
-                     <TableView fx:id="storageTable" editable="true" onKeyReleased="#onKeyReleasedOnStorageTable" onMouseClicked="#onMouseClickOnStorageTable" onSort="#onSortStorageTable">
+                     <TableView fx:id="storageTable" editable="true" onKeyReleased="#doOnKeyReleasedOnStorageTable" onMouseClicked="#doOnMouseClickOnStorageTable" onSort="#doOnSortStorageTable">
                         <columns>
                            <TableColumn fx:id="storageIdColumn" maxWidth="50.0" minWidth="30.0" prefWidth="30.0" text="id" />
                            <TableColumn fx:id="storageNameColumn" minWidth="200.0" prefWidth="200.0" text="name" />

@@ -17,7 +17,7 @@
   </columnConstraints>
   <rowConstraints>
     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="SOMETIMES" />
+    <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
   </rowConstraints>
   <fx:include source="../TopBar.fxml" GridPane.rowIndex="0" />
    <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.rowIndex="1">
@@ -37,13 +37,14 @@
                <ToolBar prefHeight="40.0" prefWidth="200.0">
                  <items>
                      <Button fx:id="addButton" mnemonicParsing="false" onAction="#add" text="Add" />
+                     <Button fx:id="showButton" disable="true" mnemonicParsing="false" onAction="#show" text="Show" />
                      <Button fx:id="editButton" disable="true" layoutX="52.0" layoutY="13.0" mnemonicParsing="false" onAction="#edit" text="Edit" />
                      <Button fx:id="deleteButton" disable="true" mnemonicParsing="false" onAction="#delete" text="Delete" />
                      <Separator orientation="VERTICAL" />
                      <Button mnemonicParsing="false" onAction="#refresh" text="Refresh" />
                  </items>
                </ToolBar>
-               <TableView fx:id="userTable" editable="true" onKeyReleased="#onKeyReleased" onMouseClicked="#onMouseClick" onSort="#onSortTable" GridPane.rowIndex="1">
+               <TableView fx:id="userTable" editable="true" onKeyReleased="#doOnKeyReleased" onMouseClicked="#doOnMouseClick" onSort="#doOnSortTable" GridPane.rowIndex="1">
                   <columns>
                      <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="30.0" prefWidth="30.0" text="id" />
                      <TableColumn fx:id="surnameColumn" minWidth="100.0" prefWidth="100.0" text="surname" />

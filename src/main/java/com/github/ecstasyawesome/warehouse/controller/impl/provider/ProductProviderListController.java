@@ -46,6 +46,9 @@ public class ProductProviderListController extends AbstractController {
   private Button addButton;
 
   @FXML
+  private Button showButton;
+
+  @FXML
   private Button editButton;
 
   @FXML
@@ -70,14 +73,12 @@ public class ProductProviderListController extends AbstractController {
     providerTable.getSelectionModel()
         .selectedItemProperty()
         .addListener((observable, prevProvider, currentProvider) -> {
-          if (currentProvider != null) {
-            editButton
-                .setDisable(!isAccessGranted(sessionUser, editProductProvider.getAccess()));
-            deleteButton.setDisable(!isAccessGranted(sessionUser, Access.ADMIN));
-          } else {
-            editButton.setDisable(true);
-            deleteButton.setDisable(true);
-          }
+          var currentNull = currentProvider == null;
+          showButton.setDisable(currentNull
+                                || !isAccessGranted(sessionUser, showProductProvider.getAccess()));
+          editButton.setDisable(currentNull
+                                || !isAccessGranted(sessionUser, editProductProvider.getAccess()));
+          deleteButton.setDisable(currentNull || !isAccessGranted(sessionUser, Access.ADMIN));
         });
 
     getProvidersFromDatabase();
@@ -95,6 +96,14 @@ public class ProductProviderListController extends AbstractController {
   }
 
   @FXML
+  private void show() {
+    var model = providerTable.getSelectionModel();
+    if (!model.isEmpty()) {
+      windowManager.showAndWait(showProductProvider, model.getSelectedItem());
+    }
+  }
+
+  @FXML
   private void edit() {
     var model = providerTable.getSelectionModel();
     if (!model.isEmpty()) {
@@ -103,37 +112,28 @@ public class ProductProviderListController extends AbstractController {
   }
 
   @FXML
-  private void onKeyReleasedOnTable(KeyEvent event) {
-    if (event.getCode() == KeyCode.ENTER) {
+  private void doOnKeyReleasedOnTable(KeyEvent event) {
+    if (event.getCode() == KeyCode.ENTER && !showButton.isDisable()) {
       show();
     }
   }
 
   @FXML
-  private void onMouseClickTable(MouseEvent event) {
-    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+  private void doOnMouseClickTable(MouseEvent event) {
+    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2
+        && !showButton.isDisable()) {
       show();
     }
   }
 
   @FXML
-  private void onSortTable() {
-    var selected = providerTable.getSelectionModel();
-    if (!selected.isEmpty()) {
-      selected.clearSelection();
-    }
+  private void doOnSortTable() {
+    providerTable.getSelectionModel().clearSelection();
   }
 
   @FXML
   private void refresh() {
     getProvidersFromDatabase();
-  }
-
-  private void show() {
-    var model = providerTable.getSelectionModel();
-    if (!model.isEmpty()) {
-      windowManager.showAndWait(showProductProvider, model.getSelectedItem());
-    }
   }
 
   private <T extends AbstractRecord> void deleteRecord(String name, TableView<T> table,

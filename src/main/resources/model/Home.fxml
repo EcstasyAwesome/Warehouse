@@ -12,7 +12,7 @@
   </columnConstraints>
   <rowConstraints>
     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="SOMETIMES" />
+    <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
   </rowConstraints>
   <fx:include source="TopBar.fxml" GridPane.rowIndex="0" />
    <Text fill="#808080" strokeType="OUTSIDE" strokeWidth="0.0" text="WAREHOUSE" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">

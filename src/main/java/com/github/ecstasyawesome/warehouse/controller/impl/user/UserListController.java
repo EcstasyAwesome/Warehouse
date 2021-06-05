@@ -4,10 +4,13 @@ import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
+import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.provider.impl.user.EditUserProvider;
 import com.github.ecstasyawesome.warehouse.provider.impl.user.NewUserProvider;
+import com.github.ecstasyawesome.warehouse.provider.impl.user.ShowUserProvider;
+import com.github.ecstasyawesome.warehouse.repository.Deletable;
 import com.github.ecstasyawesome.warehouse.repository.UserRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
@@ -28,6 +31,7 @@ public class UserListController extends AbstractController {
 
   private final UserRepository userRepository = UserRepositoryService.getInstance();
   private final WindowManager windowManager = WindowManager.getInstance();
+  private final ShowUserProvider showUserProvider = ShowUserProvider.getInstance();
   private final NewUserProvider newUserProvider = NewUserProvider.getInstance();
   private final EditUserProvider editUserProvider = EditUserProvider.getInstance();
   private final Logger logger = LogManager.getLogger(UserListController.class);
@@ -35,6 +39,9 @@ public class UserListController extends AbstractController {
 
   @FXML
   private Button addButton;
+
+  @FXML
+  private Button showButton;
 
   @FXML
   private Button editButton;
@@ -85,10 +92,12 @@ public class UserListController extends AbstractController {
           if (currentUser != null) {
             var currentUserAccessLevel = currentUser.getPersonSecurity().getAccess();
             var condition = isAccessGranted(sessionUser, currentUserAccessLevel);
+            showButton.setDisable(!isAccessGranted(sessionUser, showUserProvider.getAccess()));
             editButton.setDisable(condition
                                   || !isAccessGranted(sessionUser, editUserProvider.getAccess()));
             deleteButton.setDisable(condition || !isAccessGranted(sessionUser, Access.ADMIN));
           } else {
+            showButton.setDisable(true);
             editButton.setDisable(true);
             deleteButton.setDisable(true);
           }
@@ -98,25 +107,22 @@ public class UserListController extends AbstractController {
   }
 
   @FXML
-  private void onSortTable() {
-    var selected = userTable.getSelectionModel();
-    if (!selected.isEmpty()) {
-      selected.clearSelection();
+  private void doOnSortTable() {
+    userTable.getSelectionModel().clearSelection();
+  }
+
+  @FXML
+  private void doOnKeyReleased(KeyEvent event) {
+    if (event.getCode() == KeyCode.ENTER && !showButton.isDisable()) {
+      show();
     }
   }
 
   @FXML
-  private void onKeyReleased(KeyEvent event) {
-    if (event.getCode() == KeyCode.ENTER && !editButton.isDisable()) {
-      edit();
-    }
-  }
-
-  @FXML
-  private void onMouseClick(MouseEvent event) {
+  private void doOnMouseClick(MouseEvent event) {
     if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2
-        && !editButton.isDisable()) {
-      edit();
+        && !showButton.isDisable()) {
+      show();
     }
   }
 
@@ -124,6 +130,14 @@ public class UserListController extends AbstractController {
   private void add() {
     var result = windowManager.showAndGet(newUserProvider);
     result.ifPresent(userTable.getItems()::add);
+  }
+
+  @FXML
+  private void show() {
+    var model = userTable.getSelectionModel();
+    if (!model.isEmpty()) {
+      windowManager.showAndWait(showUserProvider, model.getSelectedItem());
+    }
   }
 
   @FXML
@@ -136,26 +150,31 @@ public class UserListController extends AbstractController {
 
   @FXML
   private void delete() {
-    var model = userTable.getSelectionModel();
-    if (!model.isEmpty()) {
-      var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
-          "All related data will be removed too, are you sure?"); // TODO i18n
-      if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
-        var user = model.getSelectedItem();
-        try {
-          userRepository.delete(user);
-          userTable.getItems().remove(user);
-          logger.info("Deleted a user with id={}", user.getId());
-        } catch (NullPointerException exception) {
-          windowManager.showDialog(exception);
-        }
-      }
-    }
+    deleteRecord("user", userTable, userRepository);
   }
 
   @FXML
   private void refresh() {
     getUsersFromDatabase();
+  }
+
+  private <T extends AbstractRecord> void deleteRecord(String name, TableView<T> table,
+      Deletable<T> deletable) {
+    var selectionModel = table.getSelectionModel();
+    if (!selectionModel.isEmpty()) {
+      var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
+          "All related data will be removed too, are you sure?"); // TODO i18n
+      if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
+        var record = selectionModel.getSelectedItem();
+        try {
+          deletable.delete(record);
+          table.getItems().remove(record);
+          logger.info("Deleted a {} with id={}", name, record.getId());
+        } catch (NullPointerException exception) {
+          windowManager.showDialog(exception);
+        }
+      }
+    }
   }
 
   private void getUsersFromDatabase() {

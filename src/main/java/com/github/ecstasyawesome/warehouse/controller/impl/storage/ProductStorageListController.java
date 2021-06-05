@@ -56,6 +56,9 @@ public class ProductStorageListController extends AbstractController {
   private Button addCompanyButton;
 
   @FXML
+  private Button showCompanyButton;
+
+  @FXML
   private Button editCompanyButton;
 
   @FXML
@@ -63,6 +66,9 @@ public class ProductStorageListController extends AbstractController {
 
   @FXML
   private Button addStorageButton;
+
+  @FXML
+  private Button showStorageButton;
 
   @FXML
   private Button editStorageButton;
@@ -96,29 +102,33 @@ public class ProductStorageListController extends AbstractController {
 
     companyTable.getSelectionModel()
         .selectedItemProperty()
-        .addListener((observable, prevCategory, currentCategory) -> {
-          if (currentCategory != null) {
-            getStoragesFromDatabase(currentCategory);
-            editCompanyButton
-                .setDisable(!isAccessGranted(sessionUser, editCompanyProvider.getAccess()));
-            deleteCompanyButton.setDisable(!isAccessGranted(sessionUser, Access.ADMIN));
-          } else {
-            editCompanyButton.setDisable(true);
-            deleteCompanyButton.setDisable(true);
+        .addListener((observable, prevCompany, currentCompany) -> {
+          var currentNull = currentCompany == null;
+          if (!currentNull) {
+            getStoragesFromDatabase(currentCompany);
           }
+          showCompanyButton
+              .setDisable(currentNull
+                          || !isAccessGranted(sessionUser, showCompanyProvider.getAccess()));
+          editCompanyButton
+              .setDisable(currentNull
+                          || !isAccessGranted(sessionUser, editCompanyProvider.getAccess()));
+          deleteCompanyButton.setDisable(currentNull
+                                         || !isAccessGranted(sessionUser, Access.ADMIN));
         });
 
     storageTable.getSelectionModel()
         .selectedItemProperty()
-        .addListener((observable, prevProduct, currentProduct) -> {
-          if (currentProduct != null) {
-            editStorageButton
-                .setDisable(!isAccessGranted(sessionUser, editStorageProvider.getAccess()));
-            deleteStorageButton.setDisable(!isAccessGranted(sessionUser, Access.ADMIN));
-          } else {
-            editStorageButton.setDisable(true);
-            deleteStorageButton.setDisable(true);
-          }
+        .addListener((observable, prevStorage, currentStorage) -> {
+          var currentNull = currentStorage == null;
+          showStorageButton
+              .setDisable(currentNull
+                          || !isAccessGranted(sessionUser, showProductStorageProvider.getAccess()));
+          editStorageButton
+              .setDisable(currentNull
+                          || !isAccessGranted(sessionUser, editStorageProvider.getAccess()));
+          deleteStorageButton.setDisable(currentNull
+                                         || !isAccessGranted(sessionUser, Access.ADMIN));
         });
 
     getCompaniesFromDatabase();
@@ -176,48 +186,6 @@ public class ProductStorageListController extends AbstractController {
   }
 
   @FXML
-  private void onKeyReleasedOnCompanyTable(KeyEvent event) {
-    if (event.getCode() == KeyCode.ENTER) {
-      showCompany();
-    }
-  }
-
-  @FXML
-  private void onKeyReleasedOnStorageTable(KeyEvent event) {
-    if (event.getCode() == KeyCode.ENTER) {
-      showStorage();
-    }
-  }
-
-  @FXML
-  private void onMouseClickOnCompanyTable(MouseEvent event) {
-    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-      showCompany();
-    }
-  }
-
-  @FXML
-  private void onMouseClickOnStorageTable(MouseEvent event) {
-    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-      showStorage();
-    }
-  }
-
-  @FXML
-  private void onSortCompanyTable() {
-    onSortAction(companyTable);
-  }
-
-  @FXML
-  private void onSortStorageTable() {
-    onSortAction(storageTable);
-  }
-
-  @FXML
-  private void refresh() {
-    getCompaniesFromDatabase();
-  }
-
   private void showCompany() {
     var model = companyTable.getSelectionModel();
     if (!model.isEmpty()) {
@@ -225,11 +193,57 @@ public class ProductStorageListController extends AbstractController {
     }
   }
 
+  @FXML
   private void showStorage() {
     var model = storageTable.getSelectionModel();
     if (!model.isEmpty()) {
       windowManager.showAndWait(showProductStorageProvider, model.getSelectedItem());
     }
+  }
+
+  @FXML
+  private void doOnKeyReleasedOnCompanyTable(KeyEvent event) {
+    if (event.getCode() == KeyCode.ENTER && !showCompanyButton.isDisable()) {
+      showCompany();
+    }
+  }
+
+  @FXML
+  private void doOnKeyReleasedOnStorageTable(KeyEvent event) {
+    if (event.getCode() == KeyCode.ENTER && !showStorageButton.isDisable()) {
+      showStorage();
+    }
+  }
+
+  @FXML
+  private void doOnMouseClickOnCompanyTable(MouseEvent event) {
+    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2
+        && !showCompanyButton.isDisable()) {
+      showCompany();
+    }
+  }
+
+  @FXML
+  private void doOnMouseClickOnStorageTable(MouseEvent event) {
+    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2
+        && !showStorageButton.isDisable()) {
+      showStorage();
+    }
+  }
+
+  @FXML
+  private void doOnSortCompanyTable() {
+    companyTable.getSelectionModel().clearSelection();
+  }
+
+  @FXML
+  private void doOnSortStorageTable() {
+    storageTable.getSelectionModel().clearSelection();
+  }
+
+  @FXML
+  private void refresh() {
+    getCompaniesFromDatabase();
   }
 
   private <T extends AbstractRecord> void deleteRecord(String name, TableView<T> table,
@@ -248,13 +262,6 @@ public class ProductStorageListController extends AbstractController {
           windowManager.showDialog(exception);
         }
       }
-    }
-  }
-
-  private void onSortAction(TableView<?> tableView) {
-    var selected = tableView.getSelectionModel();
-    if (!selected.isEmpty()) {
-      selected.clearSelection();
     }
   }
 

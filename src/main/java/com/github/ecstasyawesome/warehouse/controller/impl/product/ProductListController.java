@@ -57,6 +57,12 @@ public class ProductListController extends AbstractController {
   private Button addProductButton;
 
   @FXML
+  private Button showCategoryButton;
+
+  @FXML
+  private Button showProductButton;
+
+  @FXML
   private Button editCategoryButton;
 
   @FXML
@@ -107,29 +113,32 @@ public class ProductListController extends AbstractController {
     categoryTable.getSelectionModel()
         .selectedItemProperty()
         .addListener((observable, prevCategory, currentCategory) -> {
-          if (currentCategory != null) {
+          var currentNull = currentCategory == null;
+          if (!currentNull) {
             getProductsFromDatabase(currentCategory);
-            editCategoryButton
-                .setDisable(!isAccessGranted(sessionUser, editCategoryProvider.getAccess()));
-            deleteCategoryButton.setDisable(!isAccessGranted(sessionUser, Access.ADMIN));
-          } else {
-            editCategoryButton.setDisable(true);
-            deleteCategoryButton.setDisable(true);
           }
+          showCategoryButton
+              .setDisable(currentNull
+                          || !isAccessGranted(sessionUser, showCategoryProvider.getAccess()));
+          editCategoryButton
+              .setDisable(currentNull
+                          || !isAccessGranted(sessionUser, editCategoryProvider.getAccess()));
+          deleteCategoryButton.setDisable(currentNull
+                                          || !isAccessGranted(sessionUser, Access.ADMIN));
           searchField.clear();
         });
 
     productTable.getSelectionModel()
         .selectedItemProperty()
         .addListener((observable, prevProduct, currentProduct) -> {
-          if (currentProduct != null) {
-            editProductButton
-                .setDisable(!isAccessGranted(sessionUser, editProductProvider.getAccess()));
-            deleteProductButton.setDisable(!isAccessGranted(sessionUser, Access.ADMIN));
-          } else {
-            editProductButton.setDisable(true);
-            deleteProductButton.setDisable(true);
-          }
+          var currentNull = currentProduct == null;
+          showProductButton
+              .setDisable(currentNull
+                          || !isAccessGranted(sessionUser, showProductProvider.getAccess()));
+          editProductButton
+              .setDisable(currentNull
+                          || !isAccessGranted(sessionUser, editProductProvider.getAccess()));
+          deleteProductButton.setDisable(!isAccessGranted(sessionUser, Access.ADMIN));
         });
 
     getCategoriesFromDatabase();
@@ -226,43 +235,46 @@ public class ProductListController extends AbstractController {
   }
 
   @FXML
-  private void onSortCategoryTable() {
-    onSortAction(categoryTable);
+  private void doOnSortCategoryTable() {
+    categoryTable.getSelectionModel().clearSelection();
   }
 
   @FXML
-  private void onKeyReleasedOnCategoryTable(KeyEvent event) {
-    if (event.getCode() == KeyCode.ENTER) {
+  private void doOnKeyReleasedOnCategoryTable(KeyEvent event) {
+    if (event.getCode() == KeyCode.ENTER && !showCategoryButton.isDisable()) {
       showCategory();
     }
   }
 
   @FXML
-  private void onMouseClickOnCategoryTable(MouseEvent event) {
-    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+  private void doOnMouseClickOnCategoryTable(MouseEvent event) {
+    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2
+        && !showCategoryButton.isDisable()) {
       showCategory();
     }
   }
 
   @FXML
-  private void onSortProductTable() {
-    onSortAction(productTable);
+  private void doOnSortProductTable() {
+    productTable.getSelectionModel().clearSelection();
   }
 
   @FXML
-  private void onKeyReleasedOnProductTable(KeyEvent event) {
-    if (event.getCode() == KeyCode.ENTER) {
+  private void doOnKeyReleasedOnProductTable(KeyEvent event) {
+    if (event.getCode() == KeyCode.ENTER && !showProductButton.isDisable()) {
       showProduct();
     }
   }
 
   @FXML
-  private void onMouseClickOnProductTable(MouseEvent event) {
-    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+  private void doOnMouseClickOnProductTable(MouseEvent event) {
+    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2
+        && !showProductButton.isDisable()) {
       showProduct();
     }
   }
 
+  @FXML
   private void showCategory() {
     var selectionModel = categoryTable.getSelectionModel();
     if (!selectionModel.isEmpty()) {
@@ -270,17 +282,11 @@ public class ProductListController extends AbstractController {
     }
   }
 
+  @FXML
   private void showProduct() {
     var selectionModel = productTable.getSelectionModel();
     if (!selectionModel.isEmpty()) {
       windowManager.showAndWait(showProductProvider, selectionModel.getSelectedItem());
-    }
-  }
-
-  private void onSortAction(TableView<?> tableView) {
-    var selected = tableView.getSelectionModel();
-    if (!selected.isEmpty()) {
-      selected.clearSelection();
     }
   }
 
