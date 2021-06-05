@@ -43,8 +43,8 @@ public class OrderItem extends AbstractReceiveOperationItem {
     }
 
     public OrderItem build() {
-      if (amount <= 0D) {
-        throw new NullPointerException("Amount cannot be negative or zero");
+      if (amount < 0D) {
+        throw new NullPointerException("Amount cannot be negative");
       }
       var instance = new OrderItem();
       instance.setId(id);
