@@ -33,6 +33,8 @@ public class OrderItemRepositoryService extends OrderItemRepository {
         FROM ORDERS_ITEMS
             INNER JOIN PRODUCTS
                 ON ORDERS_ITEMS.PRODUCT_ID = PRODUCTS.PRODUCT_ID
+            INNER JOIN CATEGORIES
+                ON PRODUCTS.CATEGORY_ID = CATEGORIES.CATEGORY_ID
         WHERE ORDER_ID=?
         """;
     try {
