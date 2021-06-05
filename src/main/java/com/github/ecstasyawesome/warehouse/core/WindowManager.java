@@ -221,20 +221,20 @@ public final class WindowManager {
       var clazz = currentCachedController.getClass();
       cachedControllers.add(clazz);
       currentCachedController.backup();
-      LOGGER.debug("Backup the current controller '{}'", clazz.getName());
+      LOGGER.debug("Backup the current controller '{}'", clazz.getSimpleName());
     }
     if (controller instanceof Cacheable cacheable) {
       currentCachedController = cacheable;
       var clazz = cacheable.getClass();
-      LOGGER.debug("Set the controller '{}' like a current cached controller", clazz.getName());
+      LOGGER.debug("The controller '{}' is cacheable", clazz.getSimpleName());
       if (cachedControllers.contains(clazz)) {
         cachedControllers.remove(clazz);
         cacheable.recover();
-        LOGGER.debug("Recovered the controller '{}'", clazz.getName());
+        LOGGER.debug("Recovered the controller '{}'", clazz.getSimpleName());
       }
     } else {
       currentCachedController = null;
-      LOGGER.debug("A current controller is not cacheable");
+      LOGGER.debug("The controller '{}' is not cacheable", controller.getClass().getSimpleName());
     }
   }
 
