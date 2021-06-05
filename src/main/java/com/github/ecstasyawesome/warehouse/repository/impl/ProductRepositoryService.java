@@ -74,7 +74,7 @@ public class ProductRepositoryService extends ProductRepository {
         WHERE LOWER(PRODUCT_NAME) LIKE LOWER(?)
         """;
     try {
-      var result = selectRecords(query, name);
+      var result = selectRecords(query, String.format("%%%s%%", name));
       logger.debug("Selected all products where name contains '{}' [{} record(s)]", name,
           result.size());
       return result;
