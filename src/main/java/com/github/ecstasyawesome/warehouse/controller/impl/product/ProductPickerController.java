@@ -91,6 +91,7 @@ public class ProductPickerController extends AbstractFeedbackController<HashSet<
         });
 
     getCategoriesFromDatabase();
+    getProductsFromDatabase(null);
   }
 
   @FXML
