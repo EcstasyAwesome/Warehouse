@@ -1,8 +1,8 @@
 package com.github.ecstasyawesome.warehouse.provider.impl;
 
 import com.github.ecstasyawesome.warehouse.controller.impl.HomeController;
+import com.github.ecstasyawesome.warehouse.core.FxmlModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.module.AbstractModule;
 import com.github.ecstasyawesome.warehouse.provider.AbstractModuleProvider;
 import java.net.URL;
 
@@ -19,9 +19,8 @@ public class HomeProvider extends AbstractModuleProvider<HomeController> {
   }
 
   @Override
-  public AbstractModule<HomeController> create() {
-    return new AbstractModule<>(fxml) {
-    };
+  public FxmlModule<HomeController> create() {
+    return new FxmlModule<>(fxml);
   }
 
   @Override

@@ -1,9 +1,9 @@
 package com.github.ecstasyawesome.warehouse.provider.impl.storage;
 
 import com.github.ecstasyawesome.warehouse.controller.impl.storage.EditCompanyController;
+import com.github.ecstasyawesome.warehouse.core.FxmlModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;
-import com.github.ecstasyawesome.warehouse.module.AbstractConfiguredModule;
 import com.github.ecstasyawesome.warehouse.provider.AbstractConfiguredModuleProvider;
 import java.net.URL;
 
@@ -21,9 +21,8 @@ public class EditCompanyProvider extends
   }
 
   @Override
-  public AbstractConfiguredModule<EditCompanyController, Company> create() {
-    return new AbstractConfiguredModule<>(fxml) {
-    };
+  public FxmlModule<EditCompanyController> create() {
+    return new FxmlModule<>(fxml);
   }
 
   @Override

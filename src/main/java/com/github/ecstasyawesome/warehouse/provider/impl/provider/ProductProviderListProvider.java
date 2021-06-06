@@ -1,8 +1,8 @@
 package com.github.ecstasyawesome.warehouse.provider.impl.provider;
 
 import com.github.ecstasyawesome.warehouse.controller.impl.provider.ProductProviderListController;
+import com.github.ecstasyawesome.warehouse.core.FxmlModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
-import com.github.ecstasyawesome.warehouse.module.AbstractModule;
 import com.github.ecstasyawesome.warehouse.provider.AbstractModuleProvider;
 import java.net.URL;
 
@@ -20,9 +20,8 @@ public class ProductProviderListProvider extends
   }
 
   @Override
-  public AbstractModule<ProductProviderListController> create() {
-    return new AbstractModule<>(fxml) {
-    };
+  public FxmlModule<ProductProviderListController> create() {
+    return new FxmlModule<>(fxml);
   }
 
   @Override

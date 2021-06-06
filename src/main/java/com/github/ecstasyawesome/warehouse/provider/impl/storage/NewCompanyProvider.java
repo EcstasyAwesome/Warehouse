@@ -3,7 +3,7 @@ package com.github.ecstasyawesome.warehouse.provider.impl.storage;
 import com.github.ecstasyawesome.warehouse.controller.impl.storage.NewCompanyController;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;
-import com.github.ecstasyawesome.warehouse.module.AbstractFeedbackModule;
+import com.github.ecstasyawesome.warehouse.core.FxmlModule;
 import com.github.ecstasyawesome.warehouse.provider.AbstractFeedbackModuleProvider;
 import java.net.URL;
 
@@ -21,9 +21,8 @@ public class NewCompanyProvider extends
   }
 
   @Override
-  public AbstractFeedbackModule<NewCompanyController, Company> create() {
-    return new AbstractFeedbackModule<>(fxml) {
-    };
+  public FxmlModule<NewCompanyController> create() {
+    return new FxmlModule<>(fxml);
   }
 
   @Override

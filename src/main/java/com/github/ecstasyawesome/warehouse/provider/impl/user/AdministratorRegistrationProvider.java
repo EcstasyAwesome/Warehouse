@@ -3,7 +3,7 @@ package com.github.ecstasyawesome.warehouse.provider.impl.user;
 import com.github.ecstasyawesome.warehouse.controller.impl.user.AdministratorController;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.PersonSecurity;
-import com.github.ecstasyawesome.warehouse.module.AbstractFeedbackModule;
+import com.github.ecstasyawesome.warehouse.core.FxmlModule;
 import com.github.ecstasyawesome.warehouse.provider.AbstractFeedbackModuleProvider;
 import java.net.URL;
 
@@ -22,9 +22,8 @@ public class AdministratorRegistrationProvider
   }
 
   @Override
-  public AbstractFeedbackModule<AdministratorController, PersonSecurity> create() {
-    return new AbstractFeedbackModule<>(fxml) {
-    };
+  public FxmlModule<AdministratorController> create() {
+    return new FxmlModule<>(fxml);
   }
 
   @Override

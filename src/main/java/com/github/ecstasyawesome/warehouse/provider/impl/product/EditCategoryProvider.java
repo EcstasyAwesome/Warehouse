@@ -3,7 +3,7 @@ package com.github.ecstasyawesome.warehouse.provider.impl.product;
 import com.github.ecstasyawesome.warehouse.controller.impl.product.EditCategoryController;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
-import com.github.ecstasyawesome.warehouse.module.AbstractConfiguredModule;
+import com.github.ecstasyawesome.warehouse.core.FxmlModule;
 import com.github.ecstasyawesome.warehouse.provider.AbstractConfiguredModuleProvider;
 import java.net.URL;
 
@@ -21,9 +21,8 @@ public class EditCategoryProvider extends
   }
 
   @Override
-  public AbstractConfiguredModule<EditCategoryController, Category> create() {
-    return new AbstractConfiguredModule<>(fxml) {
-    };
+  public FxmlModule<EditCategoryController> create() {
+    return new FxmlModule<>(fxml);
   }
 
   @Override

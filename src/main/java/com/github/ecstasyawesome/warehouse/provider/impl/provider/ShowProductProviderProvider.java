@@ -3,7 +3,7 @@ package com.github.ecstasyawesome.warehouse.provider.impl.provider;
 import com.github.ecstasyawesome.warehouse.controller.impl.provider.EditProductProviderController;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductProvider;
-import com.github.ecstasyawesome.warehouse.module.AbstractConfiguredModule;
+import com.github.ecstasyawesome.warehouse.core.FxmlModule;
 import com.github.ecstasyawesome.warehouse.provider.AbstractConfiguredModuleProvider;
 import java.net.URL;
 
@@ -21,9 +21,8 @@ public class ShowProductProviderProvider extends
   }
 
   @Override
-  public AbstractConfiguredModule<EditProductProviderController, ProductProvider> create() {
-    return new AbstractConfiguredModule<>(fxml) {
-    };
+  public FxmlModule<EditProductProviderController> create() {
+    return new FxmlModule<>(fxml);
   }
 
   @Override

@@ -1,9 +1,9 @@
 package com.github.ecstasyawesome.warehouse.provider.impl.product;
 
 import com.github.ecstasyawesome.warehouse.controller.impl.product.EditProductController;
+import com.github.ecstasyawesome.warehouse.core.FxmlModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Product;
-import com.github.ecstasyawesome.warehouse.module.AbstractConfiguredModule;
 import com.github.ecstasyawesome.warehouse.provider.AbstractConfiguredModuleProvider;
 import java.net.URL;
 
@@ -21,9 +21,8 @@ public class EditProductProvider extends
   }
 
   @Override
-  public AbstractConfiguredModule<EditProductController, Product> create() {
-    return new AbstractConfiguredModule<>(fxml) {
-    };
+  public FxmlModule<EditProductController> create() {
+    return new FxmlModule<>(fxml);
   }
 
   @Override

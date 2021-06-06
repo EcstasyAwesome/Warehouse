@@ -3,7 +3,7 @@ package com.github.ecstasyawesome.warehouse.provider.impl.user;
 import com.github.ecstasyawesome.warehouse.controller.impl.user.NewUserController;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.module.AbstractFeedbackModule;
+import com.github.ecstasyawesome.warehouse.core.FxmlModule;
 import com.github.ecstasyawesome.warehouse.provider.AbstractFeedbackModuleProvider;
 import java.net.URL;
 
@@ -20,9 +20,8 @@ public class NewUserProvider extends AbstractFeedbackModuleProvider<NewUserContr
   }
 
   @Override
-  public AbstractFeedbackModule<NewUserController, User> create() {
-    return new AbstractFeedbackModule<>(fxml) {
-    };
+  public FxmlModule<NewUserController> create() {
+    return new FxmlModule<>(fxml);
   }
 
   @Override

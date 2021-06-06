@@ -1,4 +1,4 @@
-package com.github.ecstasyawesome.warehouse.module;
+package com.github.ecstasyawesome.warehouse.core;
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.util.ResourceLoader;
@@ -10,13 +10,13 @@ import javafx.scene.Scene;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 
-public abstract class AbstractModule<T extends AbstractController> {
+public final class FxmlModule<T extends AbstractController> {
 
   private final Parent parent;
   private final Scene scene;
   private final T controller;
 
-  public AbstractModule(final URL url) {
+  public FxmlModule(final URL url) {
     var logger = LogManager.getLogger(getClass());
     var fxmlLoader = ResourceLoader.createFxmlLoader(url);
     try {

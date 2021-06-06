@@ -4,6 +4,7 @@ import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.repository.UniqueField;
 import java.util.regex.Pattern;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.effect.ColorAdjust;
@@ -52,6 +53,15 @@ public final class InputValidator {
       return true;
     }
     checkBox.setEffect(RED_ADJUST);
+    return false;
+  }
+
+  public static boolean isFieldValid(final DatePicker datePicker) {
+    if (datePicker.getValue() != null) {
+      datePicker.setEffect(NO_ADJUST);
+      return true;
+    }
+    datePicker.setEffect(RED_ADJUST);
     return false;
   }
 

@@ -1,9 +1,9 @@
 package com.github.ecstasyawesome.warehouse.provider.impl.user;
 
 import com.github.ecstasyawesome.warehouse.controller.impl.user.EditUserController;
+import com.github.ecstasyawesome.warehouse.core.FxmlModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.module.AbstractConfiguredModule;
 import com.github.ecstasyawesome.warehouse.provider.AbstractConfiguredModuleProvider;
 import java.net.URL;
 
@@ -20,9 +20,8 @@ public class EditUserProvider extends AbstractConfiguredModuleProvider<EditUserC
   }
 
   @Override
-  public AbstractConfiguredModule<EditUserController, User> create() {
-    return new AbstractConfiguredModule<>(fxml) {
-    };
+  public FxmlModule<EditUserController> create() {
+    return new FxmlModule<>(fxml);
   }
 
   @Override
