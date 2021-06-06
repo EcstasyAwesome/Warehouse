@@ -6,10 +6,10 @@ import com.github.ecstasyawesome.warehouse.model.impl.Product;
 import com.github.ecstasyawesome.warehouse.module.AbstractFeedbackModule;
 import com.github.ecstasyawesome.warehouse.provider.AbstractFeedbackModuleProvider;
 import java.net.URL;
-import java.util.List;
+import java.util.HashSet;
 
 public class ProductPickerProvider extends
-    AbstractFeedbackModuleProvider<ProductPickerController, List<Product>> {
+    AbstractFeedbackModuleProvider<ProductPickerController, HashSet<Product>> {
 
   private static final ProductPickerProvider INSTANCE = new ProductPickerProvider();
   private final URL fxml = getClass().getResource("/model/product/ProductPicker.fxml");
@@ -22,7 +22,7 @@ public class ProductPickerProvider extends
   }
 
   @Override
-  public AbstractFeedbackModule<ProductPickerController, List<Product>> create() {
+  public AbstractFeedbackModule<ProductPickerController, HashSet<Product>> create() {
     return new AbstractFeedbackModule<>(fxml) {
     };
   }

@@ -31,15 +31,17 @@
          <children>
             <ToolBar prefHeight="40.0" prefWidth="200.0">
                <items>
-                  <TextField fx:id="searchField" onKeyTyped="#search" prefWidth="200.0" promptText="Search" />
-                  <Button mnemonicParsing="false" onAction="#clear" text="Reset filters" />
+                  <TextField fx:id="searchField" onKeyTyped="#search" prefWidth="300.0" promptText="Search" />
+                  <Button fx:id="resetButton" disable="true" mnemonicParsing="false" onAction="#clear" text="Reset filters" />
+                  <Separator layoutX="452.0" layoutY="10.0" orientation="VERTICAL" />
+                  <Button fx:id="pickButton" disable="true" mnemonicParsing="false" onAction="#pick" text="Pick" />
                   <Separator orientation="VERTICAL" />
                   <Label fx:id="pickedLabel" text="0">
                      <graphic>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Picked:" textAlignment="CENTER" />
                      </graphic>
                   </Label>
-                  <Button defaultButton="true" mnemonicParsing="false" onAction="#pick" text="Done" />
+                  <Button fx:id="pickSelectedButton" disable="true" mnemonicParsing="false" onAction="#pickSelected" text="Pick selected" />
                </items>
             </ToolBar>
             <SplitPane dividerPositions="0.1" GridPane.rowIndex="1">
@@ -59,12 +61,12 @@
                         </TableView>
                      </content>
                   </ScrollPane>
-                  <TableView fx:id="productTable" editable="true">
+                  <TableView fx:id="productTable" editable="true" onKeyReleased="#doOnKeyReleasedOnProductTable" onMouseClicked="#doOnMouseClickOnProductTable" onSort="#doOnSortProductTable">
                      <columns>
                         <TableColumn fx:id="productNameColumn" minWidth="200.0" prefWidth="200.0" text="name" />
                         <TableColumn fx:id="productUnitColumn" minWidth="75.0" prefWidth="75.0" text="unit" />
                         <TableColumn fx:id="productCategoryColumn" minWidth="100.0" prefWidth="100.0" text="category" />
-                        <TableColumn fx:id="productChoiceColumn" minWidth="50.0" prefWidth="50.0" text="choice" />
+                        <TableColumn fx:id="productChoiceColumn" minWidth="70.0" prefWidth="70.0" text="choice" />
                      </columns>
                      <opaqueInsets>
                         <Insets />
