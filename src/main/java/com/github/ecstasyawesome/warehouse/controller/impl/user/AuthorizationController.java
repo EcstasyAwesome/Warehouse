@@ -9,8 +9,8 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldTe
 
 import com.github.ecstasyawesome.warehouse.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.provider.impl.HomeProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.user.AdministratorRegistrationProvider;
+import com.github.ecstasyawesome.warehouse.module.impl.HomeModule;
+import com.github.ecstasyawesome.warehouse.module.impl.user.AdministratorRegistrationModule;
 import com.github.ecstasyawesome.warehouse.repository.UserRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
@@ -23,6 +23,9 @@ import org.apache.logging.log4j.Logger;
 public class AuthorizationController extends AbstractController {
 
   private final WindowManager windowManager = WindowManager.getInstance();
+  private final HomeModule homeModule = HomeModule.getInstance();
+  private final AdministratorRegistrationModule administratorRegistrationModule =
+      AdministratorRegistrationModule.getInstance();
   private final UserRepository userRepository = UserRepositoryService.getInstance();
   private final Logger logger = LogManager.getLogger(AuthorizationController.class);
 
@@ -36,7 +39,7 @@ public class AuthorizationController extends AbstractController {
   private void initialize() {
     try {
       if (!userRepository.hasTableRecords()) {
-        var result = windowManager.showAndGet(AdministratorRegistrationProvider.getInstance());
+        var result = windowManager.showAndGet(administratorRegistrationModule);
         if (result.isPresent()) {
           setFieldText(loginField, result.get().getLogin());
         } else {
@@ -60,7 +63,7 @@ public class AuthorizationController extends AbstractController {
           passwordField.setEffect(NO_ADJUST);
           SessionManager.store("currentUser", user);
           logger.info("Log in '{}'", login);
-          windowManager.show(HomeProvider.getInstance());
+          windowManager.show(homeModule);
         } else {
           passwordField.setEffect(RED_ADJUST);
           logger.info("Try to log in with login '{}' and incorrect password", login);

@@ -10,12 +10,12 @@ import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.model.impl.Product;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.provider.impl.product.EditCategoryProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.product.EditProductProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.product.NewCategoryProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.product.NewProductProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.product.ShowCategoryProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.product.ShowProductProvider;
+import com.github.ecstasyawesome.warehouse.module.impl.product.EditCategoryModule;
+import com.github.ecstasyawesome.warehouse.module.impl.product.EditProductModule;
+import com.github.ecstasyawesome.warehouse.module.impl.product.NewCategoryModule;
+import com.github.ecstasyawesome.warehouse.module.impl.product.NewProductModule;
+import com.github.ecstasyawesome.warehouse.module.impl.product.ShowCategoryModule;
+import com.github.ecstasyawesome.warehouse.module.impl.product.ShowProductModule;
 import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
 import com.github.ecstasyawesome.warehouse.repository.Deletable;
 import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
@@ -41,12 +41,12 @@ public class ProductListController extends AbstractController {
   private final WindowManager windowManager = WindowManager.getInstance();
   private final CategoryRepository categoryRepository = CategoryRepositoryService.getInstance();
   private final ProductRepository productRepository = ProductRepositoryService.getInstance();
-  private final ShowCategoryProvider showCategoryProvider = ShowCategoryProvider.getInstance();
-  private final ShowProductProvider showProductProvider = ShowProductProvider.getInstance();
-  private final NewProductProvider newProductProvider = NewProductProvider.getInstance();
-  private final NewCategoryProvider newCategoryProvider = NewCategoryProvider.getInstance();
-  private final EditProductProvider editProductProvider = EditProductProvider.getInstance();
-  private final EditCategoryProvider editCategoryProvider = EditCategoryProvider.getInstance();
+  private final ShowCategoryModule showCategoryModule = ShowCategoryModule.getInstance();
+  private final ShowProductModule showProductModule = ShowProductModule.getInstance();
+  private final NewProductModule newProductModule = NewProductModule.getInstance();
+  private final NewCategoryModule newCategoryModule = NewCategoryModule.getInstance();
+  private final EditProductModule editProductModule = EditProductModule.getInstance();
+  private final EditCategoryModule editCategoryModule = EditCategoryModule.getInstance();
   private final Logger logger = LogManager.getLogger(ProductListController.class);
   private final User sessionUser = (User) SessionManager.get("currentUser").orElseThrow();
 
@@ -100,8 +100,8 @@ public class ProductListController extends AbstractController {
 
   @FXML
   private void initialize() {
-    addCategoryButton.setDisable(!isAccessGranted(sessionUser, newCategoryProvider.getAccess()));
-    addProductButton.setDisable(!isAccessGranted(sessionUser, newProductProvider.getAccess()));
+    addCategoryButton.setDisable(!isAccessGranted(sessionUser, newCategoryModule.getAccess()));
+    addProductButton.setDisable(!isAccessGranted(sessionUser, newProductModule.getAccess()));
 
     categoryNameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
 
@@ -119,10 +119,10 @@ public class ProductListController extends AbstractController {
           }
           showCategoryButton
               .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, showCategoryProvider.getAccess()));
+                          || !isAccessGranted(sessionUser, showCategoryModule.getAccess()));
           editCategoryButton
               .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, editCategoryProvider.getAccess()));
+                          || !isAccessGranted(sessionUser, editCategoryModule.getAccess()));
           deleteCategoryButton.setDisable(currentNull
                                           || !isAccessGranted(sessionUser, Access.ADMIN));
           searchField.clear();
@@ -134,10 +134,10 @@ public class ProductListController extends AbstractController {
           var currentNull = currentProduct == null;
           showProductButton
               .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, showProductProvider.getAccess()));
+                          || !isAccessGranted(sessionUser, showProductModule.getAccess()));
           editProductButton
               .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, editProductProvider.getAccess()));
+                          || !isAccessGranted(sessionUser, editProductModule.getAccess()));
           deleteProductButton.setDisable(!isAccessGranted(sessionUser, Access.ADMIN));
         });
 
@@ -147,7 +147,7 @@ public class ProductListController extends AbstractController {
 
   @FXML
   private void addCategory() {
-    var result = windowManager.showAndGet(newCategoryProvider);
+    var result = windowManager.showAndGet(newCategoryModule);
     result.ifPresent(categoryTable.getItems()::add);
   }
 
@@ -157,7 +157,7 @@ public class ProductListController extends AbstractController {
     if (!model.isEmpty()) {
       var category = model.getSelectedItem();
       var categoryCopy = new Category(category);
-      windowManager.showAndWait(editCategoryProvider, category);
+      windowManager.showAndWait(editCategoryModule, category);
       if (!category.equals(categoryCopy)) {
         for (var product : productTable.getItems()) {
           product.getCategory().recover(category);
@@ -174,7 +174,7 @@ public class ProductListController extends AbstractController {
 
   @FXML
   private void addProduct() {
-    var result = windowManager.showAndGet(newProductProvider);
+    var result = windowManager.showAndGet(newProductModule);
     result.ifPresent(product -> {
       var selectionModel = categoryTable.getSelectionModel();
       var productCategory = product.getCategory();
@@ -190,7 +190,7 @@ public class ProductListController extends AbstractController {
     if (!model.isEmpty()) {
       var product = model.getSelectedItem();
       var categoryIdCopy = product.getCategory().getId();
-      windowManager.showAndWait(editProductProvider, product);
+      windowManager.showAndWait(editProductModule, product);
       var categoryModel = categoryTable.getSelectionModel();
       if (!categoryModel.isEmpty() && product.getCategory().getId() != categoryIdCopy) {
         productTable.getItems().remove(product);
@@ -278,7 +278,7 @@ public class ProductListController extends AbstractController {
   private void showCategory() {
     var selectionModel = categoryTable.getSelectionModel();
     if (!selectionModel.isEmpty()) {
-      windowManager.showAndWait(showCategoryProvider, selectionModel.getSelectedItem());
+      windowManager.showAndWait(showCategoryModule, selectionModel.getSelectedItem());
     }
   }
 
@@ -286,7 +286,7 @@ public class ProductListController extends AbstractController {
   private void showProduct() {
     var selectionModel = productTable.getSelectionModel();
     if (!selectionModel.isEmpty()) {
-      windowManager.showAndWait(showProductProvider, selectionModel.getSelectedItem());
+      windowManager.showAndWait(showProductModule, selectionModel.getSelectedItem());
     }
   }
 

@@ -8,9 +8,9 @@ import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductProvider;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.provider.impl.provider.EditProductProviderProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.provider.NewProductProviderProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.provider.ShowProductProviderProvider;
+import com.github.ecstasyawesome.warehouse.module.impl.provider.EditProductProviderModule;
+import com.github.ecstasyawesome.warehouse.module.impl.provider.NewProductProviderModule;
+import com.github.ecstasyawesome.warehouse.module.impl.provider.ShowProductProviderModule;
 import com.github.ecstasyawesome.warehouse.repository.Deletable;
 import com.github.ecstasyawesome.warehouse.repository.ProductProviderRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.ProductProviderRepositoryService;
@@ -33,12 +33,12 @@ public class ProductProviderListController extends AbstractController {
   private final WindowManager windowManager = WindowManager.getInstance();
   private final ProductProviderRepository productProviderRepository =
       ProductProviderRepositoryService.getInstance();
-  private final ShowProductProviderProvider showProductProvider =
-      ShowProductProviderProvider.getInstance();
-  private final NewProductProviderProvider newProductProvider =
-      NewProductProviderProvider.getInstance();
-  private final EditProductProviderProvider editProductProvider =
-      EditProductProviderProvider.getInstance();
+  private final ShowProductProviderModule showProductProviderModule =
+      ShowProductProviderModule.getInstance();
+  private final NewProductProviderModule newProductProviderModule =
+      NewProductProviderModule.getInstance();
+  private final EditProductProviderModule editProductProviderModule =
+      EditProductProviderModule.getInstance();
   private final Logger logger = LogManager.getLogger(ProductProviderListController.class);
   private final User sessionUser = (User) SessionManager.get("currentUser").orElseThrow();
 
@@ -65,7 +65,7 @@ public class ProductProviderListController extends AbstractController {
 
   @FXML
   private void initialize() {
-    addButton.setDisable(!isAccessGranted(sessionUser, newProductProvider.getAccess()));
+    addButton.setDisable(!isAccessGranted(sessionUser, newProductProviderModule.getAccess()));
 
     idColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
     nameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
@@ -74,10 +74,10 @@ public class ProductProviderListController extends AbstractController {
         .selectedItemProperty()
         .addListener((observable, prevProvider, currentProvider) -> {
           var currentNull = currentProvider == null;
-          showButton.setDisable(currentNull
-                                || !isAccessGranted(sessionUser, showProductProvider.getAccess()));
-          editButton.setDisable(currentNull
-                                || !isAccessGranted(sessionUser, editProductProvider.getAccess()));
+          showButton.setDisable(
+              currentNull || !isAccessGranted(sessionUser, showProductProviderModule.getAccess()));
+          editButton.setDisable(
+              currentNull || !isAccessGranted(sessionUser, editProductProviderModule.getAccess()));
           deleteButton.setDisable(currentNull || !isAccessGranted(sessionUser, Access.ADMIN));
         });
 
@@ -86,7 +86,7 @@ public class ProductProviderListController extends AbstractController {
 
   @FXML
   private void add() {
-    var result = windowManager.showAndGet(newProductProvider);
+    var result = windowManager.showAndGet(newProductProviderModule);
     result.ifPresent(providerTable.getItems()::add);
   }
 
@@ -99,7 +99,7 @@ public class ProductProviderListController extends AbstractController {
   private void show() {
     var model = providerTable.getSelectionModel();
     if (!model.isEmpty()) {
-      windowManager.showAndWait(showProductProvider, model.getSelectedItem());
+      windowManager.showAndWait(showProductProviderModule, model.getSelectedItem());
     }
   }
 
@@ -107,7 +107,7 @@ public class ProductProviderListController extends AbstractController {
   private void edit() {
     var model = providerTable.getSelectionModel();
     if (!model.isEmpty()) {
-      windowManager.showAndWait(editProductProvider, model.getSelectedItem());
+      windowManager.showAndWait(editProductProviderModule, model.getSelectedItem());
     }
   }
 

@@ -8,11 +8,11 @@ import com.github.ecstasyawesome.warehouse.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.controller.AbstractFeedbackController;
 import com.github.ecstasyawesome.warehouse.controller.Cacheable;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.provider.AbstractConfiguredFeedbackModuleProvider;
-import com.github.ecstasyawesome.warehouse.provider.AbstractConfiguredModuleProvider;
-import com.github.ecstasyawesome.warehouse.provider.AbstractFeedbackModuleProvider;
-import com.github.ecstasyawesome.warehouse.provider.AbstractModuleProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.user.AuthorizationProvider;
+import com.github.ecstasyawesome.warehouse.module.AbstractConfiguredFeedbackModule;
+import com.github.ecstasyawesome.warehouse.module.AbstractConfiguredModule;
+import com.github.ecstasyawesome.warehouse.module.AbstractFeedbackModule;
+import com.github.ecstasyawesome.warehouse.module.AbstractModule;
+import com.github.ecstasyawesome.warehouse.module.impl.user.AuthorizationModule;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -50,7 +50,7 @@ public final class WindowManager {
   private final Stage mainStage = new Stage();
   private final List<Stage> stages = new ArrayList<>();
   private final Set<Class<? extends Cacheable>> cachedControllers = new HashSet<>();
-  private AbstractModuleProvider<? extends AbstractController> currentModuleProvider;
+  private AbstractModule<? extends AbstractController> currentModule;
   private Cacheable currentCachedController;
 
   private WindowManager(final Stage root) {
@@ -78,82 +78,82 @@ public final class WindowManager {
     LOGGER.debug("Request to show the authorization stage");
     var user = getUserFromContext();
     if (user.isEmpty()) {
-      currentModuleProvider = null;
+      currentModule = null;
       currentCachedController = null;
-      var provider = AuthorizationProvider.getInstance();
-      var module = provider.create();
-      applyFadeAnimation(module.getParent());
-      configureAuthorizationStageAndShow(provider.getTitle(), module.getScene());
+      var module = AuthorizationModule.getInstance();
+      var fxmlBundle = module.create();
+      applyFadeAnimation(fxmlBundle.getParent());
+      configureAuthorizationStageAndShow(module.getTitle(), fxmlBundle.getScene());
     } else {
       showDialog(AlertType.WARNING, "Do logout before login"); // TODO i18n
     }
   }
 
-  public <T extends AbstractController> void show(final AbstractModuleProvider<T> provider) {
-    LOGGER.debug("Request to show the module provider at the main stage");
+  public <T extends AbstractController> void show(final AbstractModule<T> module) {
+    LOGGER.debug("Request to show the module at the main stage");
     var user = getUserFromContext().orElse(null);
-    if (isAccessGranted(user, provider.getAccess())) {
-      currentModuleProvider = provider;
-      var module = provider.create();
-      checkAbilityToCache(module.getController());
-      configureMainStageAndShow(provider.getTitle(), module.getScene());
+    if (isAccessGranted(user, module.getAccess())) {
+      currentModule = module;
+      var fxmlBundle = module.create();
+      checkAbilityToCache(fxmlBundle.getController());
+      configureMainStageAndShow(module.getTitle(), fxmlBundle.getScene());
     } else {
       showAccessWarning();
     }
   }
 
   public <T extends AbstractConfiguredController<E>, E> void show(
-      final AbstractConfiguredModuleProvider<T, E> provider, E instance) {
-    LOGGER.debug("Request to show the configured module provider at the main stage");
+      final AbstractConfiguredModule<T, E> configuredModule, E instance) {
+    LOGGER.debug("Request to show the configured module at the main stage");
     var user = getUserFromContext().orElse(null);
-    if (isAccessGranted(user, provider.getAccess())) {
-      currentModuleProvider = provider;
-      var module = provider.create();
-      var controller = module.getController();
+    if (isAccessGranted(user, configuredModule.getAccess())) {
+      currentModule = configuredModule;
+      var fxmlBundle = configuredModule.create();
+      var controller = fxmlBundle.getController();
       checkAbilityToCache(controller);
       controller.apply(instance);
-      configureMainStageAndShow(provider.getTitle(), module.getScene());
+      configureMainStageAndShow(configuredModule.getTitle(), fxmlBundle.getScene());
     } else {
       showAccessWarning();
     }
   }
 
-  public <T extends AbstractController> void showAndWait(final AbstractModuleProvider<T> provider) {
-    LOGGER.debug("Request to show the module provider");
+  public <T extends AbstractController> void showAndWait(final AbstractModule<T> module) {
+    LOGGER.debug("Request to show the module");
     var user = getUserFromContext().orElse(null);
-    if (isAccessGranted(user, provider.getAccess())) {
-      var module = provider.create();
-      checkAbilityToCache(module.getController());
-      createNewExtraStageAndShow(provider.getTitle(), module.getScene());
+    if (isAccessGranted(user, module.getAccess())) {
+      var fxmlBundle = module.create();
+      checkAbilityToCache(fxmlBundle.getController());
+      createNewExtraStageAndShow(module.getTitle(), fxmlBundle.getScene());
     } else {
       showAccessWarning();
     }
   }
 
   public <T extends AbstractConfiguredController<E>, E> void showAndWait(
-      final AbstractConfiguredModuleProvider<T, E> provider, E instance) {
-    LOGGER.debug("Request to show the configured module provider");
+      final AbstractConfiguredModule<T, E> configuredModule, E instance) {
+    LOGGER.debug("Request to show the configured module");
     var user = getUserFromContext().orElse(null);
-    if (isAccessGranted(user, provider.getAccess())) {
-      var module = provider.create();
-      var controller = module.getController();
+    if (isAccessGranted(user, configuredModule.getAccess())) {
+      var fxmlBundle = configuredModule.create();
+      var controller = fxmlBundle.getController();
       checkAbilityToCache(controller);
       controller.apply(instance);
-      createNewExtraStageAndShow(provider.getTitle(), module.getScene());
+      createNewExtraStageAndShow(configuredModule.getTitle(), fxmlBundle.getScene());
     } else {
       showAccessWarning();
     }
   }
 
   public <T extends AbstractFeedbackController<E>, E> Optional<E> showAndGet(
-      final AbstractFeedbackModuleProvider<T, E> provider) {
-    LOGGER.debug("Request to show the feedback module provider");
+      final AbstractFeedbackModule<T, E> feedbackModule) {
+    LOGGER.debug("Request to show the feedback module");
     var user = getUserFromContext().orElse(null);
-    if (isAccessGranted(user, provider.getAccess())) {
-      var module = provider.create();
-      var controller = module.getController();
+    if (isAccessGranted(user, feedbackModule.getAccess())) {
+      var fxmlBundle = feedbackModule.create();
+      var controller = fxmlBundle.getController();
       checkAbilityToCache(controller);
-      createNewExtraStageAndShow(provider.getTitle(), module.getScene());
+      createNewExtraStageAndShow(feedbackModule.getTitle(), fxmlBundle.getScene());
       return Optional.ofNullable(controller.get());
     } else {
       showAccessWarning();
@@ -162,15 +162,15 @@ public final class WindowManager {
   }
 
   public <T extends AbstractConfiguredFeedbackController<E, R>, E, R> Optional<R> showAndGet(
-      final AbstractConfiguredFeedbackModuleProvider<T, E, R> provider, final E instance) {
-    LOGGER.debug("Request to show the configured feedback module provider");
+      final AbstractConfiguredFeedbackModule<T, E, R> configuredFeedbackModule, final E instance) {
+    LOGGER.debug("Request to show the configured feedback module");
     var user = getUserFromContext().orElse(null);
-    if (isAccessGranted(user, provider.getAccess())) {
-      var module = provider.create();
-      var controller = module.getController();
+    if (isAccessGranted(user, configuredFeedbackModule.getAccess())) {
+      var fxmlBundle = configuredFeedbackModule.create();
+      var controller = fxmlBundle.getController();
       checkAbilityToCache(controller);
       controller.apply(instance);
-      createNewExtraStageAndShow(provider.getTitle(), module.getScene());
+      createNewExtraStageAndShow(configuredFeedbackModule.getTitle(), fxmlBundle.getScene());
       return Optional.ofNullable(controller.get());
     } else {
       showAccessWarning();
@@ -179,8 +179,8 @@ public final class WindowManager {
   }
 
   @SuppressWarnings("rawtypes")
-  public Class<? extends AbstractModuleProvider> getCurrentModuleProviderClass() {
-    return Objects.requireNonNull(currentModuleProvider.getClass(), "Any module was not shown");
+  public Class<? extends AbstractModule> getCurrentModuleClass() {
+    return Objects.requireNonNull(currentModule.getClass(), "Any module was not shown");
   }
 
   public void shutdown() {

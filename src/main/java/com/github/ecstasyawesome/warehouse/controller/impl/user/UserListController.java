@@ -7,9 +7,9 @@ import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.provider.impl.user.EditUserProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.user.NewUserProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.user.ShowUserProvider;
+import com.github.ecstasyawesome.warehouse.module.impl.user.EditUserModule;
+import com.github.ecstasyawesome.warehouse.module.impl.user.NewUserModule;
+import com.github.ecstasyawesome.warehouse.module.impl.user.ShowUserModule;
 import com.github.ecstasyawesome.warehouse.repository.Deletable;
 import com.github.ecstasyawesome.warehouse.repository.UserRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
@@ -31,9 +31,9 @@ public class UserListController extends AbstractController {
 
   private final UserRepository userRepository = UserRepositoryService.getInstance();
   private final WindowManager windowManager = WindowManager.getInstance();
-  private final ShowUserProvider showUserProvider = ShowUserProvider.getInstance();
-  private final NewUserProvider newUserProvider = NewUserProvider.getInstance();
-  private final EditUserProvider editUserProvider = EditUserProvider.getInstance();
+  private final ShowUserModule showUserModule = ShowUserModule.getInstance();
+  private final NewUserModule newUserModule = NewUserModule.getInstance();
+  private final EditUserModule editUserModule = EditUserModule.getInstance();
   private final Logger logger = LogManager.getLogger(UserListController.class);
   private final User sessionUser = (User) SessionManager.get("currentUser").orElseThrow();
 
@@ -75,7 +75,7 @@ public class UserListController extends AbstractController {
 
   @FXML
   private void initialize() {
-    addButton.setDisable(!isAccessGranted(sessionUser, newUserProvider.getAccess()));
+    addButton.setDisable(!isAccessGranted(sessionUser, newUserModule.getAccess()));
 
     idColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
     surnameColumn.setCellValueFactory(entry -> entry.getValue().surnameProperty());
@@ -92,9 +92,9 @@ public class UserListController extends AbstractController {
           if (currentUser != null) {
             var currentUserAccessLevel = currentUser.getPersonSecurity().getAccess();
             var condition = isAccessGranted(sessionUser, currentUserAccessLevel);
-            showButton.setDisable(!isAccessGranted(sessionUser, showUserProvider.getAccess()));
+            showButton.setDisable(!isAccessGranted(sessionUser, showUserModule.getAccess()));
             editButton.setDisable(condition
-                                  || !isAccessGranted(sessionUser, editUserProvider.getAccess()));
+                                  || !isAccessGranted(sessionUser, editUserModule.getAccess()));
             deleteButton.setDisable(condition || !isAccessGranted(sessionUser, Access.ADMIN));
           } else {
             showButton.setDisable(true);
@@ -128,7 +128,7 @@ public class UserListController extends AbstractController {
 
   @FXML
   private void add() {
-    var result = windowManager.showAndGet(newUserProvider);
+    var result = windowManager.showAndGet(newUserModule);
     result.ifPresent(userTable.getItems()::add);
   }
 
@@ -136,7 +136,7 @@ public class UserListController extends AbstractController {
   private void show() {
     var model = userTable.getSelectionModel();
     if (!model.isEmpty()) {
-      windowManager.showAndWait(showUserProvider, model.getSelectedItem());
+      windowManager.showAndWait(showUserModule, model.getSelectedItem());
     }
   }
 
@@ -144,7 +144,7 @@ public class UserListController extends AbstractController {
   private void edit() {
     var model = userTable.getSelectionModel();
     if (!model.isEmpty()) {
-      windowManager.showAndWait(editUserProvider, model.getSelectedItem());
+      windowManager.showAndWait(editUserModule, model.getSelectedItem());
     }
   }
 

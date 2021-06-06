@@ -9,12 +9,12 @@ import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductStorage;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.provider.impl.storage.EditCompanyProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.storage.EditProductStorageProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.storage.NewCompanyProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.storage.NewProductStorageProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.storage.ShowCompanyProvider;
-import com.github.ecstasyawesome.warehouse.provider.impl.storage.ShowProductStorageProvider;
+import com.github.ecstasyawesome.warehouse.module.impl.storage.EditCompanyModule;
+import com.github.ecstasyawesome.warehouse.module.impl.storage.EditProductStorageModule;
+import com.github.ecstasyawesome.warehouse.module.impl.storage.NewCompanyModule;
+import com.github.ecstasyawesome.warehouse.module.impl.storage.NewProductStorageModule;
+import com.github.ecstasyawesome.warehouse.module.impl.storage.ShowCompanyModule;
+import com.github.ecstasyawesome.warehouse.module.impl.storage.ShowProductStorageModule;
 import com.github.ecstasyawesome.warehouse.repository.CompanyRepository;
 import com.github.ecstasyawesome.warehouse.repository.Deletable;
 import com.github.ecstasyawesome.warehouse.repository.ProductStorageRepository;
@@ -40,15 +40,15 @@ public class ProductStorageListController extends AbstractController {
   private final CompanyRepository companyRepository = CompanyRepositoryService.getInstance();
   private final ProductStorageRepository productStorageRepository =
       ProductStorageRepositoryService.getInstance();
-  private final ShowCompanyProvider showCompanyProvider = ShowCompanyProvider.getInstance();
-  private final ShowProductStorageProvider showProductStorageProvider =
-      ShowProductStorageProvider.getInstance();
-  private final NewCompanyProvider newCompanyProvider = NewCompanyProvider.getInstance();
-  private final NewProductStorageProvider newStorageProvider =
-      NewProductStorageProvider.getInstance();
-  private final EditCompanyProvider editCompanyProvider = EditCompanyProvider.getInstance();
-  private final EditProductStorageProvider editStorageProvider =
-      EditProductStorageProvider.getInstance();
+  private final ShowCompanyModule showCompanyModule = ShowCompanyModule.getInstance();
+  private final ShowProductStorageModule showProductStorageModule =
+      ShowProductStorageModule.getInstance();
+  private final NewCompanyModule newCompanyModule = NewCompanyModule.getInstance();
+  private final NewProductStorageModule newProductStorageModule =
+      NewProductStorageModule.getInstance();
+  private final EditCompanyModule editCompanyModule = EditCompanyModule.getInstance();
+  private final EditProductStorageModule editProductStorageModule =
+      EditProductStorageModule.getInstance();
   private final Logger logger = LogManager.getLogger(ProductStorageListController.class);
   private final User sessionUser = (User) SessionManager.get("currentUser").orElseThrow();
 
@@ -93,8 +93,8 @@ public class ProductStorageListController extends AbstractController {
 
   @FXML
   private void initialize() {
-    addCompanyButton.setDisable(!isAccessGranted(sessionUser, newCompanyProvider.getAccess()));
-    addStorageButton.setDisable(!isAccessGranted(sessionUser, newStorageProvider.getAccess()));
+    addCompanyButton.setDisable(!isAccessGranted(sessionUser, newCompanyModule.getAccess()));
+    addStorageButton.setDisable(!isAccessGranted(sessionUser, newProductStorageModule.getAccess()));
 
     companyNameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
     storageIdColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
@@ -109,10 +109,10 @@ public class ProductStorageListController extends AbstractController {
           }
           showCompanyButton
               .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, showCompanyProvider.getAccess()));
+                          || !isAccessGranted(sessionUser, showCompanyModule.getAccess()));
           editCompanyButton
               .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, editCompanyProvider.getAccess()));
+                          || !isAccessGranted(sessionUser, editCompanyModule.getAccess()));
           deleteCompanyButton.setDisable(currentNull
                                          || !isAccessGranted(sessionUser, Access.ADMIN));
         });
@@ -123,10 +123,10 @@ public class ProductStorageListController extends AbstractController {
           var currentNull = currentStorage == null;
           showStorageButton
               .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, showProductStorageProvider.getAccess()));
+                          || !isAccessGranted(sessionUser, showProductStorageModule.getAccess()));
           editStorageButton
               .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, editStorageProvider.getAccess()));
+                          || !isAccessGranted(sessionUser, editProductStorageModule.getAccess()));
           deleteStorageButton.setDisable(currentNull
                                          || !isAccessGranted(sessionUser, Access.ADMIN));
         });
@@ -136,13 +136,13 @@ public class ProductStorageListController extends AbstractController {
 
   @FXML
   private void addCompany() {
-    var result = windowManager.showAndGet(newCompanyProvider);
+    var result = windowManager.showAndGet(newCompanyModule);
     result.ifPresent(companyTable.getItems()::add);
   }
 
   @FXML
   private void addStorage() {
-    var result = windowManager.showAndGet(newStorageProvider);
+    var result = windowManager.showAndGet(newProductStorageModule);
     result.ifPresent(storage -> {
       var selectionModel = companyTable.getSelectionModel();
       var company = storage.getCompany();
@@ -168,7 +168,7 @@ public class ProductStorageListController extends AbstractController {
     if (!model.isEmpty()) {
       var company = model.getSelectedItem();
       var companyCopy = new Company(company);
-      windowManager.showAndWait(editCompanyProvider, company);
+      windowManager.showAndWait(editCompanyModule, company);
       if (!company.equals(companyCopy)) {
         for (var storage : storageTable.getItems()) {
           storage.setCompany(company);
@@ -181,7 +181,7 @@ public class ProductStorageListController extends AbstractController {
   private void editStorage() {
     var model = storageTable.getSelectionModel();
     if (!model.isEmpty()) {
-      windowManager.showAndWait(editStorageProvider, model.getSelectedItem());
+      windowManager.showAndWait(editProductStorageModule, model.getSelectedItem());
     }
   }
 
@@ -189,7 +189,7 @@ public class ProductStorageListController extends AbstractController {
   private void showCompany() {
     var model = companyTable.getSelectionModel();
     if (!model.isEmpty()) {
-      windowManager.showAndWait(showCompanyProvider, model.getSelectedItem());
+      windowManager.showAndWait(showCompanyModule, model.getSelectedItem());
     }
   }
 
@@ -197,7 +197,7 @@ public class ProductStorageListController extends AbstractController {
   private void showStorage() {
     var model = storageTable.getSelectionModel();
     if (!model.isEmpty()) {
-      windowManager.showAndWait(showProductStorageProvider, model.getSelectedItem());
+      windowManager.showAndWait(showProductStorageModule, model.getSelectedItem());
     }
   }
 
