@@ -7,8 +7,8 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.RED_ADJUST
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
-import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.module.HomeModule;
 import com.github.ecstasyawesome.warehouse.module.user.AdministratorRegistrationModule;
 import com.github.ecstasyawesome.warehouse.repository.UserRepository;

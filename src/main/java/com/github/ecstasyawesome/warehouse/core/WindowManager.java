@@ -7,11 +7,11 @@ import com.github.ecstasyawesome.warehouse.core.controller.AbstractConfiguredFee
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.controller.Cacheable;
-import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredFeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredModule;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractModule;
+import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.module.user.AuthorizationModule;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import java.io.PrintWriter;

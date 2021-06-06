@@ -2,9 +2,9 @@ package com.github.ecstasyawesome.warehouse.module.storage;
 
 import com.github.ecstasyawesome.warehouse.controller.storage.NewProductStorageController;
 import com.github.ecstasyawesome.warehouse.core.FxmlBundle;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductStorage;
-import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import java.net.URL;
 
 public class NewProductStorageModule extends

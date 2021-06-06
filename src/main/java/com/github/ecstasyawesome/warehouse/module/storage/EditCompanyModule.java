@@ -2,9 +2,9 @@ package com.github.ecstasyawesome.warehouse.module.storage;
 
 import com.github.ecstasyawesome.warehouse.controller.storage.EditCompanyController;
 import com.github.ecstasyawesome.warehouse.core.FxmlBundle;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;
-import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredModule;
 import java.net.URL;
 
 public class EditCompanyModule extends

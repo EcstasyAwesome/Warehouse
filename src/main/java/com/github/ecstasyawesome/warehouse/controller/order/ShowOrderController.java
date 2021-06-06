@@ -1,7 +1,7 @@
 package com.github.ecstasyawesome.warehouse.controller.order;
 
-import com.github.ecstasyawesome.warehouse.core.controller.AbstractConfiguredController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractConfiguredController;
 import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.model.impl.Order;

@@ -1,7 +1,7 @@
 package com.github.ecstasyawesome.warehouse.controller.product;
 
-import com.github.ecstasyawesome.warehouse.core.controller.AbstractFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractFeedbackController;
 import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.model.impl.Product;
@@ -110,9 +110,8 @@ public class ProductPickerController extends AbstractFeedbackController<HashSet<
 
     productTable.getSelectionModel()
         .selectedItemProperty()
-        .addListener((observable, prevProduct, currentProduct) -> {
-          pickButton.setDisable(currentProduct == null);
-        });
+        .addListener((observable, prevProduct, currentProduct) ->
+            pickButton.setDisable(currentProduct == null));
 
     getCategoriesFromDatabase();
   }

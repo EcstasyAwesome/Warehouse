@@ -2,9 +2,9 @@ package com.github.ecstasyawesome.warehouse.module.product;
 
 import com.github.ecstasyawesome.warehouse.controller.product.NewCategoryController;
 import com.github.ecstasyawesome.warehouse.core.FxmlBundle;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
-import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import java.net.URL;
 
 public class NewCategoryModule extends

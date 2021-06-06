@@ -3,8 +3,8 @@ package com.github.ecstasyawesome.warehouse.controller;
 import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
 
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractModule;
+import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.module.HomeModule;
 import com.github.ecstasyawesome.warehouse.module.SettingsModule;
 import com.github.ecstasyawesome.warehouse.module.order.OrderListModule;

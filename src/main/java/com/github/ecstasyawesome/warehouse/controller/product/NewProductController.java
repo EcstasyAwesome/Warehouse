@@ -4,8 +4,8 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.NAME;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
-import com.github.ecstasyawesome.warehouse.core.controller.AbstractFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractFeedbackController;
 import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.model.impl.Product;

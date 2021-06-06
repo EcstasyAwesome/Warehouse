@@ -2,9 +2,9 @@ package com.github.ecstasyawesome.warehouse.module.user;
 
 import com.github.ecstasyawesome.warehouse.controller.user.AdministratorController;
 import com.github.ecstasyawesome.warehouse.core.FxmlBundle;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.PersonSecurity;
-import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import java.net.URL;
 
 public class AdministratorRegistrationModule

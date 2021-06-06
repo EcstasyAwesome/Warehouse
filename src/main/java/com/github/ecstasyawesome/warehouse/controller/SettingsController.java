@@ -1,7 +1,7 @@
 package com.github.ecstasyawesome.warehouse.controller;
 
-import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.core.ApplicationSettings;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.util.ResourceLoader.Language;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

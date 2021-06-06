@@ -2,8 +2,8 @@ package com.github.ecstasyawesome.warehouse.module.product;
 
 import com.github.ecstasyawesome.warehouse.controller.product.ProductListController;
 import com.github.ecstasyawesome.warehouse.core.FxmlBundle;
-import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractModule;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import java.net.URL;
 
 public class ProductListModule extends AbstractModule<ProductListController> {

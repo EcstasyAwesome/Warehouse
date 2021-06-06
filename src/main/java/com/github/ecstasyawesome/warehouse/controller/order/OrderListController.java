@@ -2,8 +2,8 @@ package com.github.ecstasyawesome.warehouse.controller.order;
 
 import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
 
-import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.model.impl.Order;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductProvider;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductStorage;

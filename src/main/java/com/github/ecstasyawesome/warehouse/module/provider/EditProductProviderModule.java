@@ -2,9 +2,9 @@ package com.github.ecstasyawesome.warehouse.module.provider;
 
 import com.github.ecstasyawesome.warehouse.controller.provider.EditProductProviderController;
 import com.github.ecstasyawesome.warehouse.core.FxmlBundle;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductProvider;
-import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredModule;
 import java.net.URL;
 
 public class EditProductProviderModule extends

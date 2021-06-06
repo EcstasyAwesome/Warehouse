@@ -2,9 +2,9 @@ package com.github.ecstasyawesome.warehouse.module.provider;
 
 import com.github.ecstasyawesome.warehouse.controller.provider.NewProductProviderController;
 import com.github.ecstasyawesome.warehouse.core.FxmlBundle;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductProvider;
-import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import java.net.URL;
 
 public class NewProductProviderModule extends

@@ -2,9 +2,9 @@ package com.github.ecstasyawesome.warehouse.module.product;
 
 import com.github.ecstasyawesome.warehouse.controller.product.ProductPickerController;
 import com.github.ecstasyawesome.warehouse.core.FxmlBundle;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Product;
-import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import java.net.URL;
 import java.util.HashSet;
 

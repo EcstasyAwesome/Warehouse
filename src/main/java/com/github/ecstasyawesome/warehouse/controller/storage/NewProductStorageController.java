@@ -8,8 +8,8 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.WILDCARD;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
-import com.github.ecstasyawesome.warehouse.core.controller.AbstractFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractFeedbackController;
 import com.github.ecstasyawesome.warehouse.model.impl.Address;
 import com.github.ecstasyawesome.warehouse.model.impl.BusinessContact.Builder;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;

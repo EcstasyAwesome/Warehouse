@@ -9,8 +9,8 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldTe
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
-import com.github.ecstasyawesome.warehouse.core.controller.AbstractConfiguredController;
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractConfiguredController;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductProvider;
 import com.github.ecstasyawesome.warehouse.repository.ProductProviderRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.ProductProviderRepositoryService;

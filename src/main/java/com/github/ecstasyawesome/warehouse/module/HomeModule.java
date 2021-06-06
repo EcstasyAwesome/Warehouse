@@ -2,8 +2,8 @@ package com.github.ecstasyawesome.warehouse.module;
 
 import com.github.ecstasyawesome.warehouse.controller.HomeController;
 import com.github.ecstasyawesome.warehouse.core.FxmlBundle;
-import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractModule;
+import com.github.ecstasyawesome.warehouse.model.Access;
 import java.net.URL;
 
 public class HomeModule extends AbstractModule<HomeController> {
