@@ -4,9 +4,11 @@ import com.github.ecstasyawesome.warehouse.model.impl.Order;
 import com.github.ecstasyawesome.warehouse.model.impl.OrderItem;
 import com.github.ecstasyawesome.warehouse.repository.OrderRepository;
 import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -30,6 +32,89 @@ public class OrderRepositoryService extends OrderRepository {
 
   public static OrderRepositoryService getInstance() {
     return INSTANCE;
+  }
+
+  @Override
+  public ObservableList<Order> search(String partOfId) {
+    Objects.requireNonNull(partOfId);
+    final var query = """
+        SELECT *
+        FROM ORDERS
+            INNER JOIN PRODUCT_PROVIDERS
+                ON ORDERS.PROVIDER_ID = PRODUCT_PROVIDERS.PROVIDER_ID
+            INNER JOIN PRODUCT_PROVIDERS_CONTACTS
+                ON ORDERS.PROVIDER_ID = PRODUCT_PROVIDERS_CONTACTS.PROVIDER_ID
+            INNER JOIN PRODUCT_PROVIDERS_ADDRESSES
+                ON ORDERS.PROVIDER_ID = PRODUCT_PROVIDERS_ADDRESSES.PROVIDER_ID
+            INNER JOIN PRODUCT_STORAGES
+                ON ORDERS.STORAGE_ID = PRODUCT_STORAGES.STORAGE_ID
+            INNER JOIN PRODUCT_STORAGES_CONTACTS
+                ON ORDERS.STORAGE_ID = PRODUCT_STORAGES_CONTACTS.STORAGE_ID
+            INNER JOIN PRODUCT_STORAGES_ADDRESSES
+                ON ORDERS.STORAGE_ID = PRODUCT_STORAGES_ADDRESSES.STORAGE_ID
+            INNER JOIN COMPANIES
+                ON PRODUCT_STORAGES.COMPANY_ID = COMPANIES.COMPANY_ID
+            INNER JOIN COMPANIES_CONTACTS
+                ON PRODUCT_STORAGES.COMPANY_ID = COMPANIES_CONTACTS.COMPANY_ID
+            INNER JOIN COMPANIES_ADDRESSES
+                ON PRODUCT_STORAGES.COMPANY_ID = COMPANIES_ADDRESSES.COMPANY_ID
+            INNER JOIN USERS
+                ON ORDERS.USER_ID = USERS.USER_ID
+            INNER JOIN USERS_CONTACTS
+                ON ORDERS.USER_ID = USERS_CONTACTS.USER_ID
+            INNER JOIN USERS_SECURITY
+                ON ORDERS.USER_ID = USERS_SECURITY.USER_ID
+        WHERE ORDER_ID LIKE ?
+        """;
+    try {
+      var result = selectRecords(query, String.format("%%%s%%", partOfId));
+      logger.debug("Selected all orders where id contains '{}' [{} record(s)]", partOfId,
+          result.size());
+      return result;
+    } catch (SQLException exception) {
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
+    }
+  }
+
+  @Override
+  public ObservableList<Order> search(LocalDate date) {
+    Objects.requireNonNull(date);
+    final var query = """
+        SELECT *
+        FROM ORDERS
+            INNER JOIN PRODUCT_PROVIDERS
+                ON ORDERS.PROVIDER_ID = PRODUCT_PROVIDERS.PROVIDER_ID
+            INNER JOIN PRODUCT_PROVIDERS_CONTACTS
+                ON ORDERS.PROVIDER_ID = PRODUCT_PROVIDERS_CONTACTS.PROVIDER_ID
+            INNER JOIN PRODUCT_PROVIDERS_ADDRESSES
+                ON ORDERS.PROVIDER_ID = PRODUCT_PROVIDERS_ADDRESSES.PROVIDER_ID
+            INNER JOIN PRODUCT_STORAGES
+                ON ORDERS.STORAGE_ID = PRODUCT_STORAGES.STORAGE_ID
+            INNER JOIN PRODUCT_STORAGES_CONTACTS
+                ON ORDERS.STORAGE_ID = PRODUCT_STORAGES_CONTACTS.STORAGE_ID
+            INNER JOIN PRODUCT_STORAGES_ADDRESSES
+                ON ORDERS.STORAGE_ID = PRODUCT_STORAGES_ADDRESSES.STORAGE_ID
+            INNER JOIN COMPANIES
+                ON PRODUCT_STORAGES.COMPANY_ID = COMPANIES.COMPANY_ID
+            INNER JOIN COMPANIES_CONTACTS
+                ON PRODUCT_STORAGES.COMPANY_ID = COMPANIES_CONTACTS.COMPANY_ID
+            INNER JOIN COMPANIES_ADDRESSES
+                ON PRODUCT_STORAGES.COMPANY_ID = COMPANIES_ADDRESSES.COMPANY_ID
+            INNER JOIN USERS
+                ON ORDERS.USER_ID = USERS.USER_ID
+            INNER JOIN USERS_CONTACTS
+                ON ORDERS.USER_ID = USERS_CONTACTS.USER_ID
+            INNER JOIN USERS_SECURITY
+                ON ORDERS.USER_ID = USERS_SECURITY.USER_ID
+        WHERE ORDER_TIME LIKE ?
+        """;
+    try {
+      var result = selectRecords(query, String.format("%%%s%%", Date.valueOf(date)));
+      logger.debug("Selected all orders where date is '{}' [{} record(s)]", date, result.size());
+      return result;
+    } catch (SQLException exception) {
+      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
+    }
   }
 
   @Override
