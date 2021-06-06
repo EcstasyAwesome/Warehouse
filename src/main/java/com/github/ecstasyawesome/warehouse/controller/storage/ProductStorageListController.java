@@ -4,7 +4,6 @@ import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
 
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
-import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductStorage;
@@ -16,15 +15,12 @@ import com.github.ecstasyawesome.warehouse.module.storage.NewProductStorageModul
 import com.github.ecstasyawesome.warehouse.module.storage.ShowCompanyModule;
 import com.github.ecstasyawesome.warehouse.module.storage.ShowProductStorageModule;
 import com.github.ecstasyawesome.warehouse.repository.CompanyRepository;
-import com.github.ecstasyawesome.warehouse.repository.Deletable;
 import com.github.ecstasyawesome.warehouse.repository.ProductStorageRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CompanyRepositoryService;
 import com.github.ecstasyawesome.warehouse.repository.impl.ProductStorageRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
@@ -154,12 +150,12 @@ public class ProductStorageListController extends AbstractController {
 
   @FXML
   private void deleteCompany() {
-    deleteRecord("company", companyTable, companyRepository);
+    deleteSelectedTableRecord(companyTable, companyRepository, windowManager, logger);
   }
 
   @FXML
   private void deleteStorage() {
-    deleteRecord("product storage", storageTable, productStorageRepository);
+    deleteSelectedTableRecord(storageTable, productStorageRepository, windowManager, logger);
   }
 
   @FXML
@@ -244,25 +240,6 @@ public class ProductStorageListController extends AbstractController {
   @FXML
   private void refresh() {
     getCompaniesFromDatabase();
-  }
-
-  private <T extends AbstractRecord> void deleteRecord(String name, TableView<T> table,
-      Deletable<T> deletable) {
-    var selectionModel = table.getSelectionModel();
-    if (!selectionModel.isEmpty()) {
-      var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
-          "All related data will be removed too, are you sure?"); // TODO i18n
-      if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
-        var record = selectionModel.getSelectedItem();
-        try {
-          deletable.delete(record);
-          table.getItems().remove(record);
-          logger.info("Deleted a {} with id={}", name, record.getId());
-        } catch (NullPointerException exception) {
-          windowManager.showDialog(exception);
-        }
-      }
-    }
   }
 
   private void getCompaniesFromDatabase() {

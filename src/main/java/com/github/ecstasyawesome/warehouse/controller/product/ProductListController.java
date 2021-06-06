@@ -4,7 +4,6 @@ import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
 
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
-import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
@@ -17,15 +16,12 @@ import com.github.ecstasyawesome.warehouse.module.product.NewProductModule;
 import com.github.ecstasyawesome.warehouse.module.product.ShowCategoryModule;
 import com.github.ecstasyawesome.warehouse.module.product.ShowProductModule;
 import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
-import com.github.ecstasyawesome.warehouse.repository.Deletable;
 import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
 import com.github.ecstasyawesome.warehouse.repository.impl.ProductRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -169,7 +165,7 @@ public class ProductListController extends AbstractController {
 
   @FXML
   private void deleteCategory() {
-    deleteRecord("category", categoryTable, categoryRepository);
+    deleteSelectedTableRecord(categoryTable, categoryRepository, windowManager, logger);
   }
 
   @FXML
@@ -200,7 +196,7 @@ public class ProductListController extends AbstractController {
 
   @FXML
   private void deleteProduct() {
-    deleteRecord("product", productTable, productRepository);
+    deleteSelectedTableRecord(productTable, productRepository, windowManager, logger);
   }
 
   @FXML
@@ -287,25 +283,6 @@ public class ProductListController extends AbstractController {
     var selectionModel = productTable.getSelectionModel();
     if (!selectionModel.isEmpty()) {
       windowManager.showAndWait(showProductModule, selectionModel.getSelectedItem());
-    }
-  }
-
-  private <T extends AbstractRecord> void deleteRecord(String name, TableView<T> table,
-      Deletable<T> deletable) {
-    var selectionModel = table.getSelectionModel();
-    if (!selectionModel.isEmpty()) {
-      var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
-          "All related data will be removed too, are you sure?"); // TODO i18n
-      if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
-        var record = selectionModel.getSelectedItem();
-        try {
-          deletable.delete(record);
-          table.getItems().remove(record);
-          logger.info("Deleted a {} with id={}", name, record.getId());
-        } catch (NullPointerException exception) {
-          windowManager.showDialog(exception);
-        }
-      }
     }
   }
 

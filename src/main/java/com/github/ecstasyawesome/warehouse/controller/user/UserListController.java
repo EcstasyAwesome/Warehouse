@@ -4,20 +4,16 @@ import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
 
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
-import com.github.ecstasyawesome.warehouse.model.AbstractRecord;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.module.user.EditUserModule;
 import com.github.ecstasyawesome.warehouse.module.user.NewUserModule;
 import com.github.ecstasyawesome.warehouse.module.user.ShowUserModule;
-import com.github.ecstasyawesome.warehouse.repository.Deletable;
 import com.github.ecstasyawesome.warehouse.repository.UserRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.UserRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
@@ -150,31 +146,12 @@ public class UserListController extends AbstractController {
 
   @FXML
   private void delete() {
-    deleteRecord("user", userTable, userRepository);
+    deleteSelectedTableRecord(userTable, userRepository, windowManager, logger);
   }
 
   @FXML
   private void refresh() {
     getUsersFromDatabase();
-  }
-
-  private <T extends AbstractRecord> void deleteRecord(String name, TableView<T> table,
-      Deletable<T> deletable) {
-    var selectionModel = table.getSelectionModel();
-    if (!selectionModel.isEmpty()) {
-      var confirmation = windowManager.showDialog(AlertType.CONFIRMATION,
-          "All related data will be removed too, are you sure?"); // TODO i18n
-      if (confirmation.isPresent() && confirmation.get() == ButtonType.OK) {
-        var record = selectionModel.getSelectedItem();
-        try {
-          deletable.delete(record);
-          table.getItems().remove(record);
-          logger.info("Deleted a {} with id={}", name, record.getId());
-        } catch (NullPointerException exception) {
-          windowManager.showDialog(exception);
-        }
-      }
-    }
   }
 
   private void getUsersFromDatabase() {
