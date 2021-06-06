@@ -2,17 +2,17 @@ package com.github.ecstasyawesome.warehouse.core;
 
 import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
 
-import com.github.ecstasyawesome.warehouse.controller.AbstractConfiguredController;
-import com.github.ecstasyawesome.warehouse.controller.AbstractConfiguredFeedbackController;
-import com.github.ecstasyawesome.warehouse.controller.AbstractController;
-import com.github.ecstasyawesome.warehouse.controller.AbstractFeedbackController;
-import com.github.ecstasyawesome.warehouse.controller.Cacheable;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractConfiguredController;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractConfiguredFeedbackController;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractFeedbackController;
+import com.github.ecstasyawesome.warehouse.core.controller.Cacheable;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
-import com.github.ecstasyawesome.warehouse.module.AbstractConfiguredFeedbackModule;
-import com.github.ecstasyawesome.warehouse.module.AbstractConfiguredModule;
-import com.github.ecstasyawesome.warehouse.module.AbstractFeedbackModule;
-import com.github.ecstasyawesome.warehouse.module.AbstractModule;
-import com.github.ecstasyawesome.warehouse.module.impl.user.AuthorizationModule;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredFeedbackModule;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredModule;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractModule;
+import com.github.ecstasyawesome.warehouse.module.user.AuthorizationModule;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import java.io.PrintWriter;
 import java.io.StringWriter;

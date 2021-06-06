@@ -1,6 +1,6 @@
 package com.github.ecstasyawesome.warehouse.core;
 
-import com.github.ecstasyawesome.warehouse.controller.AbstractController;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.util.ResourceLoader;
 import java.io.File;
 import java.io.IOException;
