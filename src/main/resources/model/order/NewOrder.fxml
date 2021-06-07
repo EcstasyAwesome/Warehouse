@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -43,21 +42,17 @@
                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
-                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
-                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
                         </rowConstraints>
                         <children>
-                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
-                           <DatePicker fx:id="datePicker" disable="true" editable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" GridPane.rowIndex="1" />
-                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Provider" GridPane.rowIndex="2" />
-                           <ChoiceBox fx:id="providerChoiceBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" GridPane.rowIndex="3" />
-                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Storage" GridPane.rowIndex="4" />
-                           <ChoiceBox fx:id="storageChoiceBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" GridPane.rowIndex="5" />
-                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Comment" GridPane.rowIndex="6" />
-                           <TextArea fx:id="commentArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="200.0" promptText="comment" GridPane.rowIndex="7" />
-                           <Button fx:id="createButton" defaultButton="true" mnemonicParsing="false" onAction="#create" text="Create" GridPane.rowIndex="8" />
+                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Provider" />
+                           <ChoiceBox fx:id="providerChoiceBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" GridPane.rowIndex="1" />
+                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Storage" GridPane.rowIndex="2" />
+                           <ChoiceBox fx:id="storageChoiceBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" GridPane.rowIndex="3" />
+                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Comment" GridPane.rowIndex="4" />
+                           <TextArea fx:id="commentArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="200.0" promptText="comment" GridPane.rowIndex="5" />
+                           <Button defaultButton="true" mnemonicParsing="false" onAction="#create" text="Create" GridPane.rowIndex="6" />
                         </children>
                      </GridPane>
                   </content>
@@ -73,12 +68,12 @@
                   <children>
                      <ToolBar prefHeight="40.0" prefWidth="200.0">
                         <items>
-                           <Button fx:id="addButton" mnemonicParsing="false" onAction="#add" text="Add" />
+                           <Button mnemonicParsing="false" onAction="#add" text="Add" />
                            <Button fx:id="deleteButton" disable="true" mnemonicParsing="false" onAction="#delete" text="Delete" />
                            <Button fx:id="clearButton" disable="true" mnemonicParsing="false" onAction="#clear" text="Clear" />
                         </items>
                      </ToolBar>
-                     <TableView fx:id="orderItemTable" editable="true" onKeyReleased="#onKeyReleasedOnProductTable" onMouseClicked="#onMouseClickOnProductTable" onSort="#onSortProductTable" GridPane.rowIndex="1">
+                     <TableView fx:id="orderItemTable" editable="true" GridPane.rowIndex="1">
                         <columns>
                            <TableColumn fx:id="idColumn" minWidth="30.0" prefWidth="30.0" text="id" />
                            <TableColumn fx:id="nameColumn" minWidth="200.0" prefWidth="200.0" text="name" />
