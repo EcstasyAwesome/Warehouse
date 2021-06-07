@@ -89,7 +89,7 @@ public class NewOrderController extends AbstractController implements Cacheable 
       @Override
       public void updateItem(Double value, boolean empty) {
         super.updateItem(value, empty);
-        setText(Unit.convert(empty ? 0D : value));
+        setText(empty ? null : Unit.convert(value));
       }
     });
 
