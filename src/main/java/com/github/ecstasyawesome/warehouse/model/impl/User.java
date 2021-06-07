@@ -80,6 +80,11 @@ public class User extends AbstractPersonRecord implements Recoverable<User> {
         personSecurity.get());
   }
 
+  @Override
+  public String toString() {
+    return getPersonSecurity().getLogin();
+  }
+
   public static class Builder {
 
     private long id = -1L;
