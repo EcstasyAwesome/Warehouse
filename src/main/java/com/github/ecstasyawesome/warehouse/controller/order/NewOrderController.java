@@ -167,7 +167,10 @@ public class NewOrderController extends AbstractController implements Cacheable 
 
   @FXML
   private void delete() {
-    orderItemTable.getItems().remove(orderItemTable.getSelectionModel().getSelectedItem());
+    var model = orderItemTable.getSelectionModel();
+    if (!model.isEmpty()) {
+      orderItemTable.getItems().remove(model.getSelectedItem());
+    }
   }
 
   @FXML

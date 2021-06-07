@@ -115,7 +115,10 @@ public class ShowOrderController extends AbstractConfiguredController<Order> {
     providerLabel.setText(instance.getProductProvider().getName());
     storageLabel.setText(instance.getProductStorage().getName());
     dateLabel.setText(instance.getTime().format(Constants.DATE_TIME_FORMATTER));
-    commentLabel.setText(instance.getComment());
+    var comment = instance.getComment();
+    if (comment != null) {
+      commentLabel.setText(comment);
+    }
     var user = instance.getUser();
     if (user != null) {
       userLabel.setText(user.toString());
