@@ -13,7 +13,6 @@ import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
 import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
 import com.github.ecstasyawesome.warehouse.repository.impl.ProductRepositoryService;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -40,7 +39,7 @@ public class NewProductController extends AbstractFeedbackController<Product> {
 
   @FXML
   private void initialize() {
-    unitChoiceBox.setItems(FXCollections.observableArrayList(Unit.values()));
+    unitChoiceBox.setItems(Unit.getUnits());
     try {
       categoryChoiceBox.setItems(categoryRepository.getAll());
     } catch (NullPointerException exception) {
