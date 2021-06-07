@@ -1,7 +1,5 @@
 package com.github.ecstasyawesome.warehouse.controller.provider;
 
-import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
-
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.model.Access;
@@ -61,7 +59,7 @@ public class ProductProviderListController extends AbstractController {
 
   @FXML
   private void initialize() {
-    addButton.setDisable(!isAccessGranted(sessionUser, newProductProviderModule.getAccess()));
+    configureButton(addButton, sessionUser, newProductProviderModule.getAccess());
 
     idColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
     nameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
@@ -70,11 +68,11 @@ public class ProductProviderListController extends AbstractController {
         .selectedItemProperty()
         .addListener((observable, prevProvider, currentProvider) -> {
           var currentNull = currentProvider == null;
-          showButton.setDisable(
-              currentNull || !isAccessGranted(sessionUser, showProductProviderModule.getAccess()));
-          editButton.setDisable(
-              currentNull || !isAccessGranted(sessionUser, editProductProviderModule.getAccess()));
-          deleteButton.setDisable(currentNull || !isAccessGranted(sessionUser, Access.ADMIN));
+          configureButton(showButton, sessionUser, currentNull,
+              showProductProviderModule.getAccess());
+          configureButton(editButton, sessionUser, currentNull,
+              editProductProviderModule.getAccess());
+          configureButton(deleteButton, sessionUser, currentNull, Access.ADMIN);
         });
 
     getProvidersFromDatabase();

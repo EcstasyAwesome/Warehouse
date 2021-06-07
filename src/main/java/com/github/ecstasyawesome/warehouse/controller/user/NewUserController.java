@@ -6,7 +6,6 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.PASSWORD;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.arePasswordsEqual;
-import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
 import com.github.ecstasyawesome.warehouse.core.WindowManager;

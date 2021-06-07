@@ -71,7 +71,7 @@ public class UserListController extends AbstractController {
 
   @FXML
   private void initialize() {
-    addButton.setDisable(!isAccessGranted(sessionUser, newUserModule.getAccess()));
+    configureButton(addButton, sessionUser, newUserModule.getAccess());
 
     idColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
     surnameColumn.setCellValueFactory(entry -> entry.getValue().surnameProperty());
@@ -88,10 +88,9 @@ public class UserListController extends AbstractController {
           if (currentUser != null) {
             var currentUserAccessLevel = currentUser.getPersonSecurity().getAccess();
             var condition = isAccessGranted(sessionUser, currentUserAccessLevel);
-            showButton.setDisable(!isAccessGranted(sessionUser, showUserModule.getAccess()));
-            editButton.setDisable(condition
-                                  || !isAccessGranted(sessionUser, editUserModule.getAccess()));
-            deleteButton.setDisable(condition || !isAccessGranted(sessionUser, Access.ADMIN));
+            configureButton(showButton, sessionUser, showUserModule.getAccess());
+            configureButton(editButton, sessionUser, condition, editUserModule.getAccess());
+            configureButton(deleteButton, sessionUser, condition, Access.ADMIN);
           } else {
             showButton.setDisable(true);
             editButton.setDisable(true);

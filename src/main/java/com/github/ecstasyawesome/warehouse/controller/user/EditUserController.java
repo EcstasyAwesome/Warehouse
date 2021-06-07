@@ -3,9 +3,7 @@ package com.github.ecstasyawesome.warehouse.controller.user;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.EMAIL;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.STRICT_NAME;
-import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
-import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractConfiguredController;

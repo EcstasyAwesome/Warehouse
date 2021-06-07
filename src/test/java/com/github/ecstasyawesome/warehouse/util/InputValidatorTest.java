@@ -5,14 +5,9 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.NO_ADJUST;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.RED_ADJUST;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.WILDCARD;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.arePasswordsEqual;
-import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
-import static com.github.ecstasyawesome.warehouse.util.InputValidator.getNullOrText;
-import static com.github.ecstasyawesome.warehouse.util.InputValidator.getTextOrEmpty;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
-import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -160,37 +155,5 @@ public class InputValidatorTest {
     when(mock.isFieldUnique(anyString())).thenReturn(false);
     assertFalse(isFieldValid("root", "admin", WILDCARD, mock));
     verify(mock, only()).isFieldUnique("root");
-  }
-
-  @Test
-  public void testGettingTextOrEmpty() {
-    assertEquals("", getTextOrEmpty(null));
-    assertEquals("text", getTextOrEmpty("text"));
-  }
-
-  @Test
-  public void testGettingNullOrText() {
-    assertNull(getNullOrText(""));
-    assertEquals(" ", getNullOrText(" "));
-    assertEquals("text", getNullOrText("text"));
-  }
-
-  @Test
-  public void testTextInputControlGetter() {
-    var field = new TextField("");
-    assertNull(getFieldText(field));
-    field.setText(" ");
-    assertEquals(" ", getFieldText(field));
-    field.setText("text");
-    assertEquals("text", getFieldText(field));
-  }
-
-  @Test
-  public void testTextInputControlSetter() {
-    var field = new TextField();
-    setFieldText(field, null);
-    assertEquals("", field.getText());
-    setFieldText(field, "text");
-    assertEquals("text", field.getText());
   }
 }

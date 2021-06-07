@@ -1,6 +1,5 @@
 package com.github.ecstasyawesome.warehouse.controller.storage;
 
-import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractConfiguredController;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductStorage;

@@ -1,7 +1,5 @@
 package com.github.ecstasyawesome.warehouse.controller.storage;
 
-import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
-
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.model.Access;
@@ -89,8 +87,8 @@ public class ProductStorageListController extends AbstractController {
 
   @FXML
   private void initialize() {
-    addCompanyButton.setDisable(!isAccessGranted(sessionUser, newCompanyModule.getAccess()));
-    addStorageButton.setDisable(!isAccessGranted(sessionUser, newProductStorageModule.getAccess()));
+    configureButton(addCompanyButton, sessionUser, newCompanyModule.getAccess());
+    configureButton(addStorageButton, sessionUser, newProductStorageModule.getAccess());
 
     companyNameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
     storageIdColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
@@ -103,28 +101,22 @@ public class ProductStorageListController extends AbstractController {
           if (!currentNull) {
             getStoragesFromDatabase(currentCompany);
           }
-          showCompanyButton
-              .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, showCompanyModule.getAccess()));
-          editCompanyButton
-              .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, editCompanyModule.getAccess()));
-          deleteCompanyButton.setDisable(currentNull
-                                         || !isAccessGranted(sessionUser, Access.ADMIN));
+          configureButton(showCompanyButton, sessionUser, currentNull,
+              showCompanyModule.getAccess());
+          configureButton(editCompanyButton, sessionUser, currentNull,
+              editCompanyModule.getAccess());
+          configureButton(deleteCompanyButton, sessionUser, currentNull, Access.ADMIN);
         });
 
     storageTable.getSelectionModel()
         .selectedItemProperty()
         .addListener((observable, prevStorage, currentStorage) -> {
           var currentNull = currentStorage == null;
-          showStorageButton
-              .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, showProductStorageModule.getAccess()));
-          editStorageButton
-              .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, editProductStorageModule.getAccess()));
-          deleteStorageButton.setDisable(currentNull
-                                         || !isAccessGranted(sessionUser, Access.ADMIN));
+          configureButton(showStorageButton, sessionUser, currentNull,
+              showProductStorageModule.getAccess());
+          configureButton(editStorageButton, sessionUser, currentNull,
+              editProductStorageModule.getAccess());
+          configureButton(deleteStorageButton, sessionUser, currentNull, Access.ADMIN);
         });
 
     getCompaniesFromDatabase();

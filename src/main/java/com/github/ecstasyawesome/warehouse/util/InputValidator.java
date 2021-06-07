@@ -110,20 +110,4 @@ public final class InputValidator {
     LOGGER.debug("Text '{}' validated successfully [{}]", text, result);
     return result;
   }
-
-  public static String getTextOrEmpty(final String text) {
-    return text == null ? "" : text;
-  }
-
-  public static String getNullOrText(final String text) {
-    return text == null || text.isEmpty() ? null : text;
-  }
-
-  public static void setFieldText(final TextInputControl field, final String text) {
-    field.setText(getTextOrEmpty(text));
-  }
-
-  public static String getFieldText(final TextInputControl field) {
-    return getNullOrText(field.getText());
-  }
 }

@@ -1,7 +1,5 @@
 package com.github.ecstasyawesome.warehouse.controller.order;
 
-import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
-
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.model.impl.Order;
@@ -64,7 +62,7 @@ public class OrderListController extends AbstractController {
 
   @FXML
   private void initialize() {
-    addButton.setDisable(!isAccessGranted(sessionUser, newOrderModule.getAccess()));
+    configureButton(addButton, sessionUser, newOrderModule.getAccess());
 
     idColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
     storageColumn.setCellValueFactory(entry -> entry.getValue().productStorageProperty());
@@ -82,11 +80,9 @@ public class OrderListController extends AbstractController {
 
     orderTable.getSelectionModel()
         .selectedItemProperty()
-        .addListener(
-            (observable, prevOrder, currentOrder) ->
-                showButton
-                    .setDisable(currentOrder == null
-                                || !isAccessGranted(sessionUser, showOrderModule.getAccess())));
+        .addListener((observable, prevOrder, currentOrder) ->
+            configureButton(showButton, sessionUser, currentOrder == null,
+                showOrderModule.getAccess()));
 
     getOrdersFromDatabase();
   }

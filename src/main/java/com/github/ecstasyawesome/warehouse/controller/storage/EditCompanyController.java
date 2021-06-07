@@ -6,9 +6,7 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.NUMBERS;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.PHONE;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.URL;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.WILDCARD;
-import static com.github.ecstasyawesome.warehouse.util.InputValidator.getFieldText;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
-import static com.github.ecstasyawesome.warehouse.util.InputValidator.setFieldText;
 
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractConfiguredController;

@@ -1,7 +1,5 @@
 package com.github.ecstasyawesome.warehouse.controller.product;
 
-import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
-
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.model.Access;
@@ -96,8 +94,8 @@ public class ProductListController extends AbstractController {
 
   @FXML
   private void initialize() {
-    addCategoryButton.setDisable(!isAccessGranted(sessionUser, newCategoryModule.getAccess()));
-    addProductButton.setDisable(!isAccessGranted(sessionUser, newProductModule.getAccess()));
+    configureButton(addCategoryButton, sessionUser, newCategoryModule.getAccess());
+    configureButton(addProductButton, sessionUser, newProductModule.getAccess());
 
     categoryNameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
 
@@ -112,29 +110,24 @@ public class ProductListController extends AbstractController {
           var currentNull = currentCategory == null;
           if (!currentNull) {
             getProductsFromDatabase(currentCategory);
+            searchField.clear();
           }
-          showCategoryButton
-              .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, showCategoryModule.getAccess()));
-          editCategoryButton
-              .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, editCategoryModule.getAccess()));
-          deleteCategoryButton.setDisable(currentNull
-                                          || !isAccessGranted(sessionUser, Access.ADMIN));
-          searchField.clear();
+          configureButton(showCategoryButton, sessionUser, currentNull,
+              showCategoryModule.getAccess());
+          configureButton(editCategoryButton, sessionUser, currentNull,
+              editCategoryModule.getAccess());
+          configureButton(deleteCategoryButton, sessionUser, currentNull, Access.ADMIN);
         });
 
     productTable.getSelectionModel()
         .selectedItemProperty()
         .addListener((observable, prevProduct, currentProduct) -> {
           var currentNull = currentProduct == null;
-          showProductButton
-              .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, showProductModule.getAccess()));
-          editProductButton
-              .setDisable(currentNull
-                          || !isAccessGranted(sessionUser, editProductModule.getAccess()));
-          deleteProductButton.setDisable(!isAccessGranted(sessionUser, Access.ADMIN));
+          configureButton(showProductButton, sessionUser, currentNull,
+              showProductModule.getAccess());
+          configureButton(editProductButton, sessionUser, currentNull,
+              editProductModule.getAccess());
+          configureButton(deleteProductButton, sessionUser, currentNull, Access.ADMIN);
         });
 
     getCategoriesFromDatabase();
