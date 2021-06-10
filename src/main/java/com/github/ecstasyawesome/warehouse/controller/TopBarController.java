@@ -18,6 +18,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TopBarController {
 
@@ -32,6 +34,7 @@ public class TopBarController {
       ProductStorageListModule.getInstance();
   private final ProductProviderListModule productProviderListModule =
       ProductProviderListModule.getInstance();
+  private final Logger logger = LogManager.getLogger(TopBarController.class);
   private final User sessionUser = (User) SessionManager.get("currentUser").orElseThrow();
 
   @FXML
@@ -68,6 +71,7 @@ public class TopBarController {
         .showDialog(AlertType.CONFIRMATION, "Are you sure you want to logout?"); // TODO i18n
     if (result.isPresent() && result.get() == ButtonType.OK) {
       SessionManager.erase();
+      logger.info("Logged out '{}'", sessionUser.getPersonSecurity().getLogin());
       windowManager.showAuthorization();
     }
   }
@@ -77,6 +81,7 @@ public class TopBarController {
     var result = windowManager
         .showDialog(AlertType.CONFIRMATION, "Are you sure you want to exit?"); // TODO i18n
     if (result.isPresent() && result.get() == ButtonType.OK) {
+      logger.info("Shutting down by user request");
       windowManager.shutdown();
     }
   }
