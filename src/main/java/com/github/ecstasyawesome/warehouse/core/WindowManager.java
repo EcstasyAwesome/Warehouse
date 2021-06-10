@@ -11,32 +11,25 @@ import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredFeedbac
 import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredModule;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractModule;
+import com.github.ecstasyawesome.warehouse.core.window.MultiSceneWindow;
+import com.github.ecstasyawesome.warehouse.core.window.WindowContainer;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.module.user.AuthorizationModule;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import javafx.util.Duration;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,15 +39,18 @@ public final class WindowManager {
   private static final Logger LOGGER = LogManager.getLogger(WindowManager.class);
   private static WindowManager instance;
   private final Stage root;
-  private final Stage authorizationStage = new Stage();
-  private final Stage mainStage = new Stage();
-  private final List<Stage> stages = new ArrayList<>();
+  private final MultiSceneWindow authorizationWindow;
+  private final MultiSceneWindow workWindow;
+  private final WindowContainer extraWindowManager;
   private final Set<Class<? extends Cacheable>> cachedControllers = new HashSet<>();
   private AbstractModule<? extends AbstractController> currentModule;
   private Cacheable currentCachedController;
 
   private WindowManager(final Stage root) {
     this.root = root;
+    authorizationWindow = new AuthorizationWindow(root);
+    workWindow = new WorkWindow(root);
+    extraWindowManager = new ExtraModalWindowManager(root);
   }
 
   public static WindowManager getInstance() {
@@ -75,28 +71,29 @@ public final class WindowManager {
   }
 
   public void showAuthorization() {
-    LOGGER.debug("Request to show the authorization stage");
+    LOGGER.trace("Request to show the module in the authorization window");
     var user = getUserFromContext();
     if (user.isEmpty()) {
+      cachedControllers.clear();
       currentModule = null;
       currentCachedController = null;
       var module = AuthorizationModule.getInstance();
       var fxmlBundle = module.create();
-      applyFadeAnimation(fxmlBundle.getParent());
-      configureAuthorizationStageAndShow(module.getTitle(), fxmlBundle.getScene());
+      authorizationWindow.show(module.getTitle(), fxmlBundle.getScene(), workWindow,
+          extraWindowManager);
     } else {
       showDialog(AlertType.WARNING, "Do logout before login"); // TODO i18n
     }
   }
 
   public <T extends AbstractController> void show(final AbstractModule<T> module) {
-    LOGGER.debug("Request to show the module at the main stage");
+    LOGGER.trace("Request to show the module in the work window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, module.getAccess())) {
       currentModule = module;
       var fxmlBundle = module.create();
       checkAbilityToCache(fxmlBundle.getController());
-      configureMainStageAndShow(module.getTitle(), fxmlBundle.getScene());
+      workWindow.show(module.getTitle(), fxmlBundle.getScene(), authorizationWindow);
     } else {
       showAccessWarning();
     }
@@ -104,7 +101,7 @@ public final class WindowManager {
 
   public <T extends AbstractConfiguredController<E>, E> void show(
       final AbstractConfiguredModule<T, E> configuredModule, E instance) {
-    LOGGER.debug("Request to show the configured module at the main stage");
+    LOGGER.trace("Request to show the configured module in the work window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, configuredModule.getAccess())) {
       currentModule = configuredModule;
@@ -112,19 +109,19 @@ public final class WindowManager {
       var controller = fxmlBundle.getController();
       checkAbilityToCache(controller);
       controller.apply(instance);
-      configureMainStageAndShow(configuredModule.getTitle(), fxmlBundle.getScene());
+      workWindow.show(configuredModule.getTitle(), fxmlBundle.getScene(), authorizationWindow);
     } else {
       showAccessWarning();
     }
   }
 
   public <T extends AbstractController> void showAndWait(final AbstractModule<T> module) {
-    LOGGER.debug("Request to show the module");
+    LOGGER.trace("Request to show the module in the extra window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, module.getAccess())) {
       var fxmlBundle = module.create();
       checkAbilityToCache(fxmlBundle.getController());
-      createNewExtraStageAndShow(module.getTitle(), fxmlBundle.getScene());
+      extraWindowManager.showWindow(module.getTitle(), fxmlBundle.getScene());
     } else {
       showAccessWarning();
     }
@@ -132,14 +129,14 @@ public final class WindowManager {
 
   public <T extends AbstractConfiguredController<E>, E> void showAndWait(
       final AbstractConfiguredModule<T, E> configuredModule, E instance) {
-    LOGGER.debug("Request to show the configured module");
+    LOGGER.trace("Request to show the configured module in the extra window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, configuredModule.getAccess())) {
       var fxmlBundle = configuredModule.create();
       var controller = fxmlBundle.getController();
       checkAbilityToCache(controller);
       controller.apply(instance);
-      createNewExtraStageAndShow(configuredModule.getTitle(), fxmlBundle.getScene());
+      extraWindowManager.showWindow(configuredModule.getTitle(), fxmlBundle.getScene());
     } else {
       showAccessWarning();
     }
@@ -147,13 +144,13 @@ public final class WindowManager {
 
   public <T extends AbstractFeedbackController<E>, E> Optional<E> showAndGet(
       final AbstractFeedbackModule<T, E> feedbackModule) {
-    LOGGER.debug("Request to show the feedback module");
+    LOGGER.trace("Request to show the feedback module in the extra window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, feedbackModule.getAccess())) {
       var fxmlBundle = feedbackModule.create();
       var controller = fxmlBundle.getController();
       checkAbilityToCache(controller);
-      createNewExtraStageAndShow(feedbackModule.getTitle(), fxmlBundle.getScene());
+      extraWindowManager.showWindow(feedbackModule.getTitle(), fxmlBundle.getScene());
       return Optional.ofNullable(controller.get());
     } else {
       showAccessWarning();
@@ -163,14 +160,14 @@ public final class WindowManager {
 
   public <T extends AbstractConfiguredFeedbackController<E, R>, E, R> Optional<R> showAndGet(
       final AbstractConfiguredFeedbackModule<T, E, R> configuredFeedbackModule, final E instance) {
-    LOGGER.debug("Request to show the configured feedback module");
+    LOGGER.trace("Request to show the configured feedback module in the extra window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, configuredFeedbackModule.getAccess())) {
       var fxmlBundle = configuredFeedbackModule.create();
       var controller = fxmlBundle.getController();
       checkAbilityToCache(controller);
       controller.apply(instance);
-      createNewExtraStageAndShow(configuredFeedbackModule.getTitle(), fxmlBundle.getScene());
+      extraWindowManager.showWindow(configuredFeedbackModule.getTitle(), fxmlBundle.getScene());
       return Optional.ofNullable(controller.get());
     } else {
       showAccessWarning();
@@ -184,6 +181,7 @@ public final class WindowManager {
   }
 
   public void shutdown() {
+    LOGGER.debug("Closed");
     root.close();
     Platform.exit();
   }
@@ -262,98 +260,7 @@ public final class WindowManager {
     return Optional.ofNullable(user);
   }
 
-  private void closeAllExtraStages() {
-    if (stages.size() > 0) {
-      stages.get(0).close();
-      stages.clear();
-    }
-  }
-
   private void showAccessWarning() {
     showDialog(AlertType.WARNING, "Access denied!"); // TODO i18n
-  }
-
-  private void createNewExtraStageAndShow(String title, Scene scene) {
-    var preparedTitle = prepareStageName(title);
-    var stage = new Stage();
-    stage.initModality(Modality.APPLICATION_MODAL);
-    stage.initOwner(stages.isEmpty() ? root : stages.get(stages.size() - 1));
-    stage.setTitle(preparedTitle);
-    stage.setScene(scene);
-    stage.setOnHidden(event -> {
-      stages.remove(stage);
-      LOGGER.debug("Closed the extra stage '{}'", preparedTitle);
-    });
-    stages.add(stage);
-    LOGGER.debug("Created the extra stage '{}'", preparedTitle);
-    LOGGER.trace("Showed the extra stage '{}'", preparedTitle);
-    stage.showAndWait();
-  }
-
-  private void configureMainStageAndShow(String title, Scene scene) {
-    if (mainStage.getOwner() == null) {
-      var viewSettings = ViewSettings.getInstance();
-      mainStage.initOwner(root);
-      mainStage.setMinWidth(viewSettings.getDefaultWidth());
-      mainStage.setMinHeight(viewSettings.getDefaultHeight());
-      mainStage.setWidth(viewSettings.getWidth());
-      mainStage.setHeight(viewSettings.getHeight());
-      mainStage.setMaximized(viewSettings.isMaximized());
-      mainStage.setOnHidden(getOnCloseActions());
-      LOGGER.debug("Configured main stage for the first time");
-    }
-    closeAllExtraStages();
-    authorizationStage.close();
-    var preparedTitle = prepareStageName(title);
-    mainStage.setTitle(preparedTitle);
-    mainStage.setScene(scene);
-    LOGGER.trace("Showed the main stage '{}'", preparedTitle);
-    mainStage.show();
-  }
-
-  private void configureAuthorizationStageAndShow(String title, Scene scene) {
-    if (authorizationStage.getOwner() == null) {
-      authorizationStage.initOwner(root);
-      authorizationStage.setResizable(false);
-      authorizationStage.setOnCloseRequest(event ->
-          LOGGER.trace("Application closed without authorized user"));
-      LOGGER.debug("Configured authorization stage for the first time");
-    }
-    closeAllExtraStages();
-    cachedControllers.clear();
-    mainStage.close();
-    var preparedTitle = prepareStageName(title);
-    authorizationStage.setTitle(preparedTitle);
-    authorizationStage.setScene(scene);
-    LOGGER.trace("Showed the authorization stage '{}'", preparedTitle);
-    authorizationStage.show();
-  }
-
-  private String prepareStageName(String moduleName) {
-    return String.format("%s - Warehouse", moduleName);
-  }
-
-  private void applyFadeAnimation(Parent parent) {
-    var fadeTransition = new FadeTransition(Duration.seconds(2), parent);
-    fadeTransition.setFromValue(0);
-    fadeTransition.setToValue(1);
-    fadeTransition.setCycleCount(1);
-    fadeTransition.playFromStart();
-  }
-
-  private EventHandler<WindowEvent> getOnCloseActions() {
-    return event -> {
-      var viewSettings = ViewSettings.getInstance();
-      var applicationSettings = ApplicationSettings.getInstance();
-      viewSettings.setWidth(mainStage.getWidth());
-      viewSettings.setHeight(mainStage.getHeight());
-      viewSettings.setMaximized(mainStage.isMaximized());
-      viewSettings.save();
-      applicationSettings.save();
-      getUserFromContext().ifPresent(user -> {
-        LOGGER.info("Logged out '{}'", user.getPersonSecurity().getLogin());
-        LOGGER.trace("Application closed");
-      });
-    };
   }
 }
