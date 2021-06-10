@@ -23,7 +23,7 @@ public final class FxmlBundle<T extends AbstractController> {
       parent = fxmlLoader.load();
       logger.debug("The resource '{}' loaded", new File(url.toExternalForm()).getName());
     } catch (IOException exception) {
-      throw new IllegalArgumentException(logger.throwing(Level.FATAL, exception));
+      throw logger.throwing(Level.FATAL, new IllegalArgumentException(exception));
     }
     try {
       controller = fxmlLoader.getController();
