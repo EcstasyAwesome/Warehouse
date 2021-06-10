@@ -1,6 +1,5 @@
 package com.github.ecstasyawesome.warehouse.util;
 
-import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 
 public final class PropertyTool {
 
-  private static final WindowManager WINDOW_MANAGER = WindowManager.getInstance();
   private static final Logger LOGGER = LogManager.getLogger(PropertyTool.class);
   private static final Path ROOT = Path.of("settings");
 
@@ -40,7 +38,6 @@ public final class PropertyTool {
     } catch (IOException exception) {
       var message = String.format("Cannot save %s", config.fileName);
       LOGGER.error(message, exception);
-      WINDOW_MANAGER.showDialog(exception);
     }
   }
 
@@ -56,7 +53,6 @@ public final class PropertyTool {
       } catch (IOException exception) {
         var message = String.format("Cannot create the directory '%s'", ROOT.toAbsolutePath());
         LOGGER.error(message, exception);
-        WINDOW_MANAGER.showDialog(exception);
       }
     }
   }
