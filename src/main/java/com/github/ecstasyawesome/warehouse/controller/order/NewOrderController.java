@@ -4,8 +4,7 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.WILDCARD;
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
-import com.github.ecstasyawesome.warehouse.core.controller.Cacheable;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractCachedController;
 import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.model.impl.Order;
@@ -36,7 +35,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NewOrderController extends AbstractController implements Cacheable {
+public class NewOrderController extends AbstractCachedController<NewOrderController> {
 
   private final WindowManager windowManager = WindowManager.getInstance();
   private final OrderRepository orderRepository = OrderRepositoryService.getInstance();
@@ -186,20 +185,15 @@ public class NewOrderController extends AbstractController implements Cacheable 
   }
 
   @Override
-  public void backup() {
-    SessionManager.store(getClass().getSimpleName(), this);
+  public NewOrderController backup() {
+    return this;
   }
 
   @Override
-  public void recover() {
-    var result = SessionManager.get(getClass().getSimpleName());
-    result.ifPresent(obj -> {
-      var controller = (NewOrderController) obj;
-      orderItemTable.setItems(controller.orderItemTable.getItems());
-      commentArea.setText(controller.commentArea.getText());
-      storageChoiceBox.setValue(controller.storageChoiceBox.getValue());
-      providerChoiceBox.setValue(controller.providerChoiceBox.getValue());
-    });
-
+  public void recover(NewOrderController instance) {
+    orderItemTable.getItems().addAll(instance.orderItemTable.getItems());
+    commentArea.setText(instance.commentArea.getText());
+    storageChoiceBox.setValue(instance.storageChoiceBox.getValue());
+    providerChoiceBox.setValue(instance.providerChoiceBox.getValue());
   }
 }

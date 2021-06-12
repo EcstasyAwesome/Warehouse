@@ -53,13 +53,13 @@ public enum Unit {
     }
 
     @Override
-    public String toString(Double aDouble) {
-      return Unit.convert(aDouble);
+    public String toString(Double value) {
+      return Unit.convert(value);
     }
 
     @Override
-    public Double fromString(String s) {
-      var value = Unit.convert(s);
+    public Double fromString(String text) {
+      var value = Unit.convert(text);
       return value < 0D ? 0D : value;
     }
   }

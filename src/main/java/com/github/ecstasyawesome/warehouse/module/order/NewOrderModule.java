@@ -2,11 +2,11 @@ package com.github.ecstasyawesome.warehouse.module.order;
 
 import com.github.ecstasyawesome.warehouse.controller.order.NewOrderController;
 import com.github.ecstasyawesome.warehouse.core.FxmlBundle;
-import com.github.ecstasyawesome.warehouse.core.module.AbstractModule;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractCachedModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import java.net.URL;
 
-public class NewOrderModule extends AbstractModule<NewOrderController> {
+public class NewOrderModule extends AbstractCachedModule<NewOrderController, NewOrderController> {
 
   private static final NewOrderModule INSTANCE = new NewOrderModule();
   private final URL fxml = getClass().getResource("/model/order/NewOrder.fxml");

@@ -1,10 +1,10 @@
 package com.github.ecstasyawesome.warehouse.core.controller;
 
-public interface Cacheable {
+public interface Cacheable<T> {
 
   boolean isReady();
 
-  void backup();
+  T backup();
 
-  void recover();
+  void recover(T instance);
 }

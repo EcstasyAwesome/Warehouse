@@ -2,11 +2,18 @@ package com.github.ecstasyawesome.warehouse.core;
 
 import static com.github.ecstasyawesome.warehouse.model.Access.isAccessGranted;
 
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractCachedConfiguredController;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractCachedConfiguredFeedbackController;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractCachedController;
+import com.github.ecstasyawesome.warehouse.core.controller.AbstractCachedFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractConfiguredController;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractConfiguredFeedbackController;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractController;
 import com.github.ecstasyawesome.warehouse.core.controller.AbstractFeedbackController;
-import com.github.ecstasyawesome.warehouse.core.controller.Cacheable;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractCachedConfiguredFeedbackModule;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractCachedConfiguredModule;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractCachedFeedbackModule;
+import com.github.ecstasyawesome.warehouse.core.module.AbstractCachedModule;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredFeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredModule;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
@@ -18,10 +25,8 @@ import com.github.ecstasyawesome.warehouse.module.user.AuthorizationModule;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -42,9 +47,8 @@ public final class WindowManager {
   private final MultiSceneWindow authorizationWindow;
   private final MultiSceneWindow workWindow;
   private final WindowContainer extraWindowManager;
-  private final Set<Class<? extends Cacheable>> cachedControllers = new HashSet<>();
+  private final Cache cache = new ControllerCache();
   private AbstractModule<? extends AbstractController> currentModule;
-  private Cacheable currentCachedController;
 
   private WindowManager(final Stage root) {
     this.root = root;
@@ -74,13 +78,10 @@ public final class WindowManager {
     LOGGER.trace("Request to show the module in the authorization window");
     var user = getUserFromContext();
     if (user.isEmpty()) {
-      cachedControllers.clear();
-      currentModule = null;
-      currentCachedController = null;
-      var module = AuthorizationModule.getInstance();
-      var fxmlBundle = module.create();
-      authorizationWindow.show(module.getTitle(), fxmlBundle.getScene(), workWindow,
-          extraWindowManager);
+      cache.erase();
+      currentModule = AuthorizationModule.getInstance();
+      authorizationWindow.show(currentModule.getTitle(), currentModule.create().getScene(),
+          workWindow, extraWindowManager);
     } else {
       showDialog(AlertType.WARNING, "Do logout before login"); // TODO i18n
     }
@@ -91,9 +92,21 @@ public final class WindowManager {
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, module.getAccess())) {
       currentModule = module;
-      var fxmlBundle = module.create();
-      checkAbilityToCache(fxmlBundle.getController());
-      workWindow.show(module.getTitle(), fxmlBundle.getScene(), authorizationWindow);
+      workWindow.show(module.getTitle(), module.create().getScene(), authorizationWindow);
+    } else {
+      showAccessWarning();
+    }
+  }
+
+  public <T extends AbstractCachedController<C>, C> void show(
+      final AbstractCachedModule<T, C> cachedModule) {
+    LOGGER.trace("Request to show the cached module in the work window");
+    var user = getUserFromContext().orElse(null);
+    if (isAccessGranted(user, cachedModule.getAccess())) {
+      currentModule = cachedModule;
+      var fxmlBundle = cachedModule.create();
+      cache.check(fxmlBundle.getController());
+      workWindow.show(cachedModule.getTitle(), fxmlBundle.getScene(), authorizationWindow);
     } else {
       showAccessWarning();
     }
@@ -106,10 +119,25 @@ public final class WindowManager {
     if (isAccessGranted(user, configuredModule.getAccess())) {
       currentModule = configuredModule;
       var fxmlBundle = configuredModule.create();
-      var controller = fxmlBundle.getController();
-      checkAbilityToCache(controller);
-      controller.apply(instance);
+      fxmlBundle.getController().apply(instance);
       workWindow.show(configuredModule.getTitle(), fxmlBundle.getScene(), authorizationWindow);
+    } else {
+      showAccessWarning();
+    }
+  }
+
+  public <T extends AbstractCachedConfiguredController<E, C>, E, C> void show(
+      final AbstractCachedConfiguredModule<T, E, C> cachedConfiguredModule, E instance) {
+    LOGGER.trace("Request to show the cached configured module in the work window");
+    var user = getUserFromContext().orElse(null);
+    if (isAccessGranted(user, cachedConfiguredModule.getAccess())) {
+      currentModule = cachedConfiguredModule;
+      var fxmlBundle = cachedConfiguredModule.create();
+      var controller = fxmlBundle.getController();
+      cache.check(controller);
+      controller.apply(instance);
+      workWindow.show(cachedConfiguredModule.getTitle(), fxmlBundle.getScene(),
+          authorizationWindow);
     } else {
       showAccessWarning();
     }
@@ -120,8 +148,20 @@ public final class WindowManager {
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, module.getAccess())) {
       var fxmlBundle = module.create();
-      checkAbilityToCache(fxmlBundle.getController());
       extraWindowManager.showWindow(module.getTitle(), fxmlBundle.getScene());
+    } else {
+      showAccessWarning();
+    }
+  }
+
+  public <T extends AbstractCachedController<C>, C> void showAndWait(
+      final AbstractCachedModule<T, C> cachedModule) {
+    LOGGER.trace("Request to show the cached module in the extra window");
+    var user = getUserFromContext().orElse(null);
+    if (isAccessGranted(user, cachedModule.getAccess())) {
+      var fxmlBundle = cachedModule.create();
+      cache.check(fxmlBundle.getController());
+      extraWindowManager.showWindow(cachedModule.getTitle(), fxmlBundle.getScene());
     } else {
       showAccessWarning();
     }
@@ -133,10 +173,23 @@ public final class WindowManager {
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, configuredModule.getAccess())) {
       var fxmlBundle = configuredModule.create();
-      var controller = fxmlBundle.getController();
-      checkAbilityToCache(controller);
-      controller.apply(instance);
+      fxmlBundle.getController().apply(instance);
       extraWindowManager.showWindow(configuredModule.getTitle(), fxmlBundle.getScene());
+    } else {
+      showAccessWarning();
+    }
+  }
+
+  public <T extends AbstractCachedConfiguredController<E, C>, E, C> void showAndWait(
+      final AbstractCachedConfiguredModule<T, E, C> cachedConfiguredModule, E instance) {
+    LOGGER.trace("Request to show the cached configured module in the extra window");
+    var user = getUserFromContext().orElse(null);
+    if (isAccessGranted(user, cachedConfiguredModule.getAccess())) {
+      var fxmlBundle = cachedConfiguredModule.create();
+      var controller = fxmlBundle.getController();
+      cache.check(controller);
+      controller.apply(instance);
+      extraWindowManager.showWindow(cachedConfiguredModule.getTitle(), fxmlBundle.getScene());
     } else {
       showAccessWarning();
     }
@@ -148,9 +201,23 @@ public final class WindowManager {
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, feedbackModule.getAccess())) {
       var fxmlBundle = feedbackModule.create();
-      var controller = fxmlBundle.getController();
-      checkAbilityToCache(controller);
       extraWindowManager.showWindow(feedbackModule.getTitle(), fxmlBundle.getScene());
+      return Optional.ofNullable(fxmlBundle.getController().get());
+    } else {
+      showAccessWarning();
+    }
+    return Optional.empty();
+  }
+
+  public <T extends AbstractCachedFeedbackController<E, C>, E, C> Optional<E> showAndGet(
+      final AbstractCachedFeedbackModule<T, E, C> cachedFeedbackModule) {
+    LOGGER.trace("Request to show the cached feedback module in the extra window");
+    var user = getUserFromContext().orElse(null);
+    if (isAccessGranted(user, cachedFeedbackModule.getAccess())) {
+      var fxmlBundle = cachedFeedbackModule.create();
+      var controller = fxmlBundle.getController();
+      cache.check(controller);
+      extraWindowManager.showWindow(cachedFeedbackModule.getTitle(), fxmlBundle.getScene());
       return Optional.ofNullable(controller.get());
     } else {
       showAccessWarning();
@@ -165,9 +232,28 @@ public final class WindowManager {
     if (isAccessGranted(user, configuredFeedbackModule.getAccess())) {
       var fxmlBundle = configuredFeedbackModule.create();
       var controller = fxmlBundle.getController();
-      checkAbilityToCache(controller);
       controller.apply(instance);
       extraWindowManager.showWindow(configuredFeedbackModule.getTitle(), fxmlBundle.getScene());
+      return Optional.ofNullable(controller.get());
+    } else {
+      showAccessWarning();
+    }
+    return Optional.empty();
+  }
+
+  public <T extends
+      AbstractCachedConfiguredFeedbackController<E, R, C>, E, R, C> Optional<R> showAndGet(
+      final AbstractCachedConfiguredFeedbackModule<T, E, R, C> cachedConfiguredFeedbackModule,
+      final E instance) {
+    LOGGER.trace("Request to show the cached configured feedback module in the extra window");
+    var user = getUserFromContext().orElse(null);
+    if (isAccessGranted(user, cachedConfiguredFeedbackModule.getAccess())) {
+      var fxmlBundle = cachedConfiguredFeedbackModule.create();
+      var controller = fxmlBundle.getController();
+      cache.check(controller);
+      controller.apply(instance);
+      extraWindowManager.showWindow(cachedConfiguredFeedbackModule.getTitle(),
+          fxmlBundle.getScene());
       return Optional.ofNullable(controller.get());
     } else {
       showAccessWarning();
@@ -212,28 +298,6 @@ public final class WindowManager {
     alert.getDialogPane().setExpandableContent(gridPane);
     LOGGER.trace("Showed a dialog with an exception");
     alert.showAndWait();
-  }
-
-  private void checkAbilityToCache(AbstractController controller) {
-    if (currentCachedController != null && currentCachedController.isReady()) {
-      var clazz = currentCachedController.getClass();
-      cachedControllers.add(clazz);
-      currentCachedController.backup();
-      LOGGER.debug("Backup the current controller '{}'", clazz.getSimpleName());
-    }
-    if (controller instanceof Cacheable cacheable) {
-      currentCachedController = cacheable;
-      var clazz = cacheable.getClass();
-      LOGGER.debug("The controller '{}' is cacheable", clazz.getSimpleName());
-      if (cachedControllers.contains(clazz)) {
-        cachedControllers.remove(clazz);
-        cacheable.recover();
-        LOGGER.debug("Recovered the controller '{}'", clazz.getSimpleName());
-      }
-    } else {
-      currentCachedController = null;
-      LOGGER.debug("The controller '{}' is not cacheable", controller.getClass().getSimpleName());
-    }
   }
 
   private Alert createNewDialog(AlertType type, String message) {
