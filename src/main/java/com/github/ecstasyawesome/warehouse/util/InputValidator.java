@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 public final class InputValidator {
 
-  public static final Pattern PHONE = Pattern.compile("^((\\+?3)?8)?\\d{10}$");
+  public static final Pattern PHONE = Pattern.compile("^((\\+?3)?8)?0\\d{9}$");
   public static final Pattern STRICT_NAME = Pattern.compile("^[A-ZА-Я][a-zа-я]+$");
   public static final Pattern NAME = Pattern.compile("^[A-ZА-Я].+$");
   public static final Pattern LOGIN = Pattern.compile("^[a-z_0-9]{5,20}$");
