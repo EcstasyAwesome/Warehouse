@@ -5,15 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
+import com.github.ecstasyawesome.warehouse.ResourceBackupManager;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.StringJoiner;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,33 +19,16 @@ import org.junit.jupiter.api.Test;
 public class DatabaseManagerTest {
 
   private static final Path DB_PATH = Path.of("database");
-  private static final Path DB_TEMP_PATH = Path.of("databaseTmp");
-  private static boolean isCreatedDbFolder = false;
+  private static final ResourceBackupManager BACKUP_MANAGER = new ResourceBackupManager(DB_PATH);
 
   @BeforeAll
   public static void beforeAll() throws IOException {
-    try {
-      Files.walk(DB_TEMP_PATH)
-          .sorted(Comparator.reverseOrder())
-          .map(Path::toFile)
-          .forEach(File::delete);
-      // to backup data, if db is exist and used for development
-      Files.move(DB_PATH, DB_TEMP_PATH, StandardCopyOption.REPLACE_EXISTING);
-      isCreatedDbFolder = true;
-    } catch (NoSuchFileException ignored) {
-    }
+    BACKUP_MANAGER.backup();
   }
 
   @AfterAll
   public static void afterAll() throws IOException {
-    if (isCreatedDbFolder) {
-      Files.walk(DB_PATH)
-          .sorted(Comparator.reverseOrder())
-          .map(Path::toFile)
-          .forEach(File::delete);
-      // to restore data
-      Files.move(DB_TEMP_PATH, DB_PATH, StandardCopyOption.REPLACE_EXISTING);
-    }
+    BACKUP_MANAGER.restore();
   }
 
   @Test
