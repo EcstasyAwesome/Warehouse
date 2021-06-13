@@ -19,21 +19,16 @@ import com.github.ecstasyawesome.warehouse.core.module.AbstractConfiguredModule;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractFeedbackModule;
 import com.github.ecstasyawesome.warehouse.core.module.AbstractModule;
 import com.github.ecstasyawesome.warehouse.core.window.MultiSceneWindow;
+import com.github.ecstasyawesome.warehouse.core.window.PopupNotification;
 import com.github.ecstasyawesome.warehouse.core.window.WindowContainer;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.module.user.AuthorizationModule;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Objects;
 import java.util.Optional;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -272,51 +267,28 @@ public final class WindowManager {
     Platform.exit();
   }
 
-  // TODO push notifications (will be super to find lib to show native notifications)
   public Optional<ButtonType> showDialog(AlertType type, final String message) {
-    var alert = createNewDialog(type, message);
-    LOGGER.trace("Showed a dialog");
-    return alert.showAndWait();
+    LOGGER.trace("Request to show a simple dialog");
+    return new SimpleDialogWindow(type, message).showAndGet();
   }
 
-  public void showDialog(final Exception exception) {
-    var alert = createNewDialog(AlertType.ERROR, exception.getMessage());
-    var stacktrace = getStacktrace(exception);
-
-    var textArea = new TextArea(stacktrace);
-    textArea.setEditable(false);
-    textArea.setWrapText(true);
-    textArea.setMaxWidth(Double.MAX_VALUE);
-    textArea.setMaxHeight(Double.MAX_VALUE);
-    GridPane.setVgrow(textArea, Priority.ALWAYS);
-    GridPane.setHgrow(textArea, Priority.ALWAYS);
-
-    var gridPane = new GridPane();
-    gridPane.setMaxWidth(Double.MAX_VALUE);
-    gridPane.add(textArea, 0, 0);
-
-    alert.getDialogPane().setExpandableContent(gridPane);
-    LOGGER.trace("Showed a dialog with an exception");
-    alert.showAndWait();
+  public Optional<ButtonType> showDialog(final Exception exception) {
+    LOGGER.trace("Request to show an error dialog");
+    return new ExceptionDialogWindow(exception).showAndGet();
   }
 
-  private Alert createNewDialog(AlertType type, String message) {
-    var alert = new Alert(type);
-    alert.setTitle("Notification"); // TODO i18n
-    alert.setHeaderText(null);
-    var defaultMessage = "Message is not provided"; // TODO i18n
-    var messageNullOrBlank = message == null || message.isBlank();
-    alert.setContentText(messageNullOrBlank ? defaultMessage : message);
-    LOGGER.debug("Created an dialog with type '{}' and message '{}'", type.name(), message);
-    return alert;
-  }
-
-  private String getStacktrace(Exception exception) {
-    var result = new StringWriter();
-    try (var printStream = new PrintWriter(result)) {
-      exception.printStackTrace(printStream);
+  public void showNotification(String message) {
+    LOGGER.trace("Request to show a simple notification");
+    var popup = (PopupNotification) null;
+    if (authorizationWindow.isActive()) {
+      popup = new SimplePopupNotification(authorizationWindow, message);
+    } else if (workWindow.isActive()) {
+      popup = new SimplePopupNotification(workWindow, message);
     }
-    return result.toString();
+
+    if (popup != null) {
+      popup.show();
+    }
   }
 
   private Optional<User> getUserFromContext() {
