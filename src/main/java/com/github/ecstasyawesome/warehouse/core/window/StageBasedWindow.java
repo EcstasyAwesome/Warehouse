@@ -20,6 +20,10 @@ public abstract class StageBasedWindow extends WindowNode {
     this(owner.stage);
   }
 
+  public final Stage getStage() {
+    return stage;
+  }
+
   public void close() {
     stage.close();
   }
