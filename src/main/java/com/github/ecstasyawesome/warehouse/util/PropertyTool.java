@@ -17,6 +17,7 @@ public final class PropertyTool {
   }
 
   public static Properties load(Config config) {
+    Objects.requireNonNull(config, "Config is required");
     final var pathToFile = preparePath(config);
     final var result = new Properties();
     try (var inputStream = Files.newInputStream(pathToFile)) {
@@ -29,7 +30,8 @@ public final class PropertyTool {
   }
 
   public static void save(Config config, final Properties properties) {
-    Objects.requireNonNull(properties);
+    Objects.requireNonNull(properties, "Properties is required");
+    Objects.requireNonNull(config, "Config is required");
     verifyRootFolder();
     final var pathToFile = preparePath(config);
     try (var outputStream = Files.newOutputStream(pathToFile)) {
@@ -61,7 +63,7 @@ public final class PropertyTool {
 
     VIEW("view.cfg"), APPLICATION("application.cfg");
 
-    private final String fileName;
+    public final String fileName;
 
     Config(String fileName) {
       this.fileName = fileName;
