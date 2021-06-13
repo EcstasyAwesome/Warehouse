@@ -15,8 +15,8 @@ public class ExtraModalWindow extends SingleSceneWindow {
 
   {
     stage.initModality(Modality.APPLICATION_MODAL);
-    stage.setOnHidden(event -> logger.debug("Closed"));
-    logger.debug("Initialized");
+    stage.setOnHidden(event -> logger.debug("Closed '{}'", stage.getTitle()));
+    logger.debug("Initialized '{}'", stage.getTitle());
   }
 
   public ExtraModalWindow(String title, Scene scene) {
