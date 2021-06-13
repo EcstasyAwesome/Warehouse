@@ -29,6 +29,20 @@ public final class ResourceBackupManager {
 
   }
 
+  public static void deleteAllFiles(Path resource) throws IOException {
+    try {
+      Files.walk(resource)
+          .sorted(Comparator.reverseOrder())
+          .forEach(path -> {
+            try {
+              Files.deleteIfExists(path);
+            } catch (IOException ignored) {
+            }
+          });
+    } catch (NoSuchFileException ignored) {
+    }
+  }
+
   public void backup() throws IOException {
     if (!state) {
       try {
@@ -49,16 +63,5 @@ public final class ResourceBackupManager {
         Files.move(resource.getValue(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
       }
     }
-  }
-
-  private void deleteAllFiles(Path resource) throws IOException {
-    Files.walk(resource)
-        .sorted(Comparator.reverseOrder())
-        .forEach(path -> {
-          try {
-            Files.deleteIfExists(path);
-          } catch (IOException ignored) {
-          }
-        });
   }
 }
