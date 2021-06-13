@@ -46,10 +46,9 @@ public class AuthorizationWindow extends MultiSceneWindow {
   }
 
   private void applyFadeAnimation(Parent parent) {
-    var fadeTransition = new FadeTransition(Duration.seconds(2), parent);
-    fadeTransition.setFromValue(0);
-    fadeTransition.setToValue(1);
-    fadeTransition.setCycleCount(1);
+    var fadeTransition = new FadeTransition(Duration.millis(1300), parent);
+    fadeTransition.setFromValue(0D);
+    fadeTransition.setToValue(1D);
     fadeTransition.playFromStart();
   }
 }
