@@ -30,6 +30,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
@@ -40,8 +41,13 @@ public class InputValidatorTest {
 
   private static boolean state = false;
 
+  @AfterAll
+  public static void afterAll() {
+    WindowManager.destroy();
+  }
+
   @Start
-  private void start(Stage stage) {
+  public void start(Stage stage) {
     if (!state) {
       WindowManager.initialize(stage);
       state = true;
