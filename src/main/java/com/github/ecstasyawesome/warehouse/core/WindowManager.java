@@ -69,6 +69,10 @@ public final class WindowManager {
     LOGGER.debug("Initialized");
   }
 
+  public static void destroy() {
+    instance = null;
+  }
+
   public void showAuthorization() {
     LOGGER.trace("Request to show the module in the authorization window");
     var user = getUserFromContext();
