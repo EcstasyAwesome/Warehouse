@@ -23,6 +23,10 @@ public final class ResourceLoader {
   private ResourceLoader() {
   }
 
+  public static ResourceBundle getLanguageBundle() {
+    return LANGUAGE_BUNDLE;
+  }
+
   public static <T extends Parent> T load(URL resource) {
     Objects.requireNonNull(resource);
     try {
