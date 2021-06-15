@@ -47,7 +47,7 @@ public class DatabaseManagerTest {
         "COMPANIES_CONTACTS", "PRODUCTS", "PRODUCT_PROVIDERS", "PRODUCT_PROVIDERS_ADDRESSES",
         "PRODUCT_PROVIDERS_CONTACTS", "PRODUCT_STORAGES", "PRODUCT_STORAGES_ADDRESSES", "ORDERS",
         "PRODUCT_STORAGES_CONTACTS", "USERS", "USERS_CONTACTS", "USERS_SECURITY"};
-    try (var connection = TestConnectionPool.getConnection()) {
+    try (var connection = TestDatabase.getConnection()) {
       var metaData = connection.getMetaData();
       try (var resultSet = metaData.getTables(null, null, null, new String[]{"TABLE"})) {
         var joiner = new StringJoiner(";");

@@ -14,7 +14,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
-import com.github.ecstasyawesome.warehouse.util.TestConnectionPool;
+import com.github.ecstasyawesome.warehouse.util.TestDatabase;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @BeforeEach
   public void setUp() throws SQLException {
-    try (var connection = TestConnectionPool.getConnection();
+    try (var connection = TestDatabase.getConnection();
         var statement = connection.createStatement()) {
       connection.setAutoCommit(false);
       statement.execute(TABLE);
@@ -70,7 +70,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @AfterEach
   public void tearDown() throws SQLException {
-    try (var connection = TestConnectionPool.getConnection();
+    try (var connection = TestDatabase.getConnection();
         var statement = connection.createStatement()) {
       connection.setAutoCommit(false);
       statement.execute(DROP_QUERY);
@@ -92,7 +92,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
     var id = TOTAL_RECORDS + 1;
     var name = "name";
     var surname = "surname";
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       assertEquals(id, insertRecord(connection, INSERT_QUERY, name, surname));
       verify(connection, never()).setAutoCommit(anyBoolean());
       verify(connection, never()).commit();
@@ -114,7 +114,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @Test
   public void checkInsertRecordWithCustomConnectionThrowsSqlException() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       assertThrows(SQLException.class, () -> insertRecord(connection, null, null, null));
       verify(connection, never()).setAutoCommit(anyBoolean());
       verify(connection, never()).commit();
@@ -130,7 +130,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
     var id = TOTAL_RECORDS + 1;
     var name = "name";
     var surname = "surname";
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         assertEquals(id, insertRecord(INSERT_QUERY, name, surname));
@@ -142,7 +142,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
       fail(exception);
     }
 
-    try (var connection = TestConnectionPool.getConnection()) {
+    try (var connection = TestDatabase.getConnection()) {
       try (var statement = connection.prepareStatement(SELECT_BY_ID_QUERY)) {
         statement.setLong(1, id);
         assertTrue(statement.execute());
@@ -160,7 +160,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @Test
   public void checkInsertRecordThrowsSqlException() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         assertThrows(SQLException.class, () -> insertRecord(null));
@@ -176,7 +176,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @Test
   public void testExecuteSuccess() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         assertEquals(1, execute(DELETE_QUERY, TOTAL_RECORDS));
@@ -188,7 +188,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
       fail(exception);
     }
 
-    try (var connection = TestConnectionPool.getConnection()) {
+    try (var connection = TestDatabase.getConnection()) {
       try (var statement = connection.prepareStatement(SELECT_BY_ID_QUERY)) {
         statement.setLong(1, TOTAL_RECORDS);
         assertTrue(statement.execute());
@@ -203,7 +203,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @Test
   public void testExecuteFailed() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         assertEquals(0, execute(DELETE_QUERY, TOTAL_RECORDS + 1));
@@ -218,7 +218,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @Test
   public void checkExecuteThrowsSqlException() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         assertThrows(SQLException.class, () -> execute(null, TOTAL_RECORDS));
@@ -234,7 +234,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @Test
   public void testCheckSuccess() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         assertTrue(check(CHECK_QUERY, TOTAL_RECORDS));
@@ -249,7 +249,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @Test
   public void testCheckFailed() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         assertFalse(check(CHECK_QUERY, TOTAL_RECORDS + 1));
@@ -264,7 +264,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @Test
   public void checkThatCheckThrowsSqlException() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         assertThrows(SQLException.class, () -> check(null));
@@ -279,7 +279,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @Test
   public void testSelectRecord() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         final var id = 1L;
@@ -298,7 +298,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @Test
   public void checkSelectRecordThrowsNoDataException() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         assertThrows(JdbcSQLNonTransientException.class,
@@ -315,7 +315,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @Test
   public void checkSelectRecordThrowsSqlException() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         assertThrows(SQLException.class, () -> selectRecord(null));
@@ -332,7 +332,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
   @SuppressWarnings("ConstantConditions")
   @Test
   public void testSelectRecords() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         var actual = selectRecords(SELECT_ALL_QUERY);
@@ -356,18 +356,13 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
   @SuppressWarnings("ConstantConditions")
   @Test
   public void testSelectNoRecords() {
-    try (var connection = spy(TestConnectionPool.getConnection());
+    try (var connection = spy(TestDatabase.getConnection());
         var statement = connection.prepareStatement(DELETE_QUERY)) {
       for (var index = 1L; index <= TOTAL_RECORDS; index++) {
         statement.setLong(1, index);
         statement.addBatch();
       }
       statement.executeBatch();
-    } catch (SQLException exception) {
-      fail(exception);
-    }
-
-    try (var connection = spy(TestConnectionPool.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         var actual = selectRecords(SELECT_ALL_QUERY);
@@ -385,7 +380,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   @Test
   public void checkSelectRecordsThrowsSqlException() {
-    try (var connection = spy(TestConnectionPool.getConnection())) {
+    try (var connection = spy(TestDatabase.getConnection())) {
       try (var staticMock = mockStatic(DatabaseManager.class)) {
         staticMock.when(DatabaseManager::getConnection).thenReturn(connection);
         assertThrows(SQLException.class, () -> selectRecords(null));
