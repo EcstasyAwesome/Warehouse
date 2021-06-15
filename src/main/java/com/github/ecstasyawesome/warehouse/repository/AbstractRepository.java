@@ -108,10 +108,10 @@ public abstract class AbstractRepository<T extends AbstractRecord> {
     }
   }
 
-  protected final NullPointerException createNpeWithSuppressedException(
-      final SQLException sqlException) {
+  protected final NullPointerException createNpeWithSuppressedException(final SQLException sql) {
+    Objects.requireNonNull(sql);
     var exception = new NullPointerException();
-    exception.addSuppressed(sqlException);
+    exception.addSuppressed(sql);
     return exception;
   }
 
