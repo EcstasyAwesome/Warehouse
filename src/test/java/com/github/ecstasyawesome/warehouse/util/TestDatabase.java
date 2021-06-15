@@ -6,13 +6,15 @@ import java.sql.SQLException;
 
 public class TestDatabase {
 
-  public static Connection getConnection() throws SQLException {
-    var connection = getConnectionToInMemoryDatabase();
-    DatabaseManager.createTablesIfAbsent(connection);
-    return connection.isClosed() ? getConnectionToInMemoryDatabase() : connection;
+  static {
+    try (var connection = getConnection()) {
+      DatabaseManager.createTablesIfAbsent(connection);
+    } catch (SQLException exception) {
+      throw new ExceptionInInitializerError(exception);
+    }
   }
 
-  private static Connection getConnectionToInMemoryDatabase() throws SQLException {
+  public static Connection getConnection() throws SQLException {
     return DriverManager.getConnection("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
   }
 
