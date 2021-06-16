@@ -20,7 +20,7 @@ public final class ResourceBackupManager {
       var path = resources[index];
       try {
         if (Files.exists(path)) {
-          paths.put(path, Files.createTempDirectory("warehouse_tmp_"));
+          paths.put(path, Files.createTempDirectory(Path.of("."), "tmp_"));
         }
       } catch (IOException exception) {
         throw new NullPointerException();
