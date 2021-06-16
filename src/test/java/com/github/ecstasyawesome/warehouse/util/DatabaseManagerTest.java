@@ -32,7 +32,9 @@ public class DatabaseManagerTest {
   }
 
   @Test
-  public void databaseCreatedAndConnectionAvailable() {
+  public void databaseCreatedAndConnectionAvailable() throws IOException {
+    ResourceBackupManager.deleteAllFiles(Path.of("database"));
+    assertTrue(Files.notExists(Path.of("database")));
     try (var connection = DatabaseManager.getConnection()) {
       assertNotNull(connection);
     } catch (SQLException exception) {
