@@ -10,16 +10,28 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.StringJoiner;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class DatabaseManagerTest {
 
+  private static final Path DATABASE = Path.of("database");
+  private static final ResourceBackupManager RESOURCE_MANAGER = new ResourceBackupManager(DATABASE);
+
+  @BeforeAll
+  public static void beforeAll() throws IOException {
+    RESOURCE_MANAGER.backup();
+  }
+
+  @AfterAll
+  public static void afterAll() throws IOException {
+    RESOURCE_MANAGER.restore();
+  }
+
   @Test
-  public void databaseCreated() throws IOException {
-    var databasePath = Path.of("database");
-    var resourceManager = new ResourceBackupManager(databasePath);
-    resourceManager.backup();
-    assertTrue(Files.notExists(databasePath));
+  public void databaseCreated() {
+    assertTrue(Files.notExists(DATABASE));
     var expected = new String[]{"CATEGORIES", "COMPANIES", "COMPANIES_ADDRESSES", "ORDERS_ITEMS",
         "COMPANIES_CONTACTS", "PRODUCTS", "PRODUCT_PROVIDERS", "PRODUCT_PROVIDERS_ADDRESSES",
         "PRODUCT_PROVIDERS_CONTACTS", "PRODUCT_STORAGES", "PRODUCT_STORAGES_ADDRESSES", "ORDERS",
@@ -40,7 +52,6 @@ public class DatabaseManagerTest {
     } catch (Throwable throwable) {
       fail(throwable);
     }
-    assertTrue(Files.exists(databasePath.resolve("default.mv.db")));
-    resourceManager.restore();
+    assertTrue(Files.exists(DATABASE.resolve("default.mv.db")));
   }
 }
