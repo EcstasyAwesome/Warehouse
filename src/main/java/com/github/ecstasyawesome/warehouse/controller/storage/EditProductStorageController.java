@@ -72,11 +72,11 @@ public class EditProductStorageController extends AbstractConfiguredController<P
 
   @FXML
   private void save(ActionEvent event) {
-    if (isFieldValid(nameField, productStorage.getName(), NAME, productStorageRepository)
-        & isFieldValid(regionField, NAME, false) & isFieldValid(townField, NAME, false)
-        & isFieldValid(streetField, NAME, true) & isFieldValid(numberField, WILDCARD, true)
-        & isFieldValid(phoneField, PHONE, false) & isFieldValid(extraPhoneField, PHONE, true)
-        & isFieldValid(emailField, EMAIL, true) & isFieldValid(siteField, URL, true)) {
+    if (isFieldValid(nameField, NAME, false) & isFieldValid(regionField, NAME, false)
+        & isFieldValid(townField, NAME, false) & isFieldValid(streetField, NAME, true)
+        & isFieldValid(numberField, WILDCARD, true) & isFieldValid(phoneField, PHONE, false)
+        & isFieldValid(extraPhoneField, PHONE, true) & isFieldValid(emailField, EMAIL, true)
+        & isFieldValid(siteField, URL, true)) {
       var storageCopy = new ProductStorage(productStorage);
       productStorage.setName(getFieldText(nameField));
       productStorage.getBusinessContact().setPhone(getFieldText(phoneField));

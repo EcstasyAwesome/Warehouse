@@ -31,7 +31,7 @@ public class EditCategoryController extends AbstractConfiguredController<Categor
 
   @FXML
   private void save(ActionEvent event) {
-    if (isFieldValid(nameField, category.getName(), STRICT_NAME, categoryRepository)
+    if (isFieldValid(nameField, STRICT_NAME, false)
         & isFieldValid(descriptionArea, WILDCARD, true)) {
       var categoryCopy = new Category(category);
       category.setName(getFieldText(nameField));

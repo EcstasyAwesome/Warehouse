@@ -27,19 +27,6 @@ public class UserRepositoryService extends UserRepository {
   }
 
   @Override
-  public boolean isFieldUnique(final String login) {
-    checkStringParameter(login);
-    final var query = "SELECT EXISTS(SELECT 1 FROM USERS_SECURITY WHERE SECURITY_LOGIN=?)";
-    try {
-      var result = !check(query, login);
-      logger.debug("Login '{}' is unique [{}]", login, result);
-      return result;
-    } catch (SQLException exception) {
-      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
-    }
-  }
-
-  @Override
   public boolean hasTableRecords() {
     try {
       var result = check("SELECT EXISTS(SELECT 1 FROM USERS LIMIT 1)");

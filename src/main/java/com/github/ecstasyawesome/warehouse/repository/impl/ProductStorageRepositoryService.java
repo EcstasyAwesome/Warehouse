@@ -30,26 +30,6 @@ public class ProductStorageRepositoryService extends ProductStorageRepository {
   }
 
   @Override
-  public boolean isFieldUnique(final String name) {
-    checkStringParameter(name);
-    final var query = """
-        SELECT EXISTS
-        (
-            SELECT 1
-            FROM PRODUCT_STORAGES
-            WHERE STORAGE_NAME=?
-        )
-        """;
-    try {
-      var result = !check(query, name);
-      logger.debug("Name '{}' is unique [{}]", name, result);
-      return result;
-    } catch (SQLException exception) {
-      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
-    }
-  }
-
-  @Override
   public ObservableList<ProductStorage> getAll(Company criteria) {
     Objects.requireNonNull(criteria);
     final var query = """

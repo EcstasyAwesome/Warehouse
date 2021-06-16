@@ -5,7 +5,6 @@ import com.github.ecstasyawesome.warehouse.model.impl.ProductStorage;
 
 public abstract class ProductStorageRepository extends AbstractRepository<ProductStorage>
     implements Producible<ProductStorage>, Readable<ProductStorage>, Updatable<ProductStorage>,
-    Deletable<ProductStorage>, Observable<ProductStorage>, Collectable<ProductStorage, Company>,
-    UniqueField {
+    Deletable<ProductStorage>, Observable<ProductStorage>, Collectable<ProductStorage, Company> {
 
 }

@@ -15,20 +15,17 @@ import static com.github.ecstasyawesome.warehouse.util.InputValidator.arePasswor
 import static com.github.ecstasyawesome.warehouse.util.InputValidator.isFieldValid;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.only;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
-import com.github.ecstasyawesome.warehouse.repository.UniqueField;
+import java.time.LocalDate;
 import java.util.stream.IntStream;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -55,7 +52,7 @@ public class InputValidatorTest {
   }
 
   @Test
-  public void checkEqualPasswords() {
+  public void testEqualPasswords() {
     var pass1 = new PasswordField();
     pass1.setText("qwerty");
     var pass2 = new PasswordField();
@@ -66,7 +63,7 @@ public class InputValidatorTest {
   }
 
   @Test
-  public void checkBlankPasswords() {
+  public void testBlankPasswords() {
     var pass1 = new PasswordField();
     pass1.setText("   ");
     var pass2 = new PasswordField();
@@ -77,7 +74,7 @@ public class InputValidatorTest {
   }
 
   @Test
-  public void checkNonEqualPasswords() {
+  public void testNonEqualPasswords() {
     var pass1 = new PasswordField();
     pass1.setText("qwerty");
     var pass2 = new PasswordField();
@@ -88,7 +85,14 @@ public class InputValidatorTest {
   }
 
   @Test
-  public void checkValidChoiceBox() {
+  public void testPasswordsEqualThrowsNpe() {
+    var pass = new PasswordField();
+    assertThrows(NullPointerException.class, () -> arePasswordsEqual(null, pass));
+    assertThrows(NullPointerException.class, () -> arePasswordsEqual(pass, null));
+  }
+
+  @Test
+  public void testValidChoiceBox() {
     var choiceBox = new ChoiceBox<String>();
     choiceBox.setValue("some text");
     assertTrue(isFieldValid(choiceBox));
@@ -96,21 +100,46 @@ public class InputValidatorTest {
   }
 
   @Test
-  public void checkInvalidChoiceBox() {
+  public void testInvalidChoiceBox() {
     var choiceBox = new ChoiceBox<String>();
     assertFalse(isFieldValid(choiceBox));
     assertEquals(RED_ADJUST, choiceBox.getEffect());
   }
 
   @Test
-  public void checkNotEmptyTextInputControl() {
+  public void testInvalidChoiceBoxThrowsNpe() {
+    assertThrows(NullPointerException.class, () -> isFieldValid((ChoiceBox<?>) null));
+  }
+
+  @Test
+  public void testValidDatePicker() {
+    var datePicker = new DatePicker();
+    datePicker.setValue(LocalDate.now());
+    assertTrue(isFieldValid(datePicker));
+    assertEquals(NO_ADJUST, datePicker.getEffect());
+  }
+
+  @Test
+  public void testInvalidDatePicker() {
+    var datePicker = new DatePicker();
+    assertFalse(isFieldValid(datePicker));
+    assertEquals(RED_ADJUST, datePicker.getEffect());
+  }
+
+  @Test
+  public void testInvalidDatePickerThrowsNpe() {
+    assertThrows(NullPointerException.class, () -> isFieldValid((DatePicker) null));
+  }
+
+  @Test
+  public void testNotEmptyTextInputControl() {
     var textField = new TextField("some text");
     assertTrue(isFieldValid(textField, WILDCARD, false));
     assertEquals(NO_ADJUST, textField.getEffect());
   }
 
   @Test
-  public void checkEmptyTextInputControl() {
+  public void testEmptyTextInputControl() {
     var textField = new TextField();
     assertTrue(isFieldValid(textField, NAME, true));
     assertEquals(NO_ADJUST, textField.getEffect());
@@ -120,55 +149,25 @@ public class InputValidatorTest {
   }
 
   @Test
-  public void checkUniqueFieldTextInputControl() {
-    var mock = mock(UniqueField.class);
-    when(mock.isFieldUnique(anyString())).thenReturn(true);
-    var textField = new TextField("root");
-    assertTrue(isFieldValid(textField, "admin", WILDCARD, mock));
-    assertEquals(NO_ADJUST, textField.getEffect());
-    verify(mock, only()).isFieldUnique("root");
+  public void testTextInputControlThrowsNpe() {
+    assertThrows(NullPointerException.class,
+        () -> isFieldValid((TextInputControl) null, NAME, true));
   }
 
   @Test
-  public void checkUniqueFieldTextInputControlWithSameValue() {
-    var mock = mock(UniqueField.class);
-    var textField = new TextField("root");
-    assertTrue(isFieldValid(textField, "root", WILDCARD, mock));
-    assertEquals(NO_ADJUST, textField.getEffect());
-    verify(mock, never()).isFieldUnique(anyString());
+  public void testNotEmptyTextField() {
+    assertTrue(isFieldValid("some text", WILDCARD, false));
   }
 
   @Test
-  public void checkNotUniqueFieldTextInputControl() {
-    var mock = mock(UniqueField.class);
-    when(mock.isFieldUnique(anyString())).thenReturn(false);
-    var textField = new TextField("root");
-    assertFalse(isFieldValid(textField, "admin", WILDCARD, mock));
-    assertEquals(RED_ADJUST, textField.getEffect());
-    verify(mock, only()).isFieldUnique("root");
+  public void testEmptyTextField() {
+    assertTrue(isFieldValid("", NAME, true));
+    assertFalse(isFieldValid("   ", NAME, true));
   }
 
   @Test
-  public void checkUniqueText() {
-    var mock = mock(UniqueField.class);
-    when(mock.isFieldUnique(anyString())).thenReturn(true);
-    assertTrue(isFieldValid("text", "admin", WILDCARD, mock));
-    verify(mock, only()).isFieldUnique("text");
-  }
-
-  @Test
-  public void checkUniqueTextWithSameValue() {
-    var mock = mock(UniqueField.class);
-    assertTrue(isFieldValid("root", "root", WILDCARD, mock));
-    verify(mock, never()).isFieldUnique(anyString());
-  }
-
-  @Test
-  public void checkNotUniqueText() {
-    var mock = mock(UniqueField.class);
-    when(mock.isFieldUnique(anyString())).thenReturn(false);
-    assertFalse(isFieldValid("root", "admin", WILDCARD, mock));
-    verify(mock, only()).isFieldUnique("root");
+  public void testNullTextField() {
+    assertFalse(isFieldValid((String) null, NAME, true));
   }
 
   @Test

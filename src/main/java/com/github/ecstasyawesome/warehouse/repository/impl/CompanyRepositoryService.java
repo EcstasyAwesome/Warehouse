@@ -27,18 +27,6 @@ public class CompanyRepositoryService extends CompanyRepository {
   }
 
   @Override
-  public boolean isFieldUnique(final String name) {
-    checkStringParameter(name);
-    try {
-      var result = !check("SELECT EXISTS(SELECT 1 FROM COMPANIES WHERE COMPANY_NAME=?)", name);
-      logger.debug("Name '{}' is unique [{}]", name, result);
-      return result;
-    } catch (SQLException exception) {
-      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
-    }
-  }
-
-  @Override
   public ObservableList<Company> getAll() {
     final var query = """
         SELECT *

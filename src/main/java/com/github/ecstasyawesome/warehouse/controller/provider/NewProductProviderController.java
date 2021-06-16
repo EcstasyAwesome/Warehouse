@@ -57,11 +57,11 @@ public class NewProductProviderController extends AbstractFeedbackController<Pro
 
   @FXML
   private void add(ActionEvent event) {
-    if (isFieldValid(nameField, null, NAME, productProviderRepository)
-        & isFieldValid(regionField, NAME, false) & isFieldValid(townField, NAME, false)
-        & isFieldValid(streetField, NAME, true) & isFieldValid(numberField, WILDCARD, true)
-        & isFieldValid(phoneField, PHONE, false) & isFieldValid(extraPhoneField, PHONE, true)
-        & isFieldValid(emailField, EMAIL, true) & isFieldValid(siteField, URL, true)) {
+    if (isFieldValid(nameField, NAME, false) & isFieldValid(regionField, NAME, false)
+        & isFieldValid(townField, NAME, false) & isFieldValid(streetField, NAME, true)
+        & isFieldValid(numberField, WILDCARD, true) & isFieldValid(phoneField, PHONE, false)
+        & isFieldValid(extraPhoneField, PHONE, true) & isFieldValid(emailField, EMAIL, true)
+        & isFieldValid(siteField, URL, true)) {
       try {
         var contact = Builder.create()
             .setPhone(getFieldText(phoneField))

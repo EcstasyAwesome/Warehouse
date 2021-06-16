@@ -27,26 +27,6 @@ public class ProductProviderRepositoryService extends ProductProviderRepository 
   }
 
   @Override
-  public boolean isFieldUnique(final String name) {
-    checkStringParameter(name);
-    final var query = """
-        SELECT EXISTS
-        (
-            SELECT 1
-            FROM PRODUCT_PROVIDERS
-            WHERE PROVIDER_NAME=?
-        )
-        """;
-    try {
-      var result = !check(query, name);
-      logger.debug("Name '{}' is unique [{}]", name, result);
-      return result;
-    } catch (SQLException exception) {
-      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
-    }
-  }
-
-  @Override
   public ObservableList<ProductProvider> getAll() {
     final var query = """
         SELECT *

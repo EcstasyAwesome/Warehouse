@@ -49,8 +49,8 @@ public class NewProductController extends AbstractFeedbackController<Product> {
 
   @FXML
   private void add(ActionEvent event) {
-    if (isFieldValid(nameField, null, NAME, productRepository)
-        & isFieldValid(unitChoiceBox) & isFieldValid(categoryChoiceBox)) {
+    if (isFieldValid(nameField, NAME, false) & isFieldValid(unitChoiceBox)
+        & isFieldValid(categoryChoiceBox)) {
       try {
         var product = Builder.create()
             .setName(getFieldText(nameField))

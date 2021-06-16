@@ -32,7 +32,7 @@ public class NewCategoryController extends AbstractFeedbackController<Category> 
 
   @FXML
   private void add(ActionEvent event) {
-    if (isFieldValid(nameField, null, STRICT_NAME, categoryRepository)
+    if (isFieldValid(nameField, STRICT_NAME, false)
         & isFieldValid(descriptionArea, WILDCARD, true)) {
       try {
         var category = Builder.create()

@@ -1,9 +1,7 @@
 package com.github.ecstasyawesome.warehouse.repository.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mockStatic;
 
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
@@ -40,14 +38,6 @@ public class CategoryRepositoryServiceTest {
   @AfterEach
   public void tearDown() {
     mockedDatabase.close();
-  }
-
-  @Test
-  public void testIsFieldUnique() {
-    var category = getTestEntry();
-    assertTrue(categoryRepository.isFieldUnique(category.getName()));
-    categoryRepository.create(category);
-    assertFalse(categoryRepository.isFieldUnique(category.getName()));
   }
 
   @Test

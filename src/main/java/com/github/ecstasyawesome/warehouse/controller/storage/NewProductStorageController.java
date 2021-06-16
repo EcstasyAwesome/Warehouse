@@ -74,11 +74,11 @@ public class NewProductStorageController extends AbstractFeedbackController<Prod
 
   @FXML
   private void add(ActionEvent event) {
-    if (isFieldValid(nameField, null, NAME, productStorageRepository)
-        & isFieldValid(companyChoiceBox) & isFieldValid(regionField, NAME, false)
-        & isFieldValid(townField, NAME, false) & isFieldValid(streetField, NAME, true)
-        & isFieldValid(numberField, WILDCARD, true) & isFieldValid(phoneField, PHONE, false)
-        & isFieldValid(extraPhoneField, PHONE, true) & isFieldValid(emailField, EMAIL, true)
+    if (isFieldValid(nameField, NAME, false) & isFieldValid(companyChoiceBox)
+        & isFieldValid(regionField, NAME, false) & isFieldValid(townField, NAME, false)
+        & isFieldValid(streetField, NAME, true) & isFieldValid(numberField, WILDCARD, true)
+        & isFieldValid(phoneField, PHONE, false) & isFieldValid(extraPhoneField, PHONE, true)
+        & isFieldValid(emailField, EMAIL, true)
         & isFieldValid(siteField, URL, true)) {
       try {
         var contact = Builder.create()

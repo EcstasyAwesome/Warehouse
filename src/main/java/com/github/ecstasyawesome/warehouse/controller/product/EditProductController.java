@@ -47,8 +47,7 @@ public class EditProductController extends AbstractConfiguredController<Product>
 
   @FXML
   private void save(ActionEvent event) {
-    if (isFieldValid(nameField, product.getName(), NAME, productRepository)
-        & isFieldValid(categoryChoiceBox)) {
+    if (isFieldValid(nameField, NAME, false) & isFieldValid(categoryChoiceBox)) {
       var productCopy = new Product(product);
       product.setName(getFieldText(nameField));
       product.setCategory(categoryChoiceBox.getValue());

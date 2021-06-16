@@ -55,11 +55,11 @@ public class EditProductProviderController extends AbstractConfiguredController<
 
   @FXML
   private void save(ActionEvent event) {
-    if (isFieldValid(nameField, productProvider.getName(), NAME, productProviderRepository)
-        & isFieldValid(regionField, NAME, false) & isFieldValid(townField, NAME, false)
-        & isFieldValid(streetField, NAME, true) & isFieldValid(numberField, WILDCARD, true)
-        & isFieldValid(phoneField, PHONE, false) & isFieldValid(extraPhoneField, PHONE, true)
-        & isFieldValid(emailField, EMAIL, true) & isFieldValid(siteField, URL, true)) {
+    if (isFieldValid(nameField, NAME, false) & isFieldValid(regionField, NAME, false)
+        & isFieldValid(townField, NAME, false) & isFieldValid(streetField, NAME, true)
+        & isFieldValid(numberField, WILDCARD, true) & isFieldValid(phoneField, PHONE, false)
+        & isFieldValid(extraPhoneField, PHONE, true) & isFieldValid(emailField, EMAIL, true)
+        & isFieldValid(siteField, URL, true)) {
       var providerCopy = new ProductProvider(productProvider);
       productProvider.setName(getFieldText(nameField));
       productProvider.getBusinessContact().setPhone(getFieldText(phoneField));

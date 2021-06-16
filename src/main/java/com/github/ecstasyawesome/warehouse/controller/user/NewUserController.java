@@ -69,7 +69,7 @@ public class NewUserController extends AbstractFeedbackController<User> {
     if (isFieldValid(surnameField, STRICT_NAME, false) & isFieldValid(nameField, STRICT_NAME, false)
         & isFieldValid(secondNameField, STRICT_NAME, false) & isFieldValid(phoneField, PHONE, false)
         & isFieldValid(emailField, EMAIL, true) & isFieldValid(passwordField, PASSWORD, false)
-        & isFieldValid(loginField, null, LOGIN, userRepository) & isFieldValid(accessChoiceBox)
+        & isFieldValid(loginField, LOGIN, false) & isFieldValid(accessChoiceBox)
         && arePasswordsEqual(passwordField, repeatedPasswordField)) {
       try {
         var contact = Builder.create()

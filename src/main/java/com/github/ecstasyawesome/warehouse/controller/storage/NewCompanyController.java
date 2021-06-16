@@ -70,12 +70,12 @@ public class NewCompanyController extends AbstractFeedbackController<Company> {
 
   @FXML
   private void add(ActionEvent event) {
-    if (isFieldValid(nameField, null, NAME, companyRepository)
-        & isFieldValid(personTypeChoiceBox) & isFieldValid(identifierCodeField, NUMBERS, false)
-        & isFieldValid(regionField, NAME, false) & isFieldValid(townField, NAME, false)
-        & isFieldValid(streetField, NAME, true) & isFieldValid(numberField, WILDCARD, true)
-        & isFieldValid(phoneField, PHONE, false) & isFieldValid(extraPhoneField, PHONE, true)
-        & isFieldValid(emailField, EMAIL, true) & isFieldValid(siteField, URL, true)) {
+    if (isFieldValid(nameField, NAME, false) & isFieldValid(personTypeChoiceBox)
+        & isFieldValid(identifierCodeField, NUMBERS, false) & isFieldValid(regionField, NAME, false)
+        & isFieldValid(townField, NAME, false) & isFieldValid(streetField, NAME, true)
+        & isFieldValid(numberField, WILDCARD, true) & isFieldValid(phoneField, PHONE, false)
+        & isFieldValid(extraPhoneField, PHONE, true) & isFieldValid(emailField, EMAIL, true)
+        & isFieldValid(siteField, URL, true)) {
       try {
         var address = Builder.create()
             .setRegion(getFieldText(regionField))

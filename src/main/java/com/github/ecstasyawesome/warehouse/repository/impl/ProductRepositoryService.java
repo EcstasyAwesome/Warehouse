@@ -151,18 +151,6 @@ public class ProductRepositoryService extends ProductRepository {
   }
 
   @Override
-  public boolean isFieldUnique(final String name) {
-    checkStringParameter(name);
-    try {
-      var result = !check("SELECT EXISTS(SELECT 1 FROM PRODUCTS WHERE PRODUCT_NAME=?)", name);
-      logger.debug("Name '{}' is unique [{}]", name, result);
-      return result;
-    } catch (SQLException exception) {
-      throw createNpeWithSuppressedException(logger.throwing(Level.ERROR, exception));
-    }
-  }
-
-  @Override
   protected Product transformToObj(final ResultSet resultSet) throws SQLException {
     return Product.Builder.create()
         .setId(resultSet.getLong("PRODUCTS.PRODUCT_ID"))
