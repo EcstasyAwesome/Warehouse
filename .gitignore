@@ -2,6 +2,7 @@
 *.iml
 *.log
 .idea/
+.github/
 target/
 logs/
 settings/
