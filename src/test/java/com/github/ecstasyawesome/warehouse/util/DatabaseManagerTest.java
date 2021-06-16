@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 public class DatabaseManagerTest {
 
   private static final Path DB_PATH = Path.of("database");
-  private final ResourceBackupManager BACKUP_MANAGER = new ResourceBackupManager(DB_PATH);
+  private static final ResourceBackupManager BACKUP_MANAGER = new ResourceBackupManager(DB_PATH);
 
   @BeforeEach
   public void setUp() throws IOException {
