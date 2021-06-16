@@ -78,6 +78,8 @@ public class CategoryRepositoryServiceTest {
   public void testCreateDuplicate() {
     var category = getTestEntry();
     categoryRepository.create(category);
+    assertEquals(1, category.getId());
+    assertEquals(category, categoryRepository.read(1));
     assertThrows(NullPointerException.class, () -> categoryRepository.create(category));
   }
 
