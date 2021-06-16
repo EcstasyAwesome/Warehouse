@@ -8,25 +8,16 @@ import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.Objects;
 
 public final class ResourceBackupManager {
 
   private final Map<Path, Path> paths = new HashMap<>();
+  private final Path[] resources;
   private boolean state = false;
 
   public ResourceBackupManager(Path... resources) {
-    IntStream.range(0, resources.length).forEach(index -> {
-      var path = resources[index];
-      try {
-        if (Files.exists(path)) {
-          paths.put(path, Files.createTempDirectory(Path.of("."), "tmp_"));
-        }
-      } catch (IOException exception) {
-        throw new NullPointerException();
-      }
-    });
-
+    this.resources = resources;
   }
 
   public static void deleteAllFiles(Path resource) throws IOException {
@@ -45,6 +36,7 @@ public final class ResourceBackupManager {
 
   public void backup() throws IOException {
     if (!state) {
+      checkResources();
       try {
         for (var resource : paths.entrySet()) {
           Files.move(resource.getKey(), resource.getValue(), StandardCopyOption.REPLACE_EXISTING);
@@ -61,6 +53,17 @@ public final class ResourceBackupManager {
         var destinationPath = resource.getKey();
         deleteAllFiles(destinationPath);
         Files.move(resource.getValue(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+      }
+      state = false;
+    }
+  }
+
+  private void checkResources() throws IOException {
+    paths.clear();
+    for (var resource : resources) {
+      Objects.requireNonNull(resource);
+      if (Files.exists(resource)) {
+        paths.put(resource, Files.createTempDirectory(Path.of("."), "tmp_"));
       }
     }
   }
