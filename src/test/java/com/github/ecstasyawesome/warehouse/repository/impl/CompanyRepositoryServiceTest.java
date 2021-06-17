@@ -1,5 +1,6 @@
 package com.github.ecstasyawesome.warehouse.repository.impl;
 
+import static com.github.ecstasyawesome.warehouse.repository.AbstractTestEntryRepository.createCompany;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -8,15 +9,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mockStatic;
 
 import com.github.ecstasyawesome.warehouse.model.PersonType;
-import com.github.ecstasyawesome.warehouse.model.impl.Address;
-import com.github.ecstasyawesome.warehouse.model.impl.BusinessContact;
-import com.github.ecstasyawesome.warehouse.model.impl.Company;
 import com.github.ecstasyawesome.warehouse.repository.CompanyRepository;
 import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import com.github.ecstasyawesome.warehouse.util.TestDatabase;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +22,6 @@ import org.mockito.MockedStatic;
 
 public class CompanyRepositoryServiceTest {
 
-  private static final Random RANDOM = new Random();
   private final CompanyRepository companyRepository = CompanyRepositoryService.getInstance();
   private MockedStatic<DatabaseManager> mockedDatabase;
 
@@ -54,13 +50,13 @@ public class CompanyRepositoryServiceTest {
 
   @Test
   public void testGetAll() {
-    var one = getTestEntry("Name1", "777777777777777");
-    companyRepository.create(one);
-    var two = getTestEntry("Name2", "888888888888888");
-    companyRepository.create(two);
-    var three = getTestEntry("Name3", "999999999999999");
-    companyRepository.create(three);
-    var expected = List.of(one, two, three);
+    var company1 = createCompany("Name1", "777777777777777");
+    companyRepository.create(company1);
+    var company2 = createCompany("Name2", "888888888888888");
+    companyRepository.create(company2);
+    var company3 = createCompany("Name3", "999999999999999");
+    companyRepository.create(company3);
+    var expected = List.of(company1, company2, company3);
     var actual = companyRepository.getAll();
     assertEquals(expected.size(), actual.size());
     IntStream.range(0, expected.size())
@@ -75,10 +71,10 @@ public class CompanyRepositoryServiceTest {
 
   @Test
   public void testReadAndCreate() {
-    var company = getTestEntry();
+    var company = createCompany("Name1", "777777777777777");
     companyRepository.create(company);
     assertEquals(1, company.getId());
-    assertEquals(company, companyRepository.read(1));
+    assertEquals(company, companyRepository.read(company.getId()));
   }
 
   @Test
@@ -88,12 +84,12 @@ public class CompanyRepositoryServiceTest {
 
   @Test
   public void testCreateDuplicate() {
-    var company = getTestEntry("Name1", "8888888888888888");
-    var companyDuplicateName = getTestEntry("Name1", "481651946198");
-    var companyDuplicateIdentifiedCode = getTestEntry("Name2", "8888888888888888");
+    var company = createCompany("Name1", "8888888888888888");
+    var companyDuplicateName = createCompany("Name1", "481651946198");
+    var companyDuplicateIdentifiedCode = createCompany("Name2", "8888888888888888");
     companyRepository.create(company);
     assertEquals(1, company.getId());
-    assertEquals(company, companyRepository.read(1));
+    assertEquals(company, companyRepository.read(company.getId()));
     assertThrows(NullPointerException.class, () -> companyRepository.create(companyDuplicateName));
     assertThrows(NullPointerException.class,
         () -> companyRepository.create(companyDuplicateIdentifiedCode));
@@ -101,7 +97,7 @@ public class CompanyRepositoryServiceTest {
 
   @Test
   public void testUpdate() {
-    var company = getTestEntry();
+    var company = createCompany("Name1", "777777777777777");
     companyRepository.create(company);
     company.setName("New name");
     company.setPersonType(PersonType.LEGAL_ENTITY);
@@ -112,20 +108,20 @@ public class CompanyRepositoryServiceTest {
 
   @Test
   public void testUpdateDuplicate() {
-    var one = getTestEntry("Name1", "8888888888888888");
-    companyRepository.create(one);
-    var two = getTestEntry("Name2", "7777777777777777");
-    companyRepository.create(two);
-    two.setName(one.getName());
-    assertThrows(NullPointerException.class, () -> companyRepository.update(two));
-    two.setName("Name2");
-    two.setIdentifierCode(one.getIdentifierCode());
-    assertThrows(NullPointerException.class, () -> companyRepository.update(two));
+    var company1 = createCompany("Name1", "8888888888888888");
+    companyRepository.create(company1);
+    var company2 = createCompany("Name2", "7777777777777777");
+    companyRepository.create(company2);
+    company2.setName(company1.getName());
+    assertThrows(NullPointerException.class, () -> companyRepository.update(company2));
+    company2.setName("Name2");
+    company2.setIdentifierCode(company1.getIdentifierCode());
+    assertThrows(NullPointerException.class, () -> companyRepository.update(company2));
   }
 
   @Test
   public void testDelete() {
-    var company = getTestEntry();
+    var company = createCompany("Name1", "777777777777777");
     companyRepository.create(company);
     assertEquals(1, company.getId());
     companyRepository.delete(company);
@@ -147,34 +143,8 @@ public class CompanyRepositoryServiceTest {
 
   @Test
   public void testDeleteAbsentEntry() {
-    var company = getTestEntry();
+    var company = createCompany("Name1", "777777777777777");
     company.setId(7);
     assertThrows(NullPointerException.class, () -> companyRepository.delete(company));
-  }
-
-  private Company getTestEntry() {
-    return getTestEntry("Name", String.valueOf(RANDOM.nextInt(Integer.MAX_VALUE)));
-  }
-
-  private Company getTestEntry(String name, String identifierCode) {
-    var contact = BusinessContact.Builder.create()
-        .setPhone("0955558877")
-        .setExtraPhone("0958886633")
-        .setEmail("example@mail.com")
-        .setSite("example.com")
-        .build();
-    var address = Address.Builder.create()
-        .setRegion("Region")
-        .setTown("Town")
-        .setStreet("Street")
-        .setNumber("10/7")
-        .build();
-    return Company.Builder.create()
-        .setName(name)
-        .setIdentifierCode(identifierCode)
-        .setPersonType(PersonType.INDIVIDUAL)
-        .setBusinessContact(contact)
-        .setAddress(address)
-        .build();
   }
 }

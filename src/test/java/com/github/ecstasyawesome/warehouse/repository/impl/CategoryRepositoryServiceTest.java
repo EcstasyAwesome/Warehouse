@@ -1,10 +1,10 @@
 package com.github.ecstasyawesome.warehouse.repository.impl;
 
+import static com.github.ecstasyawesome.warehouse.repository.AbstractTestEntryRepository.createCategory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
 
-import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.repository.CategoryRepository;
 import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import com.github.ecstasyawesome.warehouse.util.TestDatabase;
@@ -42,11 +42,11 @@ public class CategoryRepositoryServiceTest {
 
   @Test
   public void testGetAll() {
-    var one = getTestEntry("Name1");
+    var one = createCategory("Name1");
     categoryRepository.create(one);
-    var two = getTestEntry("Name2");
+    var two = createCategory("Name2");
     categoryRepository.create(two);
-    var three = getTestEntry("Name3");
+    var three = createCategory("Name3");
     categoryRepository.create(three);
     var expected = List.of(one, two, three);
     var actual = categoryRepository.getAll();
@@ -63,10 +63,10 @@ public class CategoryRepositoryServiceTest {
 
   @Test
   public void testReadAndCreate() {
-    var category = getTestEntry();
+    var category = createCategory("Name");
     categoryRepository.create(category);
     assertEquals(1, category.getId());
-    assertEquals(category, categoryRepository.read(1));
+    assertEquals(category, categoryRepository.read(category.getId()));
   }
 
   @Test
@@ -76,16 +76,16 @@ public class CategoryRepositoryServiceTest {
 
   @Test
   public void testCreateDuplicate() {
-    var category = getTestEntry();
+    var category = createCategory("Name");
     categoryRepository.create(category);
     assertEquals(1, category.getId());
-    assertEquals(category, categoryRepository.read(1));
+    assertEquals(category, categoryRepository.read(category.getId()));
     assertThrows(NullPointerException.class, () -> categoryRepository.create(category));
   }
 
   @Test
   public void testUpdate() {
-    var category = getTestEntry();
+    var category = createCategory("Name");
     categoryRepository.create(category);
     category.setName("New name");
     categoryRepository.update(category);
@@ -94,9 +94,9 @@ public class CategoryRepositoryServiceTest {
 
   @Test
   public void testUpdateDuplicate() {
-    var one = getTestEntry("Name1");
+    var one = createCategory("Name1");
     categoryRepository.create(one);
-    var two = getTestEntry("Name2");
+    var two = createCategory("Name2");
     categoryRepository.create(two);
     two.setName(one.getName());
     assertThrows(NullPointerException.class, () -> categoryRepository.update(two));
@@ -104,7 +104,7 @@ public class CategoryRepositoryServiceTest {
 
   @Test
   public void testDelete() {
-    var category = getTestEntry();
+    var category = createCategory("Name");
     categoryRepository.create(category);
     assertEquals(1, category.getId());
     categoryRepository.delete(category);
@@ -113,19 +113,10 @@ public class CategoryRepositoryServiceTest {
 
   @Test
   public void testDeleteAbsentEntry() {
-    var category = getTestEntry();
+    var category = createCategory("Name");
     category.setId(7);
     assertThrows(NullPointerException.class, () -> categoryRepository.delete(category));
   }
 
-  private Category getTestEntry() {
-    return getTestEntry("Name");
-  }
 
-  private Category getTestEntry(String name) {
-    return Category.Builder.create()
-        .setName(name)
-        .setDescription("Text")
-        .build();
-  }
 }
