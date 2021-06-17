@@ -8,6 +8,7 @@ import com.github.ecstasyawesome.warehouse.ResourceBackupManager;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.StringJoiner;
 import org.junit.jupiter.api.AfterAll;
@@ -20,13 +21,23 @@ public class DatabaseManagerTest {
   private static final ResourceBackupManager RESOURCE_MANAGER = new ResourceBackupManager(DATABASE);
 
   @BeforeAll
-  public static void beforeAll() throws IOException {
+  public static void beforeAll() throws IOException, SQLException {
+    shutdownDatabaseManually();
     RESOURCE_MANAGER.backup();
   }
 
   @AfterAll
-  public static void afterAll() throws IOException {
+  public static void afterAll() throws IOException, SQLException {
+    shutdownDatabaseManually();
     RESOURCE_MANAGER.restore();
+  }
+
+  // necessary because database was started with 'DB_CLOSE_DELAY=-1' option
+  private static void shutdownDatabaseManually() throws SQLException {
+    try (var connection = DatabaseManager.getConnection();
+        var statement = connection.createStatement()) {
+      statement.execute("SHUTDOWN");
+    }
   }
 
   @Test

@@ -252,7 +252,8 @@ public final class DatabaseManager {
 
   public static Connection getConnection() throws SQLException {
     LOGGER.debug("Establishing connection with database");
-    return DriverManager.getConnection("jdbc:h2:./database/default", "root", "root");
+    final var url = "jdbc:h2:./database/default;DB_CLOSE_DELAY=-1";
+    return DriverManager.getConnection(url, "root", "root");
   }
 
   public static void createTablesIfAbsent(final Connection connection) {
