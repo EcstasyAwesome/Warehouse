@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public abstract class AbstractTestEntryRepository {
+public final class DefaultRecordRepository {
 
   public static Category createCategory(String name) {
     return Category.Builder.create()

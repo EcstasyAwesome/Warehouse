@@ -1,6 +1,6 @@
 package com.github.ecstasyawesome.warehouse.repository.impl;
 
-import static com.github.ecstasyawesome.warehouse.repository.AbstractTestEntryRepository.createCompany;
+import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createCompany;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;

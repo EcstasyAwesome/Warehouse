@@ -1,6 +1,6 @@
 package com.github.ecstasyawesome.warehouse.repository.impl;
 
-import static com.github.ecstasyawesome.warehouse.repository.AbstractTestEntryRepository.createCategory;
+import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createCategory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
