@@ -42,13 +42,13 @@ public class CategoryRepositoryServiceTest {
 
   @Test
   public void testGetAll() {
-    var one = createCategory("Name1");
-    categoryRepository.create(one);
-    var two = createCategory("Name2");
-    categoryRepository.create(two);
-    var three = createCategory("Name3");
-    categoryRepository.create(three);
-    var expected = List.of(one, two, three);
+    var category1 = createCategory("Name1");
+    categoryRepository.create(category1);
+    var category2 = createCategory("Name2");
+    categoryRepository.create(category2);
+    var category3 = createCategory("Name3");
+    categoryRepository.create(category3);
+    var expected = List.of(category1, category2, category3);
     var actual = categoryRepository.getAll();
     assertEquals(expected.size(), actual.size());
     IntStream.range(0, expected.size())
@@ -94,12 +94,12 @@ public class CategoryRepositoryServiceTest {
 
   @Test
   public void testUpdateDuplicate() {
-    var one = createCategory("Name1");
-    categoryRepository.create(one);
-    var two = createCategory("Name2");
-    categoryRepository.create(two);
-    two.setName(one.getName());
-    assertThrows(NullPointerException.class, () -> categoryRepository.update(two));
+    var category1 = createCategory("Name1");
+    categoryRepository.create(category1);
+    var category2 = createCategory("Name2");
+    categoryRepository.create(category2);
+    category2.setName(category1.getName());
+    assertThrows(NullPointerException.class, () -> categoryRepository.update(category2));
   }
 
   @Test
@@ -117,6 +117,4 @@ public class CategoryRepositoryServiceTest {
     category.setId(7);
     assertThrows(NullPointerException.class, () -> categoryRepository.delete(category));
   }
-
-
 }

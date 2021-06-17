@@ -9,6 +9,7 @@ import static com.github.ecstasyawesome.warehouse.repository.AbstractTestEntryRe
 import static com.github.ecstasyawesome.warehouse.repository.AbstractTestEntryRepository.createProductStorage;
 import static com.github.ecstasyawesome.warehouse.repository.AbstractTestEntryRepository.createUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
 
 import com.github.ecstasyawesome.warehouse.model.impl.Order;
@@ -56,6 +57,7 @@ public class OrderRepositoryServiceTest {
     try (var connection = TestDatabase.getConnection();
         var statement = connection.createStatement()) {
       statement.addBatch("DELETE FROM ORDERS");
+      statement.addBatch("DELETE FROM ORDERS_ITEMS");
       statement.addBatch("DELETE FROM USERS");
       statement.addBatch("DELETE FROM COMPANIES");
       statement.addBatch("DELETE FROM CATEGORIES");
@@ -73,9 +75,9 @@ public class OrderRepositoryServiceTest {
     UserRepositoryService.getInstance().create(user);
     var company = createCompany("Name", "777777777777777");
     CompanyRepositoryService.getInstance().create(company);
-    provider = createProductProvider();
+    provider = createProductProvider("Name");
     ProductProviderRepositoryService.getInstance().create(provider);
-    storage = createProductStorage(company);
+    storage = createProductStorage("Name", company);
     ProductStorageRepositoryService.getInstance().create(storage);
     var category = createCategory("Name");
     CategoryRepositoryService.getInstance().create(category);
@@ -162,7 +164,6 @@ public class OrderRepositoryServiceTest {
 
   @Test
   public void testCreate() {
-    assertEquals(0, orderRepository.getAll().size());
     var order = createOrder(user, storage, provider);
     var items = createOrderItems(product1, product2);
     orderRepository.create(order, items);
@@ -172,5 +173,33 @@ public class OrderRepositoryServiceTest {
     var orders = orderRepository.getAll();
     assertEquals(1, orders.size());
     assertEquals(order, orders.get(0));
+  }
+
+  @Test
+  public void checkCascadeDeletingByProductStorage() {
+    var order = createOrder(user, storage, provider);
+    orderRepository.create(order, createOrderItems(product1, product2));
+    assertEquals(1, orderRepository.getAll().size());
+    ProductStorageRepositoryService.getInstance().delete(storage);
+    assertEquals(0, orderRepository.getAll().size());
+  }
+
+  @Test
+  public void checkCascadeDeletingByProductProvider() {
+    var order = createOrder(user, storage, provider);
+    orderRepository.create(order, createOrderItems(product1, product2));
+    assertEquals(1, orderRepository.getAll().size());
+    ProductProviderRepositoryService.getInstance().delete(provider);
+    assertEquals(0, orderRepository.getAll().size());
+  }
+
+  @Test
+  public void checkCascadeDeletingByUser() {
+    var order = createOrder(user, storage, provider);
+    orderRepository.create(order, createOrderItems(product1, product2));
+    assertEquals(1, orderRepository.getAll().size());
+    assertThrows(NullPointerException.class,
+        () -> UserRepositoryService.getInstance().delete(user));
+    assertEquals(1, orderRepository.getAll().size());
   }
 }

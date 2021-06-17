@@ -95,7 +95,7 @@ public class ProductProviderRepositoryService extends ProductProviderRepository 
                 ON PRODUCT_PROVIDERS.PROVIDER_ID = PRODUCT_PROVIDERS_CONTACTS.PROVIDER_ID
             INNER JOIN PRODUCT_PROVIDERS_ADDRESSES
                 ON PRODUCT_PROVIDERS.PROVIDER_ID = PRODUCT_PROVIDERS_ADDRESSES.PROVIDER_ID
-        WHERE PRODUCT_PROVIDERS.PRODUCT_ID=?
+        WHERE PRODUCT_PROVIDERS.PROVIDER_ID=?
         """;
     try {
       var result = selectRecord(query, id);

@@ -83,18 +83,18 @@ public abstract class AbstractTestEntryRepository {
         .build();
   }
 
-  public static ProductStorage createProductStorage(Company company) {
+  public static ProductStorage createProductStorage(String name, Company company) {
     return ProductStorage.Builder.create()
         .setAddress(createAddress())
         .setBusinessContact(createBusinessContact())
         .setCompany(company)
-        .setName("Name")
+        .setName(name)
         .build();
   }
 
-  public static ProductProvider createProductProvider() {
+  public static ProductProvider createProductProvider(String name) {
     return ProductProvider.Builder.create()
-        .setName("Name")
+        .setName(name)
         .setAddress(createAddress())
         .setBusinessContact(createBusinessContact())
         .build();

@@ -9,6 +9,8 @@ import static com.github.ecstasyawesome.warehouse.repository.AbstractTestEntryRe
 import static com.github.ecstasyawesome.warehouse.repository.AbstractTestEntryRepository.createProductStorage;
 import static com.github.ecstasyawesome.warehouse.repository.AbstractTestEntryRepository.createUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mockStatic;
 
 import com.github.ecstasyawesome.warehouse.model.impl.Product;
@@ -49,6 +51,7 @@ public class OrderItemRepositoryServiceTest {
     try (var connection = TestDatabase.getConnection();
         var statement = connection.createStatement()) {
       statement.addBatch("DELETE FROM ORDERS");
+      statement.addBatch("DELETE FROM ORDERS_ITEMS");
       statement.addBatch("DELETE FROM COMPANIES");
       statement.addBatch("DELETE FROM CATEGORIES");
       statement.addBatch("DELETE FROM USERS");
@@ -66,9 +69,9 @@ public class OrderItemRepositoryServiceTest {
     UserRepositoryService.getInstance().create(user);
     var company = createCompany("Name", "777777777777777");
     CompanyRepositoryService.getInstance().create(company);
-    provider = createProductProvider();
+    provider = createProductProvider("Name");
     ProductProviderRepositoryService.getInstance().create(provider);
-    storage = createProductStorage(company);
+    storage = createProductStorage("Name", company);
     ProductStorageRepositoryService.getInstance().create(storage);
     var category = createCategory("Name");
     CategoryRepositoryService.getInstance().create(category);
@@ -100,5 +103,33 @@ public class OrderItemRepositoryServiceTest {
     var order = createOrder(user, storage, provider);
     order.setId(7);
     assertEquals(0, orderItemRepository.getAll(order).size());
+  }
+
+  @Test
+  public void checkCascadeDeletingByOrder() {
+    var order = createOrder(user, storage, provider);
+    OrderRepositoryService.getInstance().create(order, createOrderItems(product1, product2));
+    assertEquals(2, orderItemRepository.getAll(order).size());
+    try (var connection = TestDatabase.getConnection();
+        var statement = connection.prepareStatement("DELETE FROM ORDERS WHERE ORDER_ID=?")) {
+      statement.setLong(1, order.getId());
+      statement.execute();
+    } catch (SQLException exception) {
+      fail(exception);
+    }
+    assertEquals(0, orderItemRepository.getAll(order).size());
+  }
+
+  @Test
+  public void checkCascadeDeletingByProduct() {
+    var order = createOrder(user, storage, provider);
+    var items = createOrderItems(product1, product2);
+    OrderRepositoryService.getInstance().create(order, items);
+    assertEquals(2, orderItemRepository.getAll(order).size());
+    assertThrows(NullPointerException.class,
+        () -> ProductRepositoryService.getInstance().delete(items.get(0).getProduct()));
+    assertThrows(NullPointerException.class,
+        () -> ProductRepositoryService.getInstance().delete(items.get(1).getProduct()));
+    assertEquals(2, orderItemRepository.getAll(order).size());
   }
 }
