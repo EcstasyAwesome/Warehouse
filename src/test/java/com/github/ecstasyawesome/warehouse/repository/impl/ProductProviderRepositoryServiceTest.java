@@ -26,9 +26,17 @@ public class ProductProviderRepositoryServiceTest {
 
   private MockedStatic<DatabaseManager> mockedDatabase;
 
-  @SuppressWarnings("SqlWithoutWhere")
+
   @BeforeEach
   public void setUp() throws SQLException {
+    clearDatabase();
+    mockedDatabase = mockStatic(DatabaseManager.class);
+    mockedDatabase.when(DatabaseManager::getConnection)
+        .then(answer -> TestDatabase.getConnection());
+  }
+
+  @SuppressWarnings("SqlWithoutWhere")
+  private void clearDatabase() throws SQLException {
     try (var connection = TestDatabase.getConnection();
         var statement = connection.createStatement()) {
       statement.addBatch("DELETE FROM PRODUCT_PROVIDERS");
@@ -45,9 +53,6 @@ public class ProductProviderRepositoryServiceTest {
           """);
       statement.executeBatch();
     }
-    mockedDatabase = mockStatic(DatabaseManager.class);
-    mockedDatabase.when(DatabaseManager::getConnection)
-        .then(answer -> TestDatabase.getConnection());
   }
 
   @AfterEach

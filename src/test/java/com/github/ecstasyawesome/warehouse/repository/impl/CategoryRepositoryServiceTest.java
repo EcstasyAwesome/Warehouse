@@ -21,18 +21,22 @@ public class CategoryRepositoryServiceTest {
   private final CategoryRepository categoryRepository = CategoryRepositoryService.getInstance();
   private MockedStatic<DatabaseManager> mockedDatabase;
 
-  @SuppressWarnings("SqlWithoutWhere")
   @BeforeEach
   public void setUp() throws SQLException {
+    clearDatabase();
+    mockedDatabase = mockStatic(DatabaseManager.class);
+    mockedDatabase.when(DatabaseManager::getConnection)
+        .then(answer -> TestDatabase.getConnection());
+  }
+
+  @SuppressWarnings("SqlWithoutWhere")
+  private void clearDatabase() throws SQLException {
     try (var connection = TestDatabase.getConnection();
         var statement = connection.createStatement()) {
       statement.addBatch("DELETE FROM CATEGORIES");
       statement.addBatch("ALTER TABLE CATEGORIES ALTER COLUMN CATEGORY_ID RESTART WITH 1");
       statement.executeBatch();
     }
-    mockedDatabase = mockStatic(DatabaseManager.class);
-    mockedDatabase.when(DatabaseManager::getConnection)
-        .then(answer -> TestDatabase.getConnection());
   }
 
   @AfterEach
