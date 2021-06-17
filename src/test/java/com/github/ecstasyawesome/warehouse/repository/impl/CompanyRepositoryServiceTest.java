@@ -109,6 +109,14 @@ public class CompanyRepositoryServiceTest {
     company.setName("New name");
     company.setPersonType(PersonType.LEGAL_ENTITY);
     company.setIdentifierCode("8798352198494");
+    company.getAddress().setTown("New town");
+    company.getAddress().setRegion("New region");
+    company.getAddress().setStreet("New street");
+    company.getAddress().setNumber("12/7");
+    company.getBusinessContact().setPhone("0958563265");
+    company.getBusinessContact().setExtraPhone("0957413265");
+    company.getBusinessContact().setEmail("new_email@mail.com");
+    company.getBusinessContact().setSite("new-example.com");
     companyRepository.update(company);
     assertEquals(company, companyRepository.read(company.getId()));
   }

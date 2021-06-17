@@ -65,7 +65,32 @@ public class ProductStorageRepositoryServiceTest {
   }
 
   @Test
-  public void getAll() {
+  public void testGetAllByCompany() {
+    var storage1 = createProductStorage("Name1", company);
+    productStorageRepository.create(storage1);
+    var storage2 = createProductStorage("Name2", company);
+    productStorageRepository.create(storage2);
+    var newCompany = createCompany("New company", "456218795314527");
+    CompanyRepositoryService.getInstance().create(newCompany);
+    var storage3 = createProductStorage("Name3", newCompany);
+    productStorageRepository.create(storage3);
+
+    var expected1 = List.of(storage1, storage2);
+    var actual1 = productStorageRepository.getAll(company);
+    assertEquals(expected1.size(), actual1.size());
+    IntStream.range(0, expected1.size())
+        .forEach(index -> assertEquals(expected1.get(index), actual1.get(index)));
+
+    var expected2 = List.of(storage3);
+    var actual2 = productStorageRepository.getAll(newCompany);
+    assertEquals(expected2.size(), actual2.size());
+    IntStream.range(0, expected2.size())
+        .forEach(index -> assertEquals(expected2.get(index), actual2.get(index)));
+  }
+
+  @Test
+  public void testGetAllByCompanyEmpty() {
+    assertEquals(0, productStorageRepository.getAll(company).size());
   }
 
   @Test
@@ -115,7 +140,18 @@ public class ProductStorageRepositoryServiceTest {
   public void testUpdate() {
     var storage = createProductStorage("Name", company);
     productStorageRepository.create(storage);
+    var newCompany = createCompany("New company", "785214628971254");
+    CompanyRepositoryService.getInstance().create(newCompany);
     storage.setName("New name");
+    storage.setCompany(newCompany);
+    storage.getBusinessContact().setPhone("0958567845");
+    storage.getBusinessContact().setExtraPhone("0958586512");
+    storage.getBusinessContact().setEmail("new_email@mail.com");
+    storage.getBusinessContact().setSite("new-example.com");
+    storage.getAddress().setTown("New town");
+    storage.getAddress().setRegion("New region");
+    storage.getAddress().setStreet("New street");
+    storage.getAddress().setNumber("134/7");
     productStorageRepository.update(storage);
     assertEquals(storage, productStorageRepository.read(storage.getId()));
   }

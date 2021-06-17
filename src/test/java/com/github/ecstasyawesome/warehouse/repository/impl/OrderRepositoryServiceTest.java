@@ -71,7 +71,7 @@ public class OrderRepositoryServiceTest {
   }
 
   private void initDatabaseEntries() {
-    user = createUser();
+    user = createUser("login");
     UserRepositoryService.getInstance().create(user);
     var company = createCompany("Name", "777777777777777");
     CompanyRepositoryService.getInstance().create(company);

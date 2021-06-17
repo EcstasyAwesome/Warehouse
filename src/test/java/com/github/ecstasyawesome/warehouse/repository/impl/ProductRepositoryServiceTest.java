@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
 
+import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
 import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
@@ -13,6 +14,7 @@ import com.github.ecstasyawesome.warehouse.util.TestDatabase;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,11 +54,63 @@ public class ProductRepositoryServiceTest {
   }
 
   @Test
-  public void search() {
+  public void testSearchByName() {
+    var product1 = createProduct("Nike", category);
+    productRepository.create(product1);
+    var product2 = createProduct("Sprite", category);
+    productRepository.create(product2);
+    var product3 = createProduct("Snickers", category);
+    productRepository.create(product3);
+
+    var expected1 = Stream.of(product1, product2, product3)
+        .filter(product -> product.getName().contains("i"))
+        .toList();
+    var actual1 = productRepository.search("i");
+    assertEquals(expected1.size(), actual1.size());
+    IntStream.range(0, expected1.size())
+        .forEach(index -> assertEquals(expected1.get(index), actual1.get(index)));
+
+    var expected2 = Stream.of(product1, product2, product3)
+        .filter(product -> product.getName().toLowerCase().contains("spr"))
+        .toList();
+    var actual2 = productRepository.search("spr");
+    assertEquals(expected2.size(), actual2.size());
+    IntStream.range(0, expected2.size())
+        .forEach(index -> assertEquals(expected2.get(index), actual2.get(index)));
   }
 
   @Test
-  public void getAll() {
+  public void testSearchByNameEmpty() {
+    assertEquals(0, productRepository.search("some criteria").size());
+  }
+
+  @Test
+  public void testGetAllByCategory() {
+    var product1 = createProduct("Nike", category);
+    productRepository.create(product1);
+    var product2 = createProduct("Sprite", category);
+    productRepository.create(product2);
+    var newCategory = createCategory("Food");
+    CategoryRepositoryService.getInstance().create(newCategory);
+    var product3 = createProduct("Snickers", newCategory);
+    productRepository.create(product3);
+
+    var expected1 = List.of(product1, product2);
+    var actual1 = productRepository.getAll(category);
+    assertEquals(expected1.size(), actual1.size());
+    IntStream.range(0, expected1.size())
+        .forEach(index -> assertEquals(expected1.get(index), actual1.get(index)));
+
+    var expected2 = List.of(product3);
+    var actual2 = productRepository.getAll(newCategory);
+    assertEquals(expected2.size(), actual2.size());
+    IntStream.range(0, expected2.size())
+        .forEach(index -> assertEquals(expected2.get(index), actual2.get(index)));
+  }
+
+  @Test
+  public void testGetAllByCategoryEmpty() {
+    assertEquals(0, productRepository.getAll(category).size());
   }
 
   @Test
@@ -106,7 +160,11 @@ public class ProductRepositoryServiceTest {
   public void testUpdate() {
     var product = createProduct("Name", category);
     productRepository.create(product);
+    var newCategory = createCategory("New category");
+    CategoryRepositoryService.getInstance().create(newCategory);
     product.setName("New name");
+    product.setCategory(newCategory);
+    product.setUnit(Unit.KILO);
     productRepository.update(product);
     assertEquals(product, productRepository.read(product.getId()));
   }

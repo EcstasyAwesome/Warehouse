@@ -64,13 +64,13 @@ public final class DefaultRecordRepository {
         .build();
   }
 
-  public static User createUser() {
+  public static User createUser(String login) {
     var contact = PersonContact.Builder.create()
         .setPhone("09578567733")
         .setEmail("example@mail.com")
         .build();
     var security = PersonSecurity.Builder.create()
-        .setLogin("login")
+        .setLogin(login)
         .setPassword("password")
         .setAccess(Access.ROOT)
         .build();

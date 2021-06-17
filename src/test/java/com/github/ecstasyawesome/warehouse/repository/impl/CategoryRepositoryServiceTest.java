@@ -92,6 +92,7 @@ public class CategoryRepositoryServiceTest {
     var category = createCategory("Name");
     categoryRepository.create(category);
     category.setName("New name");
+    category.setDescription("Some text");
     categoryRepository.update(category);
     assertEquals(category, categoryRepository.read(category.getId()));
   }

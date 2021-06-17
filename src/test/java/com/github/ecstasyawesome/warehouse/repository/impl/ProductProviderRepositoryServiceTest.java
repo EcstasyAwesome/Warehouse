@@ -77,8 +77,7 @@ public class ProductProviderRepositoryServiceTest {
 
   @Test
   public void testGetAllEmptyList() {
-    var actual = productProviderRepository.getAll();
-    assertEquals(0, actual.size());
+    assertEquals(0, productProviderRepository.getAll().size());
   }
 
   @Test
@@ -108,6 +107,14 @@ public class ProductProviderRepositoryServiceTest {
     var provider = createProductProvider("Name");
     productProviderRepository.create(provider);
     provider.setName("New name");
+    provider.getBusinessContact().setPhone("0958567845");
+    provider.getBusinessContact().setExtraPhone("0958586512");
+    provider.getBusinessContact().setEmail("new_email@mail.com");
+    provider.getBusinessContact().setSite("new-example.com");
+    provider.getAddress().setTown("New town");
+    provider.getAddress().setRegion("New region");
+    provider.getAddress().setStreet("New street");
+    provider.getAddress().setNumber("134/7");
     productProviderRepository.update(provider);
     assertEquals(provider, productProviderRepository.read(provider.getId()));
   }
