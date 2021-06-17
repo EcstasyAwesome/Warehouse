@@ -33,8 +33,8 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
   private static final String CREATE_TABLE_QUERY = """
       CREATE TABLE IF NOT EXISTS TEST_MODELS
       (
-          TEST_MODEL_ID   BIGINT      NOT NULL AUTO_INCREMENT,
-          TEST_MODEL_NAME VARCHAR(50) NOT NULL,
+          TEST_MODEL_ID      BIGINT      NOT NULL AUTO_INCREMENT,
+          TEST_MODEL_NAME    VARCHAR(50) NOT NULL,
           TEST_MODEL_SURNAME VARCHAR(50) NOT NULL,
           CONSTRAINT PK_TEST_MODEL_ID PRIMARY KEY (TEST_MODEL_ID)
       )
