@@ -16,6 +16,7 @@ import com.github.ecstasyawesome.warehouse.model.impl.ProductProvider;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductStorage;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public abstract class AbstractTestEntryRepository {
@@ -102,7 +103,7 @@ public abstract class AbstractTestEntryRepository {
   public static Order createOrder(User user, ProductStorage storage, ProductProvider provider) {
     return Order.Builder.create()
         .setUser(user)
-        .setTime(LocalDateTime.now())
+        .setTime(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS))
         .setProductStorage(storage)
         .setProductProvider(provider)
         .setComment("None")
@@ -110,8 +111,8 @@ public abstract class AbstractTestEntryRepository {
   }
 
   public static List<OrderItem> createOrderItems(Product p1, Product p2) {
-    var one = OrderItem.Builder.create().setId(1).setAmount(5).setProduct(p1).build();
-    var two = OrderItem.Builder.create().setId(2).setAmount(7).setProduct(p2).build();
+    var one = OrderItem.Builder.create().setAmount(5).setProduct(p1).build();
+    var two = OrderItem.Builder.create().setAmount(7).setProduct(p2).build();
     return List.of(one, two);
   }
 }

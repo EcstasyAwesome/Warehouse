@@ -2,10 +2,7 @@ package com.github.ecstasyawesome.warehouse.repository.impl;
 
 import static com.github.ecstasyawesome.warehouse.repository.AbstractTestEntryRepository.createCompany;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mockStatic;
 
 import com.github.ecstasyawesome.warehouse.model.PersonType;
@@ -31,8 +28,6 @@ public class CompanyRepositoryServiceTest {
     try (var connection = TestDatabase.getConnection();
         var statement = connection.createStatement()) {
       statement.addBatch("DELETE FROM COMPANIES");
-      statement.addBatch("DELETE FROM COMPANIES_ADDRESSES");
-      statement.addBatch("DELETE FROM COMPANIES_CONTACTS");
       statement.addBatch("ALTER TABLE COMPANIES ALTER COLUMN COMPANY_ID RESTART WITH 1");
       statement.addBatch("ALTER TABLE COMPANIES_ADDRESSES ALTER COLUMN ADDRESS_ID RESTART WITH 1");
       statement.addBatch("ALTER TABLE COMPANIES_CONTACTS ALTER COLUMN CONTACT_ID RESTART WITH 1");
@@ -74,6 +69,8 @@ public class CompanyRepositoryServiceTest {
     var company = createCompany("Name1", "777777777777777");
     companyRepository.create(company);
     assertEquals(1, company.getId());
+    assertEquals(1, company.getAddress().getId());
+    assertEquals(1, company.getBusinessContact().getId());
     assertEquals(company, companyRepository.read(company.getId()));
   }
 
@@ -126,19 +123,6 @@ public class CompanyRepositoryServiceTest {
     assertEquals(1, company.getId());
     companyRepository.delete(company);
     assertThrows(NullPointerException.class, () -> companyRepository.read(company.getId()));
-
-    try (var connection = TestDatabase.getConnection();
-        var statement = connection.createStatement()) {
-      assertTrue(statement.execute("SELECT EXISTS(SELECT 1 FROM COMPANIES_CONTACTS)"));
-      assertTrue(statement.execute("SELECT EXISTS(SELECT 1 FROM COMPANIES_ADDRESSES)"));
-      try (var resultSet = statement.getResultSet()) {
-        while (resultSet.next()) {
-          assertFalse(resultSet.getBoolean(1));
-        }
-      }
-    } catch (SQLException exception) {
-      fail(exception);
-    }
   }
 
   @Test
