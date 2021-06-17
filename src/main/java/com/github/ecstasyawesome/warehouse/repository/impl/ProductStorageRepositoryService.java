@@ -45,7 +45,7 @@ public class ProductStorageRepositoryService extends ProductStorageRepository {
                 ON PRODUCT_STORAGES.COMPANY_ID = COMPANIES_CONTACTS.COMPANY_ID
             INNER JOIN COMPANIES_ADDRESSES
                 ON PRODUCT_STORAGES.COMPANY_ID = COMPANIES_ADDRESSES.COMPANY_ID
-        WHERE PRODUCT_STORAGES.STORAGE_ID=?
+        WHERE PRODUCT_STORAGES.COMPANY_ID=?
         """;
     try {
       var result = selectRecords(query, criteria.getId());
