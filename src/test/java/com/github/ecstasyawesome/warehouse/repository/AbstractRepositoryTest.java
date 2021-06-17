@@ -21,14 +21,16 @@ import java.util.ArrayList;
 import java.util.stream.IntStream;
 import javafx.collections.ObservableList;
 import org.h2.jdbc.JdbcSQLNonTransientException;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
 
   private static final int TOTAL_RECORDS = 3;
-  private static final String TABLE = """
+  private static final String CREATE_TABLE_QUERY = """
       CREATE TABLE IF NOT EXISTS TEST_MODELS
       (
           TEST_MODEL_ID   BIGINT      NOT NULL AUTO_INCREMENT,
@@ -37,7 +39,7 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
           CONSTRAINT PK_TEST_MODEL_ID PRIMARY KEY (TEST_MODEL_ID)
       )
       """;
-  private static final String DROP_QUERY = "DROP TABLE IF EXISTS TEST_MODELS";
+  private static final String DROP_TABLE_QUERY = "DROP TABLE IF EXISTS TEST_MODELS";
   private static final String DELETE_QUERY = "DELETE FROM TEST_MODELS WHERE TEST_MODEL_ID=?";
   private static final String CHECK_QUERY =
       "SELECT EXISTS(SELECT 1 FROM TEST_MODELS WHERE TEST_MODEL_ID=?)";
@@ -50,12 +52,25 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
   private static final String SELECT_BY_ID_QUERY =
       "SELECT * FROM TEST_MODELS WHERE TEST_MODEL_ID=?";
 
-  @BeforeEach
-  public void setUp() throws SQLException {
+  @BeforeAll
+  public static void beforeAll() throws SQLException {
     try (var connection = TestDatabase.getConnection();
         var statement = connection.createStatement()) {
-      connection.setAutoCommit(false);
-      statement.execute(TABLE);
+      statement.execute(CREATE_TABLE_QUERY);
+    }
+  }
+
+  @AfterAll
+  public static void afterAll() throws SQLException {
+    try (var connection = TestDatabase.getConnection();
+        var statement = connection.createStatement()) {
+      statement.execute(DROP_TABLE_QUERY);
+    }
+  }
+
+  @BeforeEach
+  public void setUp() throws SQLException {
+    try (var connection = TestDatabase.getConnection()) {
       try (var preparedStatement = connection.prepareStatement(INSERT_QUERY)) {
         for (var index = 1L; index <= TOTAL_RECORDS; index++) {
           preparedStatement.setString(1, String.format("name %d", index));
@@ -63,18 +78,18 @@ public class AbstractRepositoryTest extends AbstractRepository<TestModel> {
           preparedStatement.addBatch();
         }
         preparedStatement.executeBatch();
-        connection.commit();
       }
     }
   }
 
+  @SuppressWarnings("SqlWithoutWhere")
   @AfterEach
   public void tearDown() throws SQLException {
     try (var connection = TestDatabase.getConnection();
         var statement = connection.createStatement()) {
-      connection.setAutoCommit(false);
-      statement.execute(DROP_QUERY);
-      connection.commit();
+      statement.addBatch("DELETE FROM TEST_MODELS");
+      statement.addBatch("ALTER TABLE TEST_MODELS ALTER COLUMN TEST_MODEL_ID RESTART WITH 1");
+      statement.executeBatch();
     }
   }
 
