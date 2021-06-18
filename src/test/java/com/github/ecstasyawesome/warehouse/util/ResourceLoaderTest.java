@@ -5,19 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.util.ResourceLoader.Language;
 import java.io.IOException;
 import java.net.URL;
 import javafx.collections.ObservableList;
 import javafx.fxml.LoadException;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
-import org.testfx.framework.junit5.Start;
 
 @ExtendWith(ApplicationExtension.class)
 public class ResourceLoaderTest {
@@ -25,21 +21,6 @@ public class ResourceLoaderTest {
   private static final URL RESOURCE = ResourceLoader.class.getResource("/VBoxTemplate.fxml");
   private static final URL BROKEN_RESOURCE =
       ResourceLoader.class.getResource("/VBoxBrokenTemplate.fxml");
-
-  private static boolean state = false;
-
-  @AfterAll
-  public static void afterAll() {
-    WindowManager.destroy();
-  }
-
-  @Start
-  public void start(Stage stage) {
-    if (!state) {
-      WindowManager.initialize(stage);
-      state = true;
-    }
-  }
 
   @Test
   public void loadValidResource() {

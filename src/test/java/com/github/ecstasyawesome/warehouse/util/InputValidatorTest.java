@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import java.time.LocalDate;
 import java.util.stream.IntStream;
 import javafx.scene.control.ChoiceBox;
@@ -26,30 +25,12 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
-import javafx.stage.Stage;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
-import org.testfx.framework.junit5.Start;
 
 @ExtendWith(ApplicationExtension.class)
 public class InputValidatorTest {
-
-  private static boolean state = false;
-
-  @AfterAll
-  public static void afterAll() {
-    WindowManager.destroy();
-  }
-
-  @Start
-  public void start(Stage stage) {
-    if (!state) {
-      WindowManager.initialize(stage);
-      state = true;
-    }
-  }
 
   @Test
   public void testEqualPasswords() {
