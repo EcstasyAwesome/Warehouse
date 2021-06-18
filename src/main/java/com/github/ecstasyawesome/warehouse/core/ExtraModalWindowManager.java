@@ -7,10 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ExtraModalWindowManager extends WindowContainer {
 
+  private final Logger logger = LogManager.getLogger(ExtraModalWindowManager.class);
   private final List<SingleSceneWindow> windows = new ArrayList<>();
+
+  {
+    logger.debug("Initialized");
+  }
 
   public ExtraModalWindowManager() {
   }
@@ -37,6 +44,7 @@ public class ExtraModalWindowManager extends WindowContainer {
 
   @Override
   public void close() {
+    logger.debug("Closed");
     for (var index = windows.size() - 1; index >= 0; index--) {
       windows.get(index).close();
     }
@@ -60,6 +68,7 @@ public class ExtraModalWindowManager extends WindowContainer {
       extraWindow = new ExtraModalWindow(windows.get(lastElementIndex), title, scene);
     }
     windows.add(extraWindow);
+    logger.debug("Created a new window");
     return extraWindow;
   }
 }
