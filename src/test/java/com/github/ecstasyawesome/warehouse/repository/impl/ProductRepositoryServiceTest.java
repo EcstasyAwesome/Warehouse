@@ -40,6 +40,8 @@ public class ProductRepositoryServiceTest {
   private void clearDatabase() throws SQLException {
     try (var connection = TestDatabase.getConnection();
         var statement = connection.createStatement()) {
+      statement.addBatch("DELETE FROM ORDERS");
+      statement.addBatch("DELETE FROM ORDERS_ITEMS");
       statement.addBatch("DELETE FROM CATEGORIES");
       statement.addBatch("DELETE FROM PRODUCTS");
       statement.addBatch("ALTER TABLE CATEGORIES ALTER COLUMN CATEGORY_ID RESTART WITH 1");
