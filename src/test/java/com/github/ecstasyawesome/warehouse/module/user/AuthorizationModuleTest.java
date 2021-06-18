@@ -6,6 +6,7 @@ import static com.github.ecstasyawesome.warehouse.module.ModuleTester.checkTitle
 
 import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.Access;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +25,7 @@ public class AuthorizationModuleTest {
 
   @Test
   public void testCreating() {
-    checkFxmlBundle(module.create());
+    Platform.runLater(() -> checkFxmlBundle(module.create()));
   }
 
   @Test
