@@ -37,8 +37,8 @@ public class ExtraModalWindowManager extends WindowContainer {
 
   @Override
   public void close() {
-    if (windows.size() > 0) {
-      windows.get(0).close();
+    for (var index = windows.size() - 1; index >= 0; index--) {
+      windows.get(index).close();
     }
   }
 
@@ -48,14 +48,18 @@ public class ExtraModalWindowManager extends WindowContainer {
   }
 
   private ExtraModalWindow createNewWindow(String title, Scene scene) {
+    var extraWindow = (ExtraModalWindow) null;
     if (windows.isEmpty()) {
       if (owner == null) {
-        return new ExtraModalWindow(title, scene);
+        extraWindow = new ExtraModalWindow(title, scene);
+      } else {
+        extraWindow = new ExtraModalWindow(owner, title, scene);
       }
-      return new ExtraModalWindow(owner, title, scene);
     } else {
       var lastElementIndex = windows.size() - 1;
-      return new ExtraModalWindow(windows.get(lastElementIndex), title, scene);
+      extraWindow = new ExtraModalWindow(windows.get(lastElementIndex), title, scene);
     }
+    windows.add(extraWindow);
+    return extraWindow;
   }
 }
