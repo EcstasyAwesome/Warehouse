@@ -266,8 +266,12 @@ public final class WindowManager {
   }
 
   public void shutdown() {
-    LOGGER.debug("Closed");
+    authorizationWindow.close();
+    workWindow.close();
+    extraWindowManager.close();
     root.close();
+    LOGGER.debug("Closed all active windows");
+    LOGGER.debug("Request to shutdown");
     Platform.exit();
   }
 
