@@ -1,5 +1,6 @@
 package com.github.ecstasyawesome.warehouse.core.window;
 
+import java.util.Objects;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -13,6 +14,7 @@ public abstract class StageBasedWindow extends WindowNode {
   }
 
   public StageBasedWindow(Stage owner) {
+    Objects.requireNonNull(owner, "Really? Use default constructor");
     stage.initOwner(owner);
   }
 
