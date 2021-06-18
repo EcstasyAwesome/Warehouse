@@ -14,6 +14,7 @@ import org.testfx.framework.junit5.Start;
 
 @ExtendWith(ApplicationExtension.class)
 public class ProductPickerModuleTest {
+
   private final ProductPickerModule module = ProductPickerModule.getInstance();
 
   @Start

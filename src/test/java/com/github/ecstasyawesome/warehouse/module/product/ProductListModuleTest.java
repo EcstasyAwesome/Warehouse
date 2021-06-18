@@ -5,9 +5,7 @@ import static com.github.ecstasyawesome.warehouse.module.ModuleTester.checkFxmlB
 import static com.github.ecstasyawesome.warehouse.module.ModuleTester.checkTitle;
 import static com.github.ecstasyawesome.warehouse.module.ModuleTester.initCurrentModule;
 import static com.github.ecstasyawesome.warehouse.module.ModuleTester.initSessionUser;
-import static org.junit.jupiter.api.Assertions.*;
 
-import com.github.ecstasyawesome.warehouse.core.WindowManager;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
@@ -17,6 +15,7 @@ import org.testfx.framework.junit5.Start;
 
 @ExtendWith(ApplicationExtension.class)
 public class ProductListModuleTest {
+
   private final ProductListModule module = ProductListModule.getInstance();
 
   @Start
