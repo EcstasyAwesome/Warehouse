@@ -1,6 +1,7 @@
 package com.github.ecstasyawesome.warehouse.core;
 
 import com.github.ecstasyawesome.warehouse.core.window.MultiSceneWindow;
+import com.github.ecstasyawesome.warehouse.core.window.StageBasedWindow;
 import com.github.ecstasyawesome.warehouse.core.window.WindowNode;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
@@ -18,11 +19,21 @@ public class AuthorizationWindow extends MultiSceneWindow {
 
   private final Logger logger = LogManager.getLogger(AuthorizationWindow.class);
 
-  public AuthorizationWindow(Stage owner) {
-    super(owner);
+  {
     stage.setResizable(false);
     stage.setOnHidden(getOnCloseAction());
     logger.debug("Initialized");
+  }
+
+  public AuthorizationWindow() {
+  }
+
+  public AuthorizationWindow(Stage owner) {
+    super(owner);
+  }
+
+  public AuthorizationWindow(StageBasedWindow owner) {
+    super(owner);
   }
 
   @Override

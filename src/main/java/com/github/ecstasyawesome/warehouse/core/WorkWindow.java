@@ -1,6 +1,7 @@
 package com.github.ecstasyawesome.warehouse.core;
 
 import com.github.ecstasyawesome.warehouse.core.window.MultiSceneWindow;
+import com.github.ecstasyawesome.warehouse.core.window.StageBasedWindow;
 import com.github.ecstasyawesome.warehouse.core.window.WindowNode;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -15,8 +16,7 @@ public class WorkWindow extends MultiSceneWindow {
   private final ViewSettings viewSettings = ViewSettings.getInstance();
   private final Logger logger = LogManager.getLogger(WorkWindow.class);
 
-  public WorkWindow(Stage owner) {
-    super(owner);
+  {
     stage.setMinWidth(viewSettings.getDefaultWidth());
     stage.setMinHeight(viewSettings.getDefaultHeight());
     stage.setWidth(viewSettings.getWidth());
@@ -24,6 +24,17 @@ public class WorkWindow extends MultiSceneWindow {
     stage.setMaximized(viewSettings.isMaximized());
     stage.setOnHidden(getOnCloseAction());
     logger.debug("Initialized");
+  }
+
+  public WorkWindow() {
+  }
+
+  public WorkWindow(Stage owner) {
+    super(owner);
+  }
+
+  public WorkWindow(StageBasedWindow owner) {
+    super(owner);
   }
 
   @Override
