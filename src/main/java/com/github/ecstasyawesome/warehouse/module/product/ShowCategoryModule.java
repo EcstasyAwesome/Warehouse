@@ -7,8 +7,7 @@ import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import java.net.URL;
 
-public class ShowCategoryModule extends
-    AbstractConfiguredModule<ShowCategoryController, Category> {
+public class ShowCategoryModule extends AbstractConfiguredModule<ShowCategoryController, Category> {
 
   private static final ShowCategoryModule INSTANCE = new ShowCategoryModule();
   private final URL fxml = getClass().getResource("/model/product/ShowCategory.fxml");

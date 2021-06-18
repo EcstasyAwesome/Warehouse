@@ -7,8 +7,8 @@ import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.PersonSecurity;
 import java.net.URL;
 
-public class AdministratorRegistrationModule
-    extends AbstractFeedbackModule<AdministratorController, PersonSecurity> {
+public class AdministratorRegistrationModule extends
+    AbstractFeedbackModule<AdministratorController, PersonSecurity> {
 
   private static final AdministratorRegistrationModule INSTANCE =
       new AdministratorRegistrationModule();

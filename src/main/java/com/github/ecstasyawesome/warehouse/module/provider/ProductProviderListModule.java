@@ -6,8 +6,7 @@ import com.github.ecstasyawesome.warehouse.core.module.AbstractModule;
 import com.github.ecstasyawesome.warehouse.model.Access;
 import java.net.URL;
 
-public class ProductProviderListModule extends
-    AbstractModule<ProductProviderListController> {
+public class ProductProviderListModule extends AbstractModule<ProductProviderListController> {
 
   private static final ProductProviderListModule INSTANCE = new ProductProviderListModule();
   private final URL fxml = getClass().getResource("/model/provider/ProductProviderList.fxml");

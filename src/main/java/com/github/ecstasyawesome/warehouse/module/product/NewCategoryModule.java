@@ -7,8 +7,7 @@ import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import java.net.URL;
 
-public class NewCategoryModule extends
-    AbstractFeedbackModule<NewCategoryController, Category> {
+public class NewCategoryModule extends AbstractFeedbackModule<NewCategoryController, Category> {
 
   private static final NewCategoryModule INSTANCE = new NewCategoryModule();
   private final URL fxml = getClass().getResource("/model/product/NewCategory.fxml");

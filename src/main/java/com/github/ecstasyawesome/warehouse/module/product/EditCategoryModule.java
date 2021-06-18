@@ -7,8 +7,7 @@ import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import java.net.URL;
 
-public class EditCategoryModule extends
-    AbstractConfiguredModule<EditCategoryController, Category> {
+public class EditCategoryModule extends AbstractConfiguredModule<EditCategoryController, Category> {
 
   private static final EditCategoryModule INSTANCE = new EditCategoryModule();
   private final URL fxml = getClass().getResource("/model/product/EditCategory.fxml");

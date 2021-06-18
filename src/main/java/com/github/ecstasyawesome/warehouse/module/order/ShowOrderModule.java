@@ -7,8 +7,7 @@ import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Order;
 import java.net.URL;
 
-public class ShowOrderModule extends
-    AbstractConfiguredModule<ShowOrderController, Order> {
+public class ShowOrderModule extends AbstractConfiguredModule<ShowOrderController, Order> {
 
   private static final ShowOrderModule INSTANCE = new ShowOrderModule();
   private final URL fxml = getClass().getResource("/model/order/ShowOrder.fxml");

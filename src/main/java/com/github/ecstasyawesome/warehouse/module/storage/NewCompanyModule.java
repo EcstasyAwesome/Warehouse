@@ -7,8 +7,7 @@ import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;
 import java.net.URL;
 
-public class NewCompanyModule extends
-    AbstractFeedbackModule<NewCompanyController, Company> {
+public class NewCompanyModule extends AbstractFeedbackModule<NewCompanyController, Company> {
 
   private static final NewCompanyModule INSTANCE = new NewCompanyModule();
   private final URL fxml = getClass().getResource("/model/storage/NewCompany.fxml");
