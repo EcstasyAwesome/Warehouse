@@ -29,52 +29,32 @@ import java.util.Optional;
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public final class WindowManager {
 
-  private static final Logger LOGGER = LogManager.getLogger(WindowManager.class);
   private static WindowManager instance;
-  private final Stage root;
-  private final MultiSceneWindow authorizationWindow;
-  private final MultiSceneWindow workWindow;
-  private final WindowContainer extraWindowManager;
+  private final Logger logger = LogManager.getLogger(WindowManager.class);
+  private final MultiSceneWindow workWindow = new WorkWindow();
+  private final MultiSceneWindow authorizationWindow = new AuthorizationWindow();
+  private final WindowContainer extraWindowManager = new ExtraModalWindowManager();
   private final Cache cache = new ControllerCache();
   private AbstractModule<? extends AbstractController> currentModule;
 
-  private WindowManager(final Stage root) {
-    this.root = root;
-    authorizationWindow = new AuthorizationWindow(root);
-    workWindow = new WorkWindow(root);
-    extraWindowManager = new ExtraModalWindowManager(root);
+  private WindowManager() {
+    logger.debug("Initialize");
   }
 
   public static WindowManager getInstance() {
     if (instance == null) {
-      var exception = new IllegalStateException("Window Manager is not initialized");
-      throw LOGGER.throwing(Level.FATAL, exception);
+      instance = new WindowManager();
     }
     return instance;
   }
 
-  public static void initialize(final Stage stage) {
-    if (instance != null) {
-      var exception = new IllegalStateException("Window Manager is already initialized");
-      throw LOGGER.throwing(Level.FATAL, exception);
-    }
-    instance = new WindowManager(stage);
-    LOGGER.debug("Initialized");
-  }
-
-  public static void destroy() {
-    instance = null;
-  }
-
   public void showAuthorization() {
-    LOGGER.trace("Request to show the module in the authorization window");
+    logger.trace("Request to show the module in the authorization window");
     var user = getUserFromContext();
     if (user.isEmpty()) {
       cache.erase();
@@ -87,7 +67,7 @@ public final class WindowManager {
   }
 
   public <T extends AbstractController> void show(final AbstractModule<T> module) {
-    LOGGER.trace("Request to show the module in the work window");
+    logger.trace("Request to show the module in the work window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, module.getAccess())) {
       currentModule = module;
@@ -99,7 +79,7 @@ public final class WindowManager {
 
   public <T extends AbstractCachedController<C>, C> void show(
       final AbstractCachedModule<T, C> cachedModule) {
-    LOGGER.trace("Request to show the cached module in the work window");
+    logger.trace("Request to show the cached module in the work window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, cachedModule.getAccess())) {
       currentModule = cachedModule;
@@ -113,7 +93,7 @@ public final class WindowManager {
 
   public <T extends AbstractConfiguredController<E>, E> void show(
       final AbstractConfiguredModule<T, E> configuredModule, E instance) {
-    LOGGER.trace("Request to show the configured module in the work window");
+    logger.trace("Request to show the configured module in the work window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, configuredModule.getAccess())) {
       currentModule = configuredModule;
@@ -127,7 +107,7 @@ public final class WindowManager {
 
   public <T extends AbstractCachedConfiguredController<E, C>, E, C> void show(
       final AbstractCachedConfiguredModule<T, E, C> cachedConfiguredModule, E instance) {
-    LOGGER.trace("Request to show the cached configured module in the work window");
+    logger.trace("Request to show the cached configured module in the work window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, cachedConfiguredModule.getAccess())) {
       currentModule = cachedConfiguredModule;
@@ -143,7 +123,7 @@ public final class WindowManager {
   }
 
   public <T extends AbstractController> void showAndWait(final AbstractModule<T> module) {
-    LOGGER.trace("Request to show the module in the extra window");
+    logger.trace("Request to show the module in the extra window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, module.getAccess())) {
       var fxmlBundle = module.create();
@@ -155,7 +135,7 @@ public final class WindowManager {
 
   public <T extends AbstractCachedController<C>, C> void showAndWait(
       final AbstractCachedModule<T, C> cachedModule) {
-    LOGGER.trace("Request to show the cached module in the extra window");
+    logger.trace("Request to show the cached module in the extra window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, cachedModule.getAccess())) {
       var fxmlBundle = cachedModule.create();
@@ -168,7 +148,7 @@ public final class WindowManager {
 
   public <T extends AbstractConfiguredController<E>, E> void showAndWait(
       final AbstractConfiguredModule<T, E> configuredModule, E instance) {
-    LOGGER.trace("Request to show the configured module in the extra window");
+    logger.trace("Request to show the configured module in the extra window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, configuredModule.getAccess())) {
       var fxmlBundle = configuredModule.create();
@@ -181,7 +161,7 @@ public final class WindowManager {
 
   public <T extends AbstractCachedConfiguredController<E, C>, E, C> void showAndWait(
       final AbstractCachedConfiguredModule<T, E, C> cachedConfiguredModule, E instance) {
-    LOGGER.trace("Request to show the cached configured module in the extra window");
+    logger.trace("Request to show the cached configured module in the extra window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, cachedConfiguredModule.getAccess())) {
       var fxmlBundle = cachedConfiguredModule.create();
@@ -196,7 +176,7 @@ public final class WindowManager {
 
   public <T extends AbstractFeedbackController<E>, E> Optional<E> showAndGet(
       final AbstractFeedbackModule<T, E> feedbackModule) {
-    LOGGER.trace("Request to show the feedback module in the extra window");
+    logger.trace("Request to show the feedback module in the extra window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, feedbackModule.getAccess())) {
       var fxmlBundle = feedbackModule.create();
@@ -210,7 +190,7 @@ public final class WindowManager {
 
   public <T extends AbstractCachedFeedbackController<E, C>, E, C> Optional<E> showAndGet(
       final AbstractCachedFeedbackModule<T, E, C> cachedFeedbackModule) {
-    LOGGER.trace("Request to show the cached feedback module in the extra window");
+    logger.trace("Request to show the cached feedback module in the extra window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, cachedFeedbackModule.getAccess())) {
       var fxmlBundle = cachedFeedbackModule.create();
@@ -226,7 +206,7 @@ public final class WindowManager {
 
   public <T extends AbstractConfiguredFeedbackController<E, R>, E, R> Optional<R> showAndGet(
       final AbstractConfiguredFeedbackModule<T, E, R> configuredFeedbackModule, final E instance) {
-    LOGGER.trace("Request to show the configured feedback module in the extra window");
+    logger.trace("Request to show the configured feedback module in the extra window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, configuredFeedbackModule.getAccess())) {
       var fxmlBundle = configuredFeedbackModule.create();
@@ -244,7 +224,7 @@ public final class WindowManager {
       AbstractCachedConfiguredFeedbackController<E, R, C>, E, R, C> Optional<R> showAndGet(
       final AbstractCachedConfiguredFeedbackModule<T, E, R, C> cachedConfiguredFeedbackModule,
       final E instance) {
-    LOGGER.trace("Request to show the cached configured feedback module in the extra window");
+    logger.trace("Request to show the cached configured feedback module in the extra window");
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, cachedConfiguredFeedbackModule.getAccess())) {
       var fxmlBundle = cachedConfiguredFeedbackModule.create();
@@ -266,27 +246,23 @@ public final class WindowManager {
   }
 
   public void shutdown() {
-    authorizationWindow.close();
-    workWindow.close();
-    extraWindowManager.close();
-    root.close();
-    LOGGER.debug("Closed all active windows");
-    LOGGER.debug("Request to shutdown");
+    closeAllActiveWindows();
+    logger.debug("Request to shutdown the application");
     Platform.exit();
   }
 
   public Optional<ButtonType> showDialog(AlertType type, final String message) {
-    LOGGER.trace("Request to show a simple dialog");
+    logger.trace("Request to show a simple dialog");
     return new SimpleDialogWindow(type, message).showAndGet();
   }
 
   public Optional<ButtonType> showDialog(final Exception exception) {
-    LOGGER.trace("Request to show an error dialog");
+    logger.trace("Request to show an error dialog");
     return new ExceptionDialogWindow(exception).showAndGet();
   }
 
   public void showNotification(String message) {
-    LOGGER.trace("Request to show a simple notification");
+    logger.trace("Request to show a simple notification");
     var popup = (PopupNotification) null;
     if (authorizationWindow.isActive()) {
       popup = new SimplePopupNotification(authorizationWindow, message);
@@ -306,5 +282,12 @@ public final class WindowManager {
 
   private void showAccessWarning() {
     showDialog(AlertType.WARNING, "Access denied!"); // TODO i18n
+  }
+
+  private void closeAllActiveWindows() {
+    authorizationWindow.close();
+    workWindow.close();
+    extraWindowManager.close();
+    logger.debug("Closed all active windows");
   }
 }
