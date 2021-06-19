@@ -1,6 +1,7 @@
 package com.github.ecstasyawesome.warehouse.repository.impl;
 
 import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createUser;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,7 +15,6 @@ import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import com.github.ecstasyawesome.warehouse.util.TestDatabase;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -81,9 +81,7 @@ public class UserRepositoryServiceTest {
     userRepository.create(user3);
     var expected = List.of(user1, user2, user3);
     var actual = userRepository.getAll();
-    assertEquals(expected.size(), actual.size());
-    IntStream.range(0, expected.size())
-        .forEach(index -> assertEquals(expected.get(index), actual.get(index)));
+    assertArrayEquals(expected.toArray(), actual.toArray());
   }
 
   @Test

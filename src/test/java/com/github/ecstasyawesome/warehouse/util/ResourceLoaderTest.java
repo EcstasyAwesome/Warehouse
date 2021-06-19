@@ -78,6 +78,7 @@ public class ResourceLoaderTest {
     }
   }
 
+  @SuppressWarnings("ConstantConditions")
   @Test
   public void getLanguagesReturnsObservableList() {
     var actual = Language.getLanguages();

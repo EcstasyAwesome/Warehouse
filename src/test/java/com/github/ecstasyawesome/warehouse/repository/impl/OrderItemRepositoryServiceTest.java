@@ -8,6 +8,7 @@ import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordReposi
 import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createProductProvider;
 import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createProductStorage;
 import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createUser;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -21,7 +22,6 @@ import com.github.ecstasyawesome.warehouse.repository.OrderItemRepository;
 import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import com.github.ecstasyawesome.warehouse.util.TestDatabase;
 import java.sql.SQLException;
-import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,9 +93,7 @@ public class OrderItemRepositoryServiceTest {
     OrderRepositoryService.getInstance().create(order, expected);
     assertEquals(1, order.getId());
     var actual = orderItemRepository.getAll(order);
-    assertEquals(expected.size(), actual.size());
-    IntStream.range(0, expected.size())
-        .forEach(index -> assertEquals(expected.get(index), actual.get(index)));
+    assertArrayEquals(expected.toArray(), actual.toArray());
   }
 
   @Test

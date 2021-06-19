@@ -2,6 +2,7 @@ package com.github.ecstasyawesome.warehouse.repository.impl;
 
 import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createCategory;
 import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createProduct;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
@@ -13,7 +14,6 @@ import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import com.github.ecstasyawesome.warehouse.util.TestDatabase;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,17 +68,13 @@ public class ProductRepositoryServiceTest {
         .filter(product -> product.getName().contains("i"))
         .toList();
     var actual1 = productRepository.search("i");
-    assertEquals(expected1.size(), actual1.size());
-    IntStream.range(0, expected1.size())
-        .forEach(index -> assertEquals(expected1.get(index), actual1.get(index)));
+    assertArrayEquals(expected1.toArray(), actual1.toArray());
 
     var expected2 = Stream.of(product1, product2, product3)
         .filter(product -> product.getName().toLowerCase().contains("spr"))
         .toList();
     var actual2 = productRepository.search("spr");
-    assertEquals(expected2.size(), actual2.size());
-    IntStream.range(0, expected2.size())
-        .forEach(index -> assertEquals(expected2.get(index), actual2.get(index)));
+    assertArrayEquals(expected2.toArray(), actual2.toArray());
   }
 
   @Test
@@ -99,15 +95,11 @@ public class ProductRepositoryServiceTest {
 
     var expected1 = List.of(product1, product2);
     var actual1 = productRepository.getAll(category);
-    assertEquals(expected1.size(), actual1.size());
-    IntStream.range(0, expected1.size())
-        .forEach(index -> assertEquals(expected1.get(index), actual1.get(index)));
+    assertArrayEquals(expected1.toArray(), actual1.toArray());
 
     var expected2 = List.of(product3);
     var actual2 = productRepository.getAll(newCategory);
-    assertEquals(expected2.size(), actual2.size());
-    IntStream.range(0, expected2.size())
-        .forEach(index -> assertEquals(expected2.get(index), actual2.get(index)));
+    assertArrayEquals(expected2.toArray(), actual2.toArray());
   }
 
   @Test
@@ -125,9 +117,7 @@ public class ProductRepositoryServiceTest {
     productRepository.create(product3);
     var expected = List.of(product1, product2, product3);
     var actual = productRepository.getAll();
-    assertEquals(expected.size(), actual.size());
-    IntStream.range(0, expected.size())
-        .forEach(index -> assertEquals(expected.get(index), actual.get(index)));
+    assertArrayEquals(expected.toArray(), actual.toArray());
   }
 
   @Test

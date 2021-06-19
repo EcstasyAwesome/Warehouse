@@ -1,6 +1,7 @@
 package com.github.ecstasyawesome.warehouse.repository.impl;
 
 import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createCategory;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
@@ -10,7 +11,6 @@ import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import com.github.ecstasyawesome.warehouse.util.TestDatabase;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,9 +54,7 @@ public class CategoryRepositoryServiceTest {
     categoryRepository.create(category3);
     var expected = List.of(category1, category2, category3);
     var actual = categoryRepository.getAll();
-    assertEquals(expected.size(), actual.size());
-    IntStream.range(0, expected.size())
-        .forEach(index -> assertEquals(expected.get(index), actual.get(index)));
+    assertArrayEquals(expected.toArray(), actual.toArray());
   }
 
   @Test

@@ -2,6 +2,7 @@ package com.github.ecstasyawesome.warehouse.repository.impl;
 
 import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createCompany;
 import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createProductStorage;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -15,7 +16,6 @@ import com.github.ecstasyawesome.warehouse.util.DatabaseManager;
 import com.github.ecstasyawesome.warehouse.util.TestDatabase;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,15 +77,11 @@ public class ProductStorageRepositoryServiceTest {
 
     var expected1 = List.of(storage1, storage2);
     var actual1 = productStorageRepository.getAll(company);
-    assertEquals(expected1.size(), actual1.size());
-    IntStream.range(0, expected1.size())
-        .forEach(index -> assertEquals(expected1.get(index), actual1.get(index)));
+    assertArrayEquals(expected1.toArray(), actual1.toArray());
 
     var expected2 = List.of(storage3);
     var actual2 = productStorageRepository.getAll(newCompany);
-    assertEquals(expected2.size(), actual2.size());
-    IntStream.range(0, expected2.size())
-        .forEach(index -> assertEquals(expected2.get(index), actual2.get(index)));
+    assertArrayEquals(expected2.toArray(), actual2.toArray());
   }
 
   @Test
@@ -103,9 +99,7 @@ public class ProductStorageRepositoryServiceTest {
     productStorageRepository.create(storage3);
     var expected = List.of(storage1, storage2, storage3);
     var actual = productStorageRepository.getAll();
-    assertEquals(expected.size(), actual.size());
-    IntStream.range(0, expected.size())
-        .forEach(index -> assertEquals(expected.get(index), actual.get(index)));
+    assertArrayEquals(expected.toArray(), actual.toArray());
   }
 
   @Test

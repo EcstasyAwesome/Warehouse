@@ -8,6 +8,7 @@ import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordReposi
 import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createProductProvider;
 import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createProductStorage;
 import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createUser;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
@@ -104,17 +105,13 @@ public class OrderRepositoryServiceTest {
         .filter(order -> String.valueOf(order.getId()).contains("1"))
         .toList();
     var actual1 = orderRepository.search("1");
-    assertEquals(expected1.size(), actual1.size());
-    IntStream.range(0, expected1.size())
-        .forEach(index -> assertEquals(expected1.get(index), actual1.get(index)));
+    assertArrayEquals(expected1.toArray(), actual1.toArray());
 
     var expected2 = orders.stream()
         .filter(order -> String.valueOf(order.getId()).contains("2"))
         .toList();
     var actual2 = orderRepository.search("2");
-    assertEquals(expected2.size(), actual2.size());
-    IntStream.range(0, expected2.size())
-        .forEach(index -> assertEquals(expected2.get(index), actual2.get(index)));
+    assertArrayEquals(expected2.toArray(), actual2.toArray());
   }
 
   @Test
@@ -138,9 +135,7 @@ public class OrderRepositoryServiceTest {
         .filter(order -> order.getTime().getDayOfMonth() == 7)
         .toList();
     var actual = orderRepository.search(LocalDate.of(1994, 7, 7));
-    assertEquals(expected.size(), actual.size());
-    IntStream.range(0, expected.size())
-        .forEach(index -> assertEquals(expected.get(index), actual.get(index)));
+    assertArrayEquals(expected.toArray(), actual.toArray());
   }
 
   @Test
@@ -152,9 +147,7 @@ public class OrderRepositoryServiceTest {
       expected.add(order);
     });
     var actual = orderRepository.getAll();
-    assertEquals(expected.size(), actual.size());
-    IntStream.range(0, expected.size())
-        .forEach(index -> assertEquals(expected.get(index), actual.get(index)));
+    assertArrayEquals(expected.toArray(), actual.toArray());
   }
 
   @Test
