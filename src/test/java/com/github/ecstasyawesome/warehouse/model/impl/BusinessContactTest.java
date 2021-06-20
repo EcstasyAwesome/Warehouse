@@ -1,6 +1,6 @@
 package com.github.ecstasyawesome.warehouse.model.impl;
 
-import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createBusinessContact;
+import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createBusinessContact;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;

@@ -1,7 +1,7 @@
 package com.github.ecstasyawesome.warehouse.repository.impl;
 
-import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createCompany;
-import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createProductStorage;
+import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createCompany;
+import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createProductStorage;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

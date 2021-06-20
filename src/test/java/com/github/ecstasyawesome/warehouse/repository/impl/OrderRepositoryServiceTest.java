@@ -1,13 +1,13 @@
 package com.github.ecstasyawesome.warehouse.repository.impl;
 
-import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createCategory;
-import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createCompany;
-import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createOrder;
-import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createOrderItems;
-import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createProduct;
-import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createProductProvider;
-import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createProductStorage;
-import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createUser;
+import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createCategory;
+import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createCompany;
+import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createOrder;
+import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createOrderItems;
+import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createProduct;
+import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createProductProvider;
+import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createProductStorage;
+import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createUser;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

@@ -1,6 +1,6 @@
 package com.github.ecstasyawesome.warehouse.model.impl;
 
-import static com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository.createCategory;
+import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createCategory;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;

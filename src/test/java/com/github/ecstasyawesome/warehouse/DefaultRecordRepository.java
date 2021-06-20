@@ -1,4 +1,4 @@
-package com.github.ecstasyawesome.warehouse.repository;
+package com.github.ecstasyawesome.warehouse;
 
 import com.github.ecstasyawesome.warehouse.model.Access;
 import com.github.ecstasyawesome.warehouse.model.PersonType;

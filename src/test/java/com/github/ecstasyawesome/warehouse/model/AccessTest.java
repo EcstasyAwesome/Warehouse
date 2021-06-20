@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.github.ecstasyawesome.warehouse.repository.DefaultRecordRepository;
+import com.github.ecstasyawesome.warehouse.DefaultRecordRepository;
 import java.util.stream.Stream;
 import javafx.collections.ObservableList;
 import org.junit.jupiter.api.Test;
