@@ -62,14 +62,13 @@ public abstract class AbstractReceiveOperation extends AbstractRecord {
     }
 
     var that = (AbstractReceiveOperation) obj;
-    return Objects.equals(productStorage.get(), that.productStorage.get())
-           && Objects.equals(time.get(), that.time.get())
-           && Objects.equals(user.get(), that.user.get());
+    return Objects.equals(getProductStorage(), that.getProductStorage())
+           && Objects.equals(getTime(), that.getTime())
+           && Objects.equals(getUser(), that.getUser());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), productStorage.get(), time.get(),
-        user.get());
+    return Objects.hash(super.hashCode(), getProductStorage(), getTime(), getUser());
   }
 }

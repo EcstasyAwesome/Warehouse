@@ -51,12 +51,12 @@ public class Category extends AbstractNamedRecord implements Recoverable<Categor
     }
 
     var that = (Category) obj;
-    return Objects.equals(description.get(), that.description.get());
+    return Objects.equals(getDescription(), that.getDescription());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), description.get());
+    return Objects.hash(super.hashCode(), getDescription());
   }
 
   public static class Builder {

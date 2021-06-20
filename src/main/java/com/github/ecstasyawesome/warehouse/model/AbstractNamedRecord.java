@@ -32,16 +32,16 @@ public abstract class AbstractNamedRecord extends AbstractRecord {
       return false;
     }
     var that = (AbstractNamedRecord) obj;
-    return Objects.equals(name.get(), that.name.get());
+    return Objects.equals(getName(), that.getName());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name.get());
+    return Objects.hash(super.hashCode(), getName());
   }
 
   @Override
   public String toString() {
-    return name.get();
+    return getName();
   }
 }

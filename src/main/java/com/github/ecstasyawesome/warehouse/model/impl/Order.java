@@ -62,8 +62,8 @@ public class Order extends AbstractReceiveOperation {
     }
 
     var that = (Order) obj;
-    return Objects.equals(productProvider.get(), that.productProvider.get())
-           && Objects.equals(comment.get(), that.comment.get());
+    return Objects.equals(getProductProvider(), that.getProductProvider())
+           && Objects.equals(getComment(), that.getComment());
   }
 
   @Override

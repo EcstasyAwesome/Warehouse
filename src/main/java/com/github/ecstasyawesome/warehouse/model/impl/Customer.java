@@ -44,12 +44,12 @@ public class Customer extends AbstractPersonRecord {
       return false;
     }
     var that = (Customer) obj;
-    return Objects.equals(phone.get(), that.phone.get());
+    return Objects.equals(getPhone(), that.getPhone());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), phone.get());
+    return Objects.hash(super.hashCode(), getPhone());
   }
 
   public static class Builder {

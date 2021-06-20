@@ -70,14 +70,13 @@ public class User extends AbstractPersonRecord implements Recoverable<User> {
     }
 
     var that = (User) obj;
-    return Objects.equals(personContact.get(), that.personContact.get())
-           && Objects.equals(personSecurity.get(), that.personSecurity.get());
+    return Objects.equals(getPersonContact(), that.getPersonContact())
+           && Objects.equals(getPersonSecurity(), that.getPersonSecurity());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), personContact.get(),
-        personSecurity.get());
+    return Objects.hash(super.hashCode(), getPersonContact(), getPersonSecurity());
   }
 
   @Override

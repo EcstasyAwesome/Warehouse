@@ -46,12 +46,12 @@ public abstract class AbstractContact extends AbstractRecord {
     }
 
     var that = (AbstractContact) obj;
-    return Objects.equals(phone.get(), that.phone.get())
-           && Objects.equals(email.get(), that.email.get());
+    return Objects.equals(getPhone(), that.getPhone())
+           && Objects.equals(getEmail(), that.getEmail());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), phone.get(), email.get());
+    return Objects.hash(super.hashCode(), getPhone(), getEmail());
   }
 }

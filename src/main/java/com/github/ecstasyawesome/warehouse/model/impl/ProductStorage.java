@@ -55,12 +55,12 @@ public class ProductStorage extends AbstractBusiness implements Recoverable<Prod
     }
 
     var that = (ProductStorage) obj;
-    return Objects.equals(company.get(), that.company.get());
+    return Objects.equals(getCompany(), that.getCompany());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), company.get());
+    return Objects.hash(super.hashCode(), getCompany());
   }
 
   public static class Builder {

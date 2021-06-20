@@ -29,11 +29,11 @@ public abstract class AbstractRecord {
       return false;
     }
     var that = (AbstractRecord) obj;
-    return id.get() == that.id.get();
+    return getId() == that.getId();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id.get());
+    return Objects.hash(getId());
   }
 }

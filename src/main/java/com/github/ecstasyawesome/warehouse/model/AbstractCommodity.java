@@ -76,15 +76,15 @@ public abstract class AbstractCommodity extends AbstractReceiveOperationItem {
     }
 
     var that = (AbstractCommodity) obj;
-    return Objects.equals(productStorage.get(), that.productStorage.get())
-           && purchasePrice.get() == that.purchasePrice.get()
-           && retailPrice.get() == that.retailPrice.get()
-           && Objects.equals(updateTime.get(), that.updateTime.get());
+    return Objects.equals(getProductStorage(), that.getProductStorage())
+           && getPurchasePrice() == that.getPurchasePrice()
+           && getRetailPrice() == that.getRetailPrice()
+           && Objects.equals(getUpdateTime(), that.getUpdateTime());
   }
 
   @Override
   public int hashCode() {
-    return Objects
-        .hash(super.hashCode(), productStorage.get(), retailPrice.get(), updateTime.get());
+    return Objects.hash(super.hashCode(), getProductStorage(), getPurchasePrice(), getRetailPrice(),
+        getUpdateTime());
   }
 }
