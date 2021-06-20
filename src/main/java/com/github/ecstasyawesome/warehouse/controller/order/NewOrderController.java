@@ -175,7 +175,10 @@ public class NewOrderController extends AbstractCachedController<NewOrderControl
   @FXML
   private void editAmount(CellEditEvent<OrderItem, Double> event) {
     var orderItem = event.getRowValue();
-    orderItem.setAmount(orderItem.getProduct().getUnit().validate(event.getNewValue()));
+    var unit = orderItem.getProduct().getUnit();
+    var amount = unit.round(event.getNewValue());
+    orderItem.setAmount(unit.getPositiveOrZero(amount));
+    event.getTableView().refresh();
   }
 
   @Override

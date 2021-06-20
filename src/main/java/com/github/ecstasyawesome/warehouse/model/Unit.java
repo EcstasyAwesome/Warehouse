@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
@@ -30,10 +31,12 @@ public enum Unit {
   }
 
   public static String convert(final Double value) {
+    Objects.requireNonNull(value);
     return DECIMAL_FORMAT.format(value.doubleValue());
   }
 
   public static Double convert(final String value) {
+    Objects.requireNonNull(value);
     try {
       return DECIMAL_FORMAT.parse(value).doubleValue();
     } catch (ParseException e) {
@@ -41,10 +44,16 @@ public enum Unit {
     }
   }
 
-  public Double validate(final Double value) {
+  public Double round(final Double value) {
+    Objects.requireNonNull(value);
     return new BigDecimal(value.toString())
         .setScale(roundingScale, RoundingMode.FLOOR)
         .doubleValue();
+  }
+
+  public Double getPositiveOrZero(final Double value) {
+    Objects.requireNonNull(value);
+    return value < 0D ? 0D : value;
   }
 
   public static class CustomDoubleStringConverter extends StringConverter<Double> {
@@ -54,13 +63,12 @@ public enum Unit {
 
     @Override
     public String toString(Double value) {
-      return Unit.convert(value);
+      return convert(value);
     }
 
     @Override
     public Double fromString(String text) {
-      var value = Unit.convert(text);
-      return value < 0D ? 0D : value;
+      return convert(text);
     }
   }
 }
