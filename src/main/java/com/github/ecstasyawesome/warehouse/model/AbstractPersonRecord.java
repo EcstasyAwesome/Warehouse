@@ -46,12 +46,12 @@ public abstract class AbstractPersonRecord extends AbstractNamedRecord {
     }
 
     var that = (AbstractPersonRecord) obj;
-    return Objects.equals(getSurname(), that.getSurname())
-           && Objects.equals(getSecondName(), that.getSecondName());
+    return Objects.equals(surname.get(), that.surname.get())
+           && Objects.equals(secondName.get(), that.secondName.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getSurname(), getSecondName());
+    return Objects.hash(super.hashCode(), surname.get(), secondName.get());
   }
 }

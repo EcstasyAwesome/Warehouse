@@ -47,12 +47,12 @@ public class ReturnInvoice extends AbstractReceiveOperation {
     }
 
     var that = (ReturnInvoice) obj;
-    return Objects.equals(getCustomer(), that.getCustomer());
+    return Objects.equals(customer.get(), that.customer.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getCustomer());
+    return Objects.hash(super.hashCode(), customer.get());
   }
 
   public static class Builder {

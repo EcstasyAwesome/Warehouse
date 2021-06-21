@@ -44,12 +44,12 @@ public class ReturnInvoiceItem extends AbstractReceiveOperationItem {
     }
 
     var that = (ReturnInvoiceItem) obj;
-    return getPrice() == that.getPrice();
+    return price.get() == that.price.get();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getPrice());
+    return Objects.hash(super.hashCode(), price.get());
   }
 
   public static class Builder {

@@ -31,17 +31,18 @@ public abstract class AbstractNamedRecord extends AbstractRecord {
     if (!super.equals(obj)) {
       return false;
     }
+
     var that = (AbstractNamedRecord) obj;
-    return Objects.equals(getName(), that.getName());
+    return Objects.equals(name.get(), that.name.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getName());
+    return Objects.hash(super.hashCode(), name.get());
   }
 
   @Override
   public String toString() {
-    return getName();
+    return name.get();
   }
 }

@@ -49,11 +49,11 @@ public abstract class AbstractReceiveOperationItem extends AbstractRecord {
     }
 
     var that = (AbstractReceiveOperationItem) obj;
-    return Objects.equals(getProduct(), that.getProduct()) && getAmount() == that.getAmount();
+    return Objects.equals(product.get(), that.product.get()) && amount.get() == that.amount.get();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getProduct(), getAmount());
+    return Objects.hash(super.hashCode(), product.get(), amount.get());
   }
 }

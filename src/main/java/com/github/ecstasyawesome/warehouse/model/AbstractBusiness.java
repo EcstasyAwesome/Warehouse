@@ -48,12 +48,12 @@ public abstract class AbstractBusiness extends AbstractNamedRecord {
     }
 
     var that = (AbstractBusiness) obj;
-    return Objects.equals(getBusinessContact(), that.getBusinessContact())
-           && Objects.equals(getAddress(), that.getAddress());
+    return Objects.equals(businessContact.get(), that.businessContact.get())
+           && Objects.equals(address.get(), that.address.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getBusinessContact(), getAddress());
+    return Objects.hash(super.hashCode(), businessContact.get(), address.get());
   }
 }

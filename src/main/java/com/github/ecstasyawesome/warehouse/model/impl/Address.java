@@ -94,15 +94,15 @@ public class Address extends AbstractRecord implements Recoverable<Address> {
     }
 
     var that = (Address) obj;
-    return Objects.equals(getRegion(), that.getRegion())
-           && Objects.equals(getTown(), that.getTown())
-           && Objects.equals(getStreet(), that.getStreet())
-           && Objects.equals(getNumber(), that.getNumber());
+    return Objects.equals(region.get(), that.region.get())
+           && Objects.equals(town.get(), that.town.get())
+           && Objects.equals(street.get(), that.street.get())
+           && Objects.equals(number.get(), that.number.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getRegion(), getTown(), getStreet(), getNumber());
+    return Objects.hash(super.hashCode(), region.get(), town.get(), street.get(), number.get());
   }
 
   public static class Builder {

@@ -67,13 +67,13 @@ public class Product extends AbstractNamedRecord implements Recoverable<Product>
     }
 
     var that = (Product) obj;
-    return Objects.equals(getCategory(), that.getCategory())
-           && Objects.equals(getUnit(), that.getUnit());
+    return Objects.equals(category.get(), that.category.get())
+           && Objects.equals(unit.get(), that.unit.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getCategory(), getUnit());
+    return Objects.hash(super.hashCode(), category.get(), unit.get());
   }
 
   public static class Builder {

@@ -73,13 +73,13 @@ public class Company extends AbstractBusiness implements Recoverable<Company> {
     }
 
     var that = (Company) obj;
-    return Objects.equals(getIdentifierCode(), that.getIdentifierCode())
-           && Objects.equals(getPersonType(), that.getPersonType());
+    return Objects.equals(identifierCode.get(), that.identifierCode.get())
+           && Objects.equals(personType.get(), that.personType.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getIdentifierCode(), getPersonType());
+    return Objects.hash(super.hashCode(), identifierCode.get(), personType.get());
   }
 
   public static class Builder {

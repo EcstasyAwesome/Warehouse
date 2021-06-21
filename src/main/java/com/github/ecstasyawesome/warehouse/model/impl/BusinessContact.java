@@ -68,13 +68,13 @@ public class BusinessContact extends AbstractContact implements Recoverable<Busi
     }
 
     var that = (BusinessContact) obj;
-    return Objects.equals(getExtraPhone(), that.getExtraPhone())
-           && Objects.equals(getSite(), that.getSite());
+    return Objects.equals(extraPhone.get(), that.extraPhone.get())
+           && Objects.equals(site.get(), that.site.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getExtraPhone(), getSite());
+    return Objects.hash(super.hashCode(), extraPhone.get(), site.get());
   }
 
   public static class Builder {

@@ -46,12 +46,12 @@ public class Invoice extends AbstractReceiveOperation {
     }
 
     var that = (Invoice) obj;
-    return Objects.equals(getProductProvider(), that.getProductProvider());
+    return Objects.equals(productProvider.get(), that.productProvider.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getProductProvider());
+    return Objects.hash(super.hashCode(), productProvider.get());
   }
 
   public static class Builder {

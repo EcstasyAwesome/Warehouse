@@ -81,9 +81,9 @@ public class DecommissionedCommodity extends AbstractCommodity {
     }
 
     var that = (DecommissionedCommodity) obj;
-    return Objects.equals(getDecommissioningTime(), that.getDecommissioningTime())
-           && Objects.equals(getReason(), that.getReason())
-           && Objects.equals(getUser(), that.getUser());
+    return Objects.equals(decommissioningTime.get(), that.decommissioningTime.get())
+           && Objects.equals(reason.get(), that.reason.get())
+           && Objects.equals(user.get(), that.user.get());
   }
 
   @Override

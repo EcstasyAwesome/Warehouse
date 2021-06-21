@@ -43,13 +43,14 @@ public class Customer extends AbstractPersonRecord {
     if (!super.equals(obj)) {
       return false;
     }
+
     var that = (Customer) obj;
-    return Objects.equals(getPhone(), that.getPhone());
+    return Objects.equals(phone.get(), that.phone.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getPhone());
+    return Objects.hash(super.hashCode(), phone.get());
   }
 
   public static class Builder {

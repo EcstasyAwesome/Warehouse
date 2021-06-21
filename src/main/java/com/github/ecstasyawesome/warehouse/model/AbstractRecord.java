@@ -28,12 +28,13 @@ public abstract class AbstractRecord {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
+
     var that = (AbstractRecord) obj;
-    return getId() == that.getId();
+    return id.get() == that.id.get();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getId());
+    return Objects.hash(id.get());
   }
 }

@@ -80,15 +80,16 @@ public class PersonSecurity extends AbstractRecord implements Recoverable<Person
     if (!super.equals(obj)) {
       return false;
     }
+
     var that = (PersonSecurity) obj;
-    return Objects.equals(getLogin(), that.getLogin())
-           && Objects.equals(getPassword(), that.getPassword())
-           && Objects.equals(getAccess(), that.getAccess());
+    return Objects.equals(login.get(), that.login.get())
+           && Objects.equals(password.get(), that.password.get())
+           && Objects.equals(access.get(), that.access.get());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getLogin(), getPassword(), getAccess());
+    return Objects.hash(super.hashCode(), login.get(), password.get(), access.get());
   }
 
   public static class Builder {
