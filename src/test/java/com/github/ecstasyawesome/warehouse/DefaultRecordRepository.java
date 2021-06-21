@@ -8,6 +8,7 @@ import com.github.ecstasyawesome.warehouse.model.impl.BusinessContact;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.model.impl.Commodity;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;
+import com.github.ecstasyawesome.warehouse.model.impl.Customer;
 import com.github.ecstasyawesome.warehouse.model.impl.Order;
 import com.github.ecstasyawesome.warehouse.model.impl.OrderItem;
 import com.github.ecstasyawesome.warehouse.model.impl.PersonContact;
@@ -54,6 +55,15 @@ public final class DefaultRecordRepository {
         .setSite("example.com")
         .setPhone("0954446589")
         .setExtraPhone("0957894512")
+        .build();
+  }
+
+  public static Customer createCustomer() {
+    return Customer.Builder.create()
+        .setSurname("Surname")
+        .setName("Name")
+        .setSecondName("Second")
+        .setPhone("0951238576")
         .build();
   }
 
