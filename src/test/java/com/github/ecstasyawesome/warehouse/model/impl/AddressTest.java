@@ -38,7 +38,11 @@ public class AddressTest {
 
   @Test
   public void testEqualsAndHashCode() {
-    EqualsVerifier.forClass(Address.class).usingGetClass().suppress(Warning.NULL_FIELDS).verify();
+    EqualsVerifier.forClass(Address.class)
+        .withRedefinedSuperclass()
+        .usingGetClass()
+        .suppress(Warning.NULL_FIELDS)
+        .verify();
   }
 
   @Test

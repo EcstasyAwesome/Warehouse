@@ -36,7 +36,11 @@ public class CategoryTest {
 
   @Test
   public void testEqualsAndHashCode() {
-    EqualsVerifier.forClass(Category.class).usingGetClass().suppress(Warning.NULL_FIELDS).verify();
+    EqualsVerifier.forClass(Category.class)
+        .withRedefinedSuperclass()
+        .usingGetClass()
+        .suppress(Warning.NULL_FIELDS)
+        .verify();
   }
 
   @Test

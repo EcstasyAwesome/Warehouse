@@ -39,6 +39,7 @@ public class BusinessContactTest {
   @Test
   public void testEqualsAndHashCode() {
     EqualsVerifier.forClass(BusinessContact.class)
+        .withRedefinedSuperclass()
         .usingGetClass()
         .suppress(Warning.NULL_FIELDS)
         .verify();
