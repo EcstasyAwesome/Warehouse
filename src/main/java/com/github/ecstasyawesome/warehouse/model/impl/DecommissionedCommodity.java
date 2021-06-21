@@ -175,7 +175,7 @@ public class DecommissionedCommodity extends AbstractCommodity {
       instance.setUpdateTime(Objects.requireNonNull(updateTime));
       instance.setDecommissioningTime(Objects.requireNonNull(decommissioningTime));
       instance.setReason(Objects.requireNonNull(reason));
-      instance.setUser(user);
+      instance.setUser(Objects.requireNonNull(user));
       return instance;
     }
   }
