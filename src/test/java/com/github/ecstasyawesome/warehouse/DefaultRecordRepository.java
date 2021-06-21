@@ -9,6 +9,7 @@ import com.github.ecstasyawesome.warehouse.model.impl.Category;
 import com.github.ecstasyawesome.warehouse.model.impl.Commodity;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;
 import com.github.ecstasyawesome.warehouse.model.impl.Customer;
+import com.github.ecstasyawesome.warehouse.model.impl.DecommissionedCommodity;
 import com.github.ecstasyawesome.warehouse.model.impl.Order;
 import com.github.ecstasyawesome.warehouse.model.impl.OrderItem;
 import com.github.ecstasyawesome.warehouse.model.impl.PersonContact;
@@ -31,6 +32,21 @@ public final class DefaultRecordRepository {
         .setPurchasePrice(69)
         .setRetailPrice(75)
         .setUpdateTime(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS))
+        .build();
+  }
+
+  public static DecommissionedCommodity createDecommissionedCommodity(Product product,
+      ProductStorage storage, User user) {
+    return DecommissionedCommodity.Builder.create()
+        .setAmount(10)
+        .setProduct(product)
+        .setProductStorage(storage)
+        .setPurchasePrice(69)
+        .setRetailPrice(75)
+        .setUpdateTime(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS))
+        .setDecommissioningTime(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS))
+        .setReason("Reason")
+        .setUser(user)
         .build();
   }
 
