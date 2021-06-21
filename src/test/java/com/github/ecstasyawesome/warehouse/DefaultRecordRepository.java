@@ -6,6 +6,7 @@ import com.github.ecstasyawesome.warehouse.model.Unit;
 import com.github.ecstasyawesome.warehouse.model.impl.Address;
 import com.github.ecstasyawesome.warehouse.model.impl.BusinessContact;
 import com.github.ecstasyawesome.warehouse.model.impl.Category;
+import com.github.ecstasyawesome.warehouse.model.impl.Commodity;
 import com.github.ecstasyawesome.warehouse.model.impl.Company;
 import com.github.ecstasyawesome.warehouse.model.impl.Order;
 import com.github.ecstasyawesome.warehouse.model.impl.OrderItem;
@@ -20,6 +21,17 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public final class DefaultRecordRepository {
+
+  public static Commodity createCommodity(Product product, ProductStorage storage) {
+    return Commodity.Builder.create()
+        .setAmount(10)
+        .setProduct(product)
+        .setProductStorage(storage)
+        .setPurchasePrice(69)
+        .setRetailPrice(75)
+        .setUpdateTime(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS))
+        .build();
+  }
 
   public static Category createCategory(String name) {
     return Category.Builder.create()
