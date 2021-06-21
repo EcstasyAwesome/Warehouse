@@ -66,7 +66,6 @@ public class CommodityTest {
     assertNotSame(commodity1.getProductStorage(), commodity2.getProductStorage());
     assertNotSame(commodity1.getProduct(), commodity2.getProduct());
     assertSame(commodity1.getUpdateTime(), commodity2.getUpdateTime());
-
   }
 
   @Test

@@ -60,5 +60,4 @@ public class CategoryTest {
     category.setName("n");
     assertDoesNotThrow(category::build);
   }
-
 }
