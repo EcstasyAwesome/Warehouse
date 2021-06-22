@@ -172,4 +172,11 @@ public final class DefaultRecordRepository {
     var two = OrderItem.Builder.create().setAmount(7).setProduct(p2).build();
     return List.of(one, two);
   }
+
+  public static OrderItem createOrderItem(Product product) {
+    return OrderItem.Builder.create()
+        .setAmount(10)
+        .setProduct(product)
+        .build();
+  }
 }
