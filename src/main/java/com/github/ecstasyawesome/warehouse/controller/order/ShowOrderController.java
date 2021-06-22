@@ -14,9 +14,9 @@ import com.github.ecstasyawesome.warehouse.repository.impl.OrderItemRepositorySe
 import com.github.ecstasyawesome.warehouse.util.Constants;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
@@ -71,14 +71,7 @@ public class ShowOrderController extends AbstractConfiguredController<Order> {
     categoryColumn.setCellValueFactory(entry -> entry.getValue().getProduct().categoryProperty());
     unitColumn.setCellValueFactory(entry -> entry.getValue().getProduct().unitProperty());
     amountColumn.setCellValueFactory(entry -> entry.getValue().amountProperty().asObject());
-    amountColumn.setCellFactory(cell -> new TableCell<>() {
-
-      @Override
-      public void updateItem(Double value, boolean empty) {
-        super.updateItem(value, empty);
-        setText(empty ? null : Unit.convert(value));
-      }
-    });
+    amountColumn.setCellFactory(TextFieldTableCell.forTableColumn(Unit.getConverter()));
   }
 
   @FXML
@@ -115,13 +108,10 @@ public class ShowOrderController extends AbstractConfiguredController<Order> {
     providerLabel.setText(instance.getProductProvider().getName());
     storageLabel.setText(instance.getProductStorage().getName());
     dateLabel.setText(instance.getTime().format(Constants.DATE_TIME_FORMATTER));
+    userLabel.setText(instance.getUser().toString());
     var comment = instance.getComment();
     if (comment != null) {
       commentLabel.setText(comment);
-    }
-    var user = instance.getUser();
-    if (user != null) {
-      userLabel.setText(user.toString());
     }
     try {
       orderItemTable.setItems(orderItemRepository.getAll(instance));
