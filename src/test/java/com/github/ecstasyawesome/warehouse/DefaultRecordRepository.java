@@ -93,6 +93,13 @@ public final class DefaultRecordRepository {
         .build();
   }
 
+  public static PersonContact createPersonContact() {
+    return PersonContact.Builder.create()
+        .setEmail("example@mail.com")
+        .setPhone("0954446589")
+        .build();
+  }
+
   public static Customer createCustomer() {
     return Customer.Builder.create()
         .setSurname("Surname")
@@ -122,17 +129,13 @@ public final class DefaultRecordRepository {
   }
 
   public static User createUser(String login) {
-    var contact = PersonContact.Builder.create()
-        .setPhone("09578567733")
-        .setEmail("example@mail.com")
-        .build();
     var security = PersonSecurity.Builder.create()
         .setLogin(login)
         .setPassword("password")
         .setAccess(Access.ROOT)
         .build();
     return User.Builder.create()
-        .setUserContact(contact)
+        .setUserContact(createPersonContact())
         .setUserSecurity(security)
         .setSurname("Surname")
         .setName("Name")
