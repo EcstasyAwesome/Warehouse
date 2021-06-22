@@ -11,6 +11,7 @@ import com.github.ecstasyawesome.warehouse.model.impl.Company;
 import com.github.ecstasyawesome.warehouse.model.impl.Customer;
 import com.github.ecstasyawesome.warehouse.model.impl.DecommissionedCommodity;
 import com.github.ecstasyawesome.warehouse.model.impl.Invoice;
+import com.github.ecstasyawesome.warehouse.model.impl.InvoiceItem;
 import com.github.ecstasyawesome.warehouse.model.impl.Order;
 import com.github.ecstasyawesome.warehouse.model.impl.OrderItem;
 import com.github.ecstasyawesome.warehouse.model.impl.PersonContact;
@@ -42,6 +43,14 @@ public final class DefaultRecordRepository {
         .setProductStorage(storage)
         .setUser(user)
         .setTime(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS))
+        .build();
+  }
+
+  public static InvoiceItem createInvoiceItem(Product product) {
+    return InvoiceItem.Builder.create()
+        .setAmount(10)
+        .setProduct(product)
+        .setPurchasePrice(18.5)
         .build();
   }
 
