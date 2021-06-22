@@ -5,9 +5,11 @@ import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.create
 import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createProductProvider;
 import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createProductStorage;
 import static com.github.ecstasyawesome.warehouse.DefaultRecordRepository.createUser;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.github.ecstasyawesome.warehouse.model.PersonType;
 import java.time.LocalDateTime;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
