@@ -20,6 +20,7 @@ import com.github.ecstasyawesome.warehouse.model.impl.Product;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductProvider;
 import com.github.ecstasyawesome.warehouse.model.impl.ProductStorage;
 import com.github.ecstasyawesome.warehouse.model.impl.ReturnInvoice;
+import com.github.ecstasyawesome.warehouse.model.impl.ReturnInvoiceItem;
 import com.github.ecstasyawesome.warehouse.model.impl.User;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -61,6 +62,14 @@ public final class DefaultRecordRepository {
         .setProductStorage(storage)
         .setUser(user)
         .setTime(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS))
+        .build();
+  }
+
+  public static ReturnInvoiceItem createReturnInvoiceItem(Product product) {
+    return ReturnInvoiceItem.Builder.create()
+        .setAmount(10)
+        .setProduct(product)
+        .setPrice(99.5)
         .build();
   }
 
