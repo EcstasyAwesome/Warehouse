@@ -123,7 +123,7 @@ public class Order extends AbstractReceiveOperation {
       instance.setProductProvider(Objects.requireNonNull(productProvider));
       instance.setProductStorage(Objects.requireNonNull(productStorage));
       instance.setTime(Objects.requireNonNull(time));
-      instance.setUser(user);
+      instance.setUser(Objects.requireNonNull(user));
       instance.setComment(comment);
       return instance;
     }
