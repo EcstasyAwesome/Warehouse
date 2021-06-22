@@ -128,12 +128,17 @@ public final class DefaultRecordRepository {
         .build();
   }
 
-  public static User createUser(String login) {
-    var security = PersonSecurity.Builder.create()
-        .setLogin(login)
+  public static PersonSecurity createPersonSecurity() {
+    return PersonSecurity.Builder.create()
+        .setLogin("login")
         .setPassword("password")
         .setAccess(Access.ROOT)
         .build();
+  }
+
+  public static User createUser(String login) {
+    var security = createPersonSecurity();
+    security.setLogin(login);
     return User.Builder.create()
         .setUserContact(createPersonContact())
         .setUserSecurity(security)
