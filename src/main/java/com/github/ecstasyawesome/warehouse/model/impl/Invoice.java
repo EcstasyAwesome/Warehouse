@@ -89,7 +89,7 @@ public class Invoice extends AbstractReceiveOperation {
       return this;
     }
 
-    private Builder setUser(User user) {
+    public Builder setUser(User user) {
       this.user = user;
       return this;
     }
@@ -100,7 +100,7 @@ public class Invoice extends AbstractReceiveOperation {
       instance.setProductProvider(Objects.requireNonNull(productProvider));
       instance.setProductStorage(Objects.requireNonNull(productStorage));
       instance.setTime(Objects.requireNonNull(time));
-      instance.setUser(user);
+      instance.setUser(Objects.requireNonNull(user));
       return instance;
     }
   }
