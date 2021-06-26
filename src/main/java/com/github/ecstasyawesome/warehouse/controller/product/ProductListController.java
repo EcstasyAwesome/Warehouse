@@ -18,6 +18,7 @@ import com.github.ecstasyawesome.warehouse.repository.ProductRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CategoryRepositoryService;
 import com.github.ecstasyawesome.warehouse.repository.impl.ProductRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -95,7 +96,6 @@ public class ProductListController extends AbstractController {
   @FXML
   private void initialize() {
     configureButton(addCategoryButton, sessionUser, newCategoryModule.getAccess());
-    configureButton(addProductButton, sessionUser, newProductModule.getAccess());
 
     categoryNameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
 
@@ -129,6 +129,11 @@ public class ProductListController extends AbstractController {
               editProductModule.getAccess());
           configureButton(deleteProductButton, sessionUser, currentNull, Access.ADMIN);
         });
+
+    categoryTable.getItems().addListener((ListChangeListener<? super Category>) change -> {
+      var empty = change.getList().isEmpty();
+      configureButton(addProductButton, sessionUser, empty, newProductModule.getAccess());
+    });
 
     getCategoriesFromDatabase();
     getProductsFromDatabase(null);
@@ -285,8 +290,10 @@ public class ProductListController extends AbstractController {
     if (!selectionModel.isEmpty()) {
       selectedCategory = selectionModel.getSelectedItem();
     }
+    var categories = categoryTable.getItems();
+    categories.clear();
     try {
-      categoryTable.setItems(categoryRepository.getAll());
+      categories.addAll(categoryRepository.getAll());
       if (selectedCategory != null) {
         selectionModel.select(selectedCategory);
       }
