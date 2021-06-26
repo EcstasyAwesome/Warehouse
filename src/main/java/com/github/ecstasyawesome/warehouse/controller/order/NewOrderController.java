@@ -115,7 +115,7 @@ public class NewOrderController extends AbstractCachedController<NewOrderControl
       var zeroValue = orderItemTable.getItems().stream()
           .filter(orderItem -> orderItem.getAmount() == 0D)
           .findAny();
-      if (zeroValue.isEmpty()) {
+      if (zeroValue.isEmpty() && orderItemTable.getItems().size() > 0) {
         var order = Order.Builder.create()
             .setProductProvider(providerChoiceBox.getValue())
             .setProductStorage(storageChoiceBox.getValue())
@@ -135,7 +135,7 @@ public class NewOrderController extends AbstractCachedController<NewOrderControl
       } else {
         windowManager
             .showDialog(AlertType.WARNING,
-                "Edit or remove order items with zero amount!"); // TODO i18n
+                "Items list is empty or contains zero amount!"); // TODO i18n
       }
     }
   }
@@ -184,7 +184,7 @@ public class NewOrderController extends AbstractCachedController<NewOrderControl
   @Override
   public boolean isReady() {
     return !orderItemTable.getItems().isEmpty() || !commentArea.getText().isEmpty()
-           || storageChoiceBox.getValue() != null || providerChoiceBox.getValue() != null;
+        || storageChoiceBox.getValue() != null || providerChoiceBox.getValue() != null;
   }
 
   @Override
