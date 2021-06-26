@@ -73,7 +73,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </GridPane>
-            <TableView fx:id="orderItemTable" editable="true" GridPane.rowIndex="2">
+            <TableView fx:id="orderItemTable" GridPane.rowIndex="2">
                <columns>
                   <TableColumn fx:id="idColumn" minWidth="30.0" prefWidth="30.0" text="id" />
                   <TableColumn fx:id="nameColumn" minWidth="200.0" prefWidth="200.0" text="name" />
