@@ -249,6 +249,7 @@ public final class WindowManager {
     closeAllActiveWindows();
     logger.debug("Request to shutdown the application");
     Platform.exit();
+    System.exit(0);
   }
 
   public Optional<ButtonType> showDialog(AlertType type, final String message) {
