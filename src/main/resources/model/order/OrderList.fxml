@@ -39,7 +39,7 @@
             <children>
                <ToolBar prefHeight="40.0" prefWidth="200.0">
                   <items>
-                     <Button fx:id="addButton" mnemonicParsing="false" onAction="#add" text="Add" />
+                     <Button fx:id="addButton" disable="true" mnemonicParsing="false" onAction="#add" text="Add" />
                      <Button fx:id="showButton" disable="true" mnemonicParsing="false" onAction="#show" text="Show" />
                      <Separator orientation="VERTICAL" />
                      <Button mnemonicParsing="false" onAction="#refresh" text="Refresh" />
