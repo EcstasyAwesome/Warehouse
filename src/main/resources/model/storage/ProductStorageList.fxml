@@ -37,12 +37,12 @@
             <children>
                <ToolBar prefHeight="40.0" prefWidth="200.0">
                  <items>
-                     <Button fx:id="addCompanyButton" mnemonicParsing="false" onAction="#addCompany" text="Add company" />
+                     <Button fx:id="addCompanyButton" disable="true" mnemonicParsing="false" onAction="#addCompany" text="Add company" />
                      <Button fx:id="showCompanyButton" disable="true" mnemonicParsing="false" onAction="#showCompany" text="Show company" />
                      <Button fx:id="editCompanyButton" disable="true" layoutX="10.0" layoutY="13.0" mnemonicParsing="false" onAction="#editCompany" text="Edit company" />
                      <Button fx:id="deleteCompanyButton" disable="true" mnemonicParsing="false" onAction="#deleteCompany" text="Delete company" />
                      <Separator orientation="VERTICAL" />
-                     <Button fx:id="addStorageButton" mnemonicParsing="false" onAction="#addStorage" text="Add storage" />
+                     <Button fx:id="addStorageButton" disable="true" mnemonicParsing="false" onAction="#addStorage" text="Add storage" />
                      <Button fx:id="showStorageButton" disable="true" mnemonicParsing="false" onAction="#showStorage" text="Show storage" />
                      <Button fx:id="editStorageButton" disable="true" layoutX="393.0" layoutY="13.0" mnemonicParsing="false" onAction="#editStorage" text="Edit storage" />
                      <Button fx:id="deleteStorageButton" disable="true" mnemonicParsing="false" onAction="#deleteStorage" text="Delete storage" />

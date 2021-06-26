@@ -17,6 +17,7 @@ import com.github.ecstasyawesome.warehouse.repository.ProductStorageRepository;
 import com.github.ecstasyawesome.warehouse.repository.impl.CompanyRepositoryService;
 import com.github.ecstasyawesome.warehouse.repository.impl.ProductStorageRepositoryService;
 import com.github.ecstasyawesome.warehouse.util.SessionManager;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -88,7 +89,6 @@ public class ProductStorageListController extends AbstractController {
   @FXML
   private void initialize() {
     configureButton(addCompanyButton, sessionUser, newCompanyModule.getAccess());
-    configureButton(addStorageButton, sessionUser, newProductStorageModule.getAccess());
 
     companyNameColumn.setCellValueFactory(entry -> entry.getValue().nameProperty());
     storageIdColumn.setCellValueFactory(entry -> entry.getValue().idProperty().asObject());
@@ -118,6 +118,11 @@ public class ProductStorageListController extends AbstractController {
               editProductStorageModule.getAccess());
           configureButton(deleteStorageButton, sessionUser, currentNull, Access.ADMIN);
         });
+
+    companyTable.getItems().addListener((ListChangeListener<? super Company>) change -> {
+      var empty = change.getList().isEmpty();
+      configureButton(addStorageButton, sessionUser, empty, newProductStorageModule.getAccess());
+    });
 
     getCompaniesFromDatabase();
   }
@@ -240,8 +245,10 @@ public class ProductStorageListController extends AbstractController {
     if (!selectionModel.isEmpty()) {
       selectedCompany = selectionModel.getSelectedItem();
     }
+    var companies = companyTable.getItems();
+    companies.clear();
     try {
-      companyTable.setItems(companyRepository.getAll());
+      companies.addAll(companyRepository.getAll());
       if (selectedCompany != null) {
         selectionModel.select(selectedCompany);
       } else {
