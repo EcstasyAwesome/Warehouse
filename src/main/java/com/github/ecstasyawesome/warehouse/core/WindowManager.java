@@ -225,7 +225,6 @@ public final class WindowManager {
       final AbstractCachedConfiguredFeedbackModule<T, E, R, C> cachedConfiguredFeedbackModule,
       final E instance) {
     logger.trace("Request to show the cached configured feedback module in the extra window");
-
     var user = getUserFromContext().orElse(null);
     if (isAccessGranted(user, cachedConfiguredFeedbackModule.getAccess())) {
       var fxmlBundle = cachedConfiguredFeedbackModule.create();
